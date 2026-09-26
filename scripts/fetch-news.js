@@ -6,13 +6,20 @@ import { GoogleGenAI } from '@google/genai';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const parser = new Parser();
 
+// Danh sách các nguồn báo chính thống
 const RSS_FEEDS = [
-  { name: 'Chính phủ', url: 'https://baochinhphu.vn/rss/chuyen-doi-so.rss' },
+  { name: 'Chính phủ - Chuyển đổi số', url: 'https://baochinhphu.vn/rss/chuyen-doi-so.rss' },
   { name: 'Chính phủ - Tin chung', url: 'https://baochinhphu.vn/rss/home.rss' },
-  { name: 'Quân đội Nhân dân', url: 'https://www.qdnd.vn/rss/p/572.rss' }
+  { name: 'Báo Lao Động - Xã hội', url: 'https://laodong.vn/rss/xa-hoi.rss' }
 ];
 
-const KEYWORDS = ['chuyển đổi số', 'số hóa', 'đề án 06', 'chính phủ điện tử', 'căn cước công dân', 'dịch vụ công', 'hành chính công'];
+// Bộ từ khóa lọc bài viết đa dạng chủ đề hành chính, chính sách & công nghệ
+const KEYWORDS = [
+  'chuyển đổi số', 'số hóa', 'đề án 06', 'chính phủ điện tử', 'dịch vụ công', 
+  'hành chính công', 'căn cước công dân', 'cải cách hành chính', 'chế độ chính sách', 
+  'cán bộ', 'công chức', 'viên chức', 'nghỉ lễ', 'tiền lương', 'bảo hiểm xã hội', 
+  'công nghệ', 'quản lý', 'văn phòng', 'lao động', 'quy định'
+];
 
 function createSlug(text) {
   return text
@@ -26,7 +33,7 @@ function createSlug(text) {
 }
 
 async function run() {
-  console.log('🚀 Bắt đầu quét tin tức Chuyển đổi số...');
+  console.log('🚀 Bắt đầu quét tin tức tự động...');
 
   const dataPath = path.join(process.cwd(), 'data.json');
   let currentProducts = [];
@@ -69,7 +76,7 @@ Viết lại một bài viết phân tích, tổng hợp tin tức dựa trên t
 Yêu cầu đầu ra dạng JSON đúng cấu trúc sau (không kèm markdown format ngoài JSON):
 {
   "sapo": "Đoạn Sapo thu hút ngắn gọn 2-3 câu",
-  "htmlBody": "Nội dung chi tiết bài viết khoảng 3-4 đoạn văn chuẩn HTML (sử dụng các thẻ h2, p, ul, li, blockquote). Đưa ra các nhận định về tầm quan trọng của việc chuyển đổi số hành chính, đề án 06 hoặc ứng dụng công nghệ trong quản lý.",
+  "htmlBody": "Nội dung chi tiết bài viết khoảng 3-4 đoạn văn chuẩn HTML (sử dụng các thẻ h2, p, ul, li, blockquote). Đưa ra các nhận định về tầm quan trọng của chủ đề đối với công tác hành chính, cán bộ công chức hoặc ứng dụng công nghệ trong quản lý.",
   "sourceUrl": "${item.link}"
 }`;
 
@@ -154,7 +161,7 @@ function generateArticleHtmlPage(title, sapo, htmlBody, sourceUrl, sourceName, f
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-6">
             <a href="/" class="hover:text-blue-600">Trang chủ</a>
             <i class="fa-solid fa-chevron-right text-[10px]"></i>
-            <span class="text-slate-800 dark:text-slate-200 font-semibold truncate">Tin tức Số hóa</span>
+            <span class="text-slate-800 dark:text-slate-200 font-semibold truncate">Tin tức Hành chính</span>
         </nav>
 
         <article class="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 space-y-6">
@@ -183,7 +190,7 @@ function generateArticleHtmlPage(title, sapo, htmlBody, sourceUrl, sourceName, f
     </main>
 
     <footer class="bg-slate-950 text-slate-400 py-8 text-center text-xs border-t border-slate-800">
-        © 2026 Số Hóa Hành Chính. Thông tin tổng hợp tự động từ Cổng TTĐT Chính phủ.
+        © 2026 Số Hóa Hành Chính. Thông tin tổng hợp tự động từ Cổng TTĐT Chính phủ & Báo chí chính thống.
     </footer>
 </body>
 </html>`;
