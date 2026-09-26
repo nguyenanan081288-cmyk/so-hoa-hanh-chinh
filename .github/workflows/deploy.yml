@@ -1,0 +1,27 @@
+name: Tự động đẩy Code lên Hosting qua FTP
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  web-deploy:
+    name: Deploy Website
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Lấy code mới nhất từ GitHub
+        uses: actions/checkout@v4
+
+      - name: 2. Đẩy file lên Hosting FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: domains/meotinhoc.com/
+          protocol: ftp
+          port: 21
