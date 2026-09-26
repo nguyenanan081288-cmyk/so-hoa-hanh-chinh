@@ -1,14 +1,14 @@
 {
-    "name": "so-hoa-hanh-chinh-news-bot",
-    "version": "1.0.0",
-    "description": "Tự động thu thập và biên tập tin tức chuyển đổi số",
-    "main": "scripts/fetch-news.js",
-    "type": "module",
-    "scripts": {
-        "fetch-news": "node scripts/fetch-news.js"
-    },
-    "dependencies": {
-        "@google/genai": "^0.1.1",
-        "rss-parser": "^3.13.0"
-    }
+  "name": "so-hoa-hanh-chinh-news-bot",
+  "version": "1.0.0",
+  "description": "Tự động thu thập và biên tập tin tức chuyển đổi số",
+  "main": "scripts/fetch-news.js",
+  "type": "module",
+  "scripts": {
+    "fetch-news": "node scripts/fetch-news.js"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "rss-parser": "^3.13.0"
+  }
 }
