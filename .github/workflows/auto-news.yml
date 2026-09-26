@@ -6,6 +6,9 @@ on:
     - cron: '0 23,11 * * *'
   workflow_dispatch: # Cho phép bấm chạy thủ công từ giao diện GitHub UI
 
+permissions:
+  contents: write
+
 jobs:
   update-news:
     runs-on: ubuntu-latest
