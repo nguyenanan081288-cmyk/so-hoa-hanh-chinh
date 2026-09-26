@@ -403,7 +403,39 @@
                     <p id="toolSub" class="text-xs text-slate-500">Thao tác trực tiếp không cần cài đặt</p>
                 </div>
             </div>
+<!-- ==================== KHỐI GIỚI THIỆU TÁC GIẢ DẤU ẤN CÁ NHÂN ==================== -->
+<section class="max-w-7xl mx-auto px-4 py-8">
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 justify-between">
+        
+        <div class="flex items-center gap-5">
+            <!-- Avatar / Badge Cá Nhân -->
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-3xl sm:text-4xl shadow-lg shadow-blue-500/30 border-2 border-white/20 shrink-0">
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+            
+            <div class="space-y-1.5">
+                <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                    Về Tác Giả / Admin
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black text-white">Mẹo Tin Học - Chia Sẻ Từ Trải Nghiệm Thực Chiến</h3>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                    Chào bạn! Tôi tạo ra trang web này với mục đích chia sẻ những thủ thuật Excel, Word, phím tắt máy tính và công cụ tiện ích được đúc kết từ **chính kinh nghiệm xử lý công việc hàng ngày**. Hy vọng sẽ giúp bạn tiết kiệm tối đa thời gian làm việc!
+                </p>
+            </div>
+        </div>
 
+        <!-- Nút Tương Tác Trực Tiếp -->
+        <div class="flex sm:flex-col gap-2.5 w-full md:w-auto shrink-0">
+            <button onclick="toggleAiModal()" class="w-full px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-comments"></i> Hỏi Admin Qua AI
+            </button>
+            <a href="mailto:contact@meotinhoc.com" class="w-full px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> Gửi Yêu Cầu Bài Viết
+            </a>
+        </div>
+
+    </div>
+</section>
             <!-- KHUNG GHÉP PDF -->
             <div id="pdfMergeUI" class="tool-ui-box hidden space-y-3">
                 <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-slate-50 dark:bg-slate-950 hover:border-blue-500 transition-colors">
