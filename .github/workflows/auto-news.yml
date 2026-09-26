@@ -36,3 +36,11 @@ jobs:
           git add data.json bai-viet-*.html
           git diff-index --quiet HEAD || git commit -m "bot: Tự động cập nhật bài viết tin tức mới nhất [skip ci]"
           git push
+
+      - name: Tự động đồng bộ bài viết mới lên Web Hosting qua FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: public_html/
