@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Công Cụ Văn Phòng Online Miễn Phí: Ghép PDF, Quét OCR & Soát Lỗi Nghị Định 30 | Số Hóa Hành Chính
+    </title>
+    <meta name="description"
+        content="Khám phá Cổng Số Hóa Hành Chính với bộ công cụ tiện ích trực tuyến miễn phí 100%: Ghép file PDF, xóa trang PDF, quét chữ OCR tiếng Việt bóc tách bảng biểu và soát lỗi chính tả chuẩn Nghị định 30.">
+    <link rel="canonical" href="https://sohoahanhchinh.vn/bai-viet-cong-cu-tien-ich.html">
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Be Vietnam Pro"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .toast-enter {
+            transform: translateY(120%);
+            opacity: 0;
+        }
+
+        .toast-show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white">
+
+    <!-- HEADER -->
+    <header
+        class="bg-slate-900/90 backdrop-blur-xl text-white shadow-lg sticky top-0 z-40 border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 py-3.5 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-3 group" title="Trang chủ Số Hóa Hành Chính">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-all duration-300">
+                    <i class="fa-solid fa-file-invoice text-xl" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-base sm:text-lg tracking-tight text-white block leading-tight group-hover:text-blue-300 transition-colors">SỐ HÓA HÀNH CHÍNH</span>
+                    <span class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase block">Giải pháp & Tiện ích văn phòng</span>
+                </div>
+            </a>
+
+            <nav aria-label="Điều hướng chính"
+                class="hidden md:flex space-x-1 lg:space-x-2 font-medium text-xs lg:text-sm">
+                <a href="/"
+                    class="px-3 py-2 rounded-xl text-slate-200 hover:text-white hover:bg-slate-800/60 transition">Trang
+                    chủ</a>
+                <a href="index.html#cong-cu-truc-tuyen"
+                    class="px-3 py-2 rounded-xl text-amber-400 font-bold hover:bg-amber-500/10 transition flex items-center gap-1"><i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                    Tiện Ích Online</a>
+                <a href="index.html#phan-mem"
+                    class="px-3 py-2 rounded-xl text-slate-200 hover:text-white hover:bg-slate-800/60 transition">Kho
+                    Phần Mềm</a>
+                <button onclick="toggleAiModal()" class="px-3 py-2 rounded-xl text-purple-300 font-bold hover:bg-purple-500/10 transition flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-purple-400" aria-hidden="true"></i> Hỏi Đáp AI</button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleDarkMode()" aria-label="Đổi giao diện Sáng hoặc Tối" class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-amber-400 flex items-center justify-center transition border border-slate-700/60 shadow-sm active:scale-95">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm sm:text-base" aria-hidden="true"></i>
+                </button>
+                <button onclick="toggleAiModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-3 py-2.5 rounded-2xl font-bold text-xs sm:text-sm transition-all shadow-md shadow-purple-600/30 flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-robot" aria-hidden="true"></i> <span class="hidden sm:inline">Trợ lý </span>AI
+                </button>
+                <button id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Mở menu di động" class="md:hidden text-slate-300 hover:text-white text-xl p-2 rounded-xl hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MENU DI ĐỘNG -->
+        <div id="mobileMenu"
+            class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-4 space-y-1.5 font-medium text-sm">
+            <a href="/"
+                class="block text-slate-200 hover:text-blue-400 py-2.5 px-3 rounded-xl hover:bg-slate-800/50">Trang
+                chủ</a>
+            <a href="index.html#cong-cu-truc-tuyen" onclick="closeMobileMenu()"
+                class="block text-amber-400 font-bold py-2.5 px-3 rounded-xl bg-amber-500/10"><i class="fa-solid fa-bolt mr-2" aria-hidden="true"></i>Tiện
+                Ích Trực Tuyến</a>
+            <a href="index.html#phan-mem" onclick="closeMobileMenu()"
+                class="block text-slate-200 hover:text-blue-400 py-2.5 px-3 rounded-xl hover:bg-slate-800/50">Kho Phần
+                Mềm</a>
+            <button onclick="toggleAiModal(); closeMobileMenu();" class="w-full text-left text-purple-300 font-bold py-2.5 px-3 rounded-xl bg-purple-500/10 flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-purple-400" aria-hidden="true"></i> Hỏi Đáp AI Hành Chính
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN ARTICLE CONTENT -->
+    <main class="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <!-- BREADCRUMB -->
+        <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-6">
+            <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400">Trang chủ</a>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <a href="index.html#cong-cu-truc-tuyen" class="hover:text-blue-600 dark:hover:text-blue-400">Tiện ích
+                online</a>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <span class="text-slate-800 dark:text-slate-200 font-semibold truncate">Cổng công cụ tiện ích online</span>
+        </nav>
+
+        <article
+            class="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 space-y-8">
+            <!-- TITLE & META -->
+            <header class="space-y-4 border-b border-slate-100 dark:border-slate-800 pb-6">
+                <span class="bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">Hướng dẫn & Công cụ</span>
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+                    Cổng Công Cụ Văn Phòng Online Miễn Phí: Ghép PDF, Quét OCR & Soát Lỗi Nghị Định 30
+                </h1>
+                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    <span><i class="fa-solid fa-user-pen mr-1 text-blue-500"></i> Ban Biên Tập Số Hóa Hành Chính</span>
+                    <span><i class="fa-solid fa-calendar-days mr-1 text-emerald-500"></i> Cập nhật năm 2026</span>
+                </div>
+            </header>
+
+            <!-- SAPO / INTRO -->
+            <div
+                class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border-l-4 border-blue-600 text-slate-700 dark:text-slate-300 text-sm leading-relaxed font-medium">
+                Trong kỷ nguyên chuyển đổi số hành chính, việc xử lý tài liệu văn bản nhanh chóng, chuẩn xác và bảo mật
+                là ưu tiên hàng đầu của cán bộ, công chức, viên chức và nhân viên văn phòng. Tuy nhiên, nhiều người
+                thường gặp khó khăn khi phải cài đặt các phần mềm nặng phức tạp hoặc lo ngại rủi ro bảo mật dữ liệu khi
+                dùng các trang web nước ngoài.
+                <br><br>
+                Thấu hiểu nhu cầu đó, <a href="https://sohoahanhchinh.vn/"
+                    class="text-blue-600 dark:text-blue-400 font-bold hover:underline">Cổng Tiện Ích & Phần Mềm Số Hóa
+                    Hành Chính</a> ra đời nhằm cung cấp giải pháp xử lý văn bản trực tuyến toàn diện, an toàn và hoàn
+                toàn miễn phí.
+            </div>
+
+            <!-- ANH TONG QUAN -->
+            <figure class="space-y-2 text-center">
+                <img src="images/anhtongquan.jpg" alt="Giao diện Cổng Tiện Ích & Phần Mềm Số Hóa Hành Chính" class="rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 mx-auto w-full object-cover">
+                <figcaption class="text-xs text-slate-500 dark:text-slate-400 italic">Giao diện tổng quan Cổng Tiện Ích
+                    & Phần Mềm Số Hóa Hành Chính tối ưu trên mọi thiết bị.</figcaption>
+            </figure>
+
+            <!-- SECTION 1 -->
+            <section class="space-y-4">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-2 h-6 bg-blue-600 rounded-full inline-block"></span> 1. Tại Sao Nên Sử Dụng Công Cụ
+                    Trực Tuyến Tại Số Hóa Hành Chính?
+                </h2>
+                <p class="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    Không chỉ là một trang web chia sẻ phần mềm, hệ thống tích hợp bộ công cụ
+                    <strong>Xử lý ngay – Không cần cài đặt</strong> giúp tối ưu hóa 100% thời gian làm việc của bạn:
+                </p>
+                <ul class="list-disc pl-5 text-sm space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Xử lý trực tiếp trên trình duyệt:</strong> Không cần tải phần mềm rườm rà, thực hiện
+                        thao tác chỉ với vài cú nhấp chuột.</li>
+                    <li><strong>An toàn & Bảo mật 100%:</strong> Dữ liệu được xử lý an toàn ngay trên trình duyệt máy
+                        tính của bạn, không lo lộ lọt thông tin văn bản hành chính.</li>
+                    <li><strong>Chuẩn hóa thể thức Nghị định 30/2020/NĐ-CP:</strong> Tích hợp bộ quy chuẩn trình trình
+                        bày văn bản hành chính mới nhất.</li>
+                    <li><strong>Hỗ trợ Trợ lý AI 24/7:</strong> Giải đáp nhanh các thắc mắc về thể thức, căn lề, font
+                        chữ và kỹ năng Excel văn phòng.</li>
+                </ul>
+            </section>
+
+            <!-- ANH CAC CHUC NANG -->
+            <figure class="space-y-2 text-center">
+                <img src="images/anhcacchucnangcoban.jpg" alt="Bộ công cụ trực tuyến hot tại Số Hóa Hành Chính" class="rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 mx-auto w-full object-cover">
+                <figcaption class="text-xs text-slate-500 dark:text-slate-400 italic">Bộ 4 công cụ tiện ích văn phòng
+                    hot nhất hiện nay tại Số Hóa Hành Chính.</figcaption>
+            </figure>
+
+            <!-- SECTION 2 -->
+            <section class="space-y-6">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-2 h-6 bg-blue-600 rounded-full inline-block"></span> 2. Khám Phá 4 Công Cụ Tiện Ích
+                    Văn Phòng Online Nổi Bật Nhất
+                </h2>
+
+                <!-- 2.1 -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+                    <h3 class="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                        <i class="fa-solid fa-object-group"></i> 2.1. <a href="index.html#cong-cu-truc-tuyen"
+                            class="hover:underline">Ghép File PDF Trực Tuyến</a>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Khi cần gộp nhiều báo cáo, phụ lục hoặc hồ sơ riêng lẻ thành một tệp duy nhất, công cụ
+                        <strong>Ghép File PDF</strong> là trợ thủ đắc lực cho bạn. Hỗ trợ chọn nhiều file cùng lúc, tự
+                        động sắp xếp thứ tự và tối ưu dung lượng tệp đầu ra.
+                    </p>
+                    <a href="index.html#cong-cu-truc-tuyen"
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-circle-play"></i> Bấm vào đây để sử dụng ngay công cụ Ghép PDF
+                    </a>
+                </div>
+
+                <!-- 2.2 -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+                    <h3 class="text-base sm:text-lg font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                        <i class="fa-solid fa-file-circle-xmark"></i> 2.2. <a href="index.html#cong-cu-truc-tuyen"
+                            class="hover:underline">Xóa Trang PDF Thừa & Trang Trống</a>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Công văn hoặc tài liệu scan thường chứa các trang trắng, trang thừa không cần thiết. Công cụ cho
+                        phép xem tên file, nhập vị trí linh hoạt (ví dụ:
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">2, 5</code>
+                        hoặc khoảng trang
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">3-7</code>)
+                        để loại bỏ chính xác các trang mong muốn mà không làm giảm chất lượng file gốc.
+                    </p>
+                    <a href="index.html#cong-cu-truc-tuyen"
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-3.5 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-circle-play"></i> Truy cập công cụ Xóa Trang PDF
+                    </a>
+                </div>
+
+                <!-- 2.3 -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+                    <h3 class="text-base sm:text-lg font-bold text-teal-600 dark:text-teal-400 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> 2.3. <a href="index.html#cong-cu-truc-tuyen"
+                            class="hover:underline">Quét Chữ OCR Tiếng Việt (Chuyển Ảnh/PDF Sang Word, Excel)</a>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Nhận diện chữ viết từ ảnh chụp văn bản, công văn giấy hoặc file PDF scan chưa bao giờ dễ dàng
+                        đến thế nhờ công nghệ AI OCR tiên tiến. Trích xuất chữ tiếng Việt chuẩn xác cao, tự động bảo
+                        toàn cấu trúc bảng kẻ, hóa đơn, chứng từ và cho phép xuất kết quả trực tiếp ra file Word (.doc)
+                        hoặc Excel (.xlsx) phân cột sẵn sàng chỉnh sửa.
+                    </p>
+                    <a href="index.html#cong-cu-truc-tuyen"
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-3.5 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-circle-play"></i> Sử dụng AI Quét Chữ OCR ngay
+                    </a>
+                </div>
+
+                <!-- 2.4 -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+                    <h3
+                        class="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-400 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> 2.4. <a href="index.html#cong-cu-truc-tuyen"
+                            class="hover:underline">Soát Lỗi Chính Tả & Văn Phong Chuẩn Nghị Định 30</a>
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Soát lỗi văn bản hành chính trước khi phát hành là bước vô cùng quan trọng. Công cụ hỗ trợ dán
+                        trực tiếp văn bản hoặc <strong>Tải file đa định dạng</strong> (Word
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">.docx</code>,
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">.doc</code>,
+                        Excel
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">.xlsx</code>,
+                        <code class="bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">.xls</code>
+                        và file Text). Phân tích khoảng trắng thừa, lặp dấu câu, sai từ ngữ hành chính và tích hợp tính
+                        năng tự động sửa nhanh chỉ trong 1 giây.
+                    </p>
+                    <a href="index.html#cong-cu-truc-tuyen"
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 px-3.5 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-circle-play"></i> Kiểm tra chính tả & Thể thức NĐ 30
+                    </a>
+                </div>
+            </section>
+
+            <!-- SECTION 3 -->
+            <section class="space-y-4">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-2 h-6 bg-blue-600 rounded-full inline-block"></span> 3. Hướng Dẫn Sử Dụng Nhanh Trong
+                    3 Bước
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
+                        <div
+                            class="w-8 h-8 bg-blue-600 text-white font-black rounded-full flex items-center justify-center mx-auto">
+                            1</div>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Bước 1</h4>
+                        <p class="text-slate-600 dark:text-slate-400">Truy cập Cổng Tiện Ích Trực Tuyến tại <a
+                                href="index.html#cong-cu-truc-tuyen" class="text-blue-600 font-bold">Số Hóa Hành
+                                Chính</a>.</p>
+                    </div>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
+                        <div
+                            class="w-8 h-8 bg-blue-600 text-white font-black rounded-full flex items-center justify-center mx-auto">
+                            2</div>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Bước 2</h4>
+                        <p class="text-slate-600 dark:text-slate-400">Chọn công cụ cần dùng và tải tệp văn bản/hình ảnh
+                            lên từ máy tính hoặc điện thoại.</p>
+                    </div>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
+                        <div
+                            class="w-8 h-8 bg-blue-600 text-white font-black rounded-full flex items-center justify-center mx-auto">
+                            3</div>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Bước 3</h4>
+                        <p class="text-slate-600 dark:text-slate-400">Nhấn nút tiến hành xử lý và tải tệp kết quả hoàn
+                            chỉnh về máy hoàn toàn miễn phí!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CALL TO ACTION BANNER -->
+            <div
+                class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white p-6 sm:p-8 rounded-3xl text-center space-y-4 shadow-xl">
+                <h3 class="text-lg sm:text-2xl font-black">Nâng Cao Hiệu Suất Xử Lý Văn Bản Ngay Hôm Nay!</h3>
+                <p class="text-xs sm:text-sm text-blue-100 max-w-xl mx-auto">Với tiêu chí Nhanh chóng - An toàn - Chuẩn
+                    mực, hệ thống công cụ tiện ích tại Số Hóa Hành Chính giúp bạn hoàn thành công việc văn phòng hiệu
+                    quả gấp nhiều lần.</p>
+                <a href="https://sohoahanhchinh.vn/"
+                    class="inline-flex items-center gap-2 bg-white text-blue-700 font-black text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg hover:bg-amber-300 hover:text-slate-900 transition active:scale-95">
+                    <i class="fa-solid fa-rocket"></i> Trải Nghiệm Trọn Bộ Tiện Ích Trực Tuyến
+                </a>
+            </div>
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div
+                        class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                        <i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
+                    </div>
+                    <span class="font-extrabold text-lg text-white tracking-tight">SỐ HÓA HÀNH CHÍNH</span>
+                </div>
+                <p class="text-xs sm:text-sm leading-relaxed text-slate-400">
+                    Cổng thông tin chia sẻ phần mềm, tiện ích trực tuyến và mẫu biểu tối ưu cho công tác văn phòng &
+                    quản lý hành chính.
+                </p>
+            </div>
+            <div>
+                <span class="text-white font-bold mb-4 text-xs sm:text-sm uppercase tracking-widest block">Danh mục chính</span>
+                <ul class="space-y-2.5 text-xs sm:text-sm">
+                    <li><a href="/" class="hover:text-blue-400 transition">Trang chủ</a></li>
+                    <li><a href="index.html#cong-cu-truc-tuyen" class="hover:text-amber-400 transition">Công cụ Trực
+                            tuyến</a></li>
+                    <li><a href="index.html#phan-mem" class="hover:text-blue-400 transition">Phần mềm quản lý</a></li>
+                    <li><button onclick="toggleAiModal()" class="hover:text-purple-400 transition">Hỏi đáp Trợ lý AI</button>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <span class="text-white font-bold mb-4 text-xs sm:text-sm uppercase tracking-widest block">Thông tin liên hệ</span>
+                <p class="text-xs sm:text-sm mb-2.5 flex items-center gap-2">
+                    <i class="fa-solid fa-envelope text-blue-400"></i> contact@sohoahanhchinh.vn
+                </p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-10 pt-6 border-t border-slate-900 text-center text-xs text-slate-500">
+            © 2026 Số Hóa Hành Chính. Bản quyền thuộc về Số Hóa Hành Chính.
+        </div>
+    </footer>
+
+    <!-- CỔNG AI POPUP TRÔI NỔI -->
+    <button id="aiFloatingBtn" onclick="toggleAiModal()" class="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white p-4 rounded-full shadow-2xl shadow-purple-600/50 border border-purple-400/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group" title="Trợ lý AI Văn Phòng">
+        <i class="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
+        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full animate-ping"></span>
+        <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+    </button>
+
+    <div id="aiChatPopup"
+        class="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 h-[520px] max-h-[80vh] bg-slate-900/95 backdrop-blur-xl border border-purple-500/30 rounded-3xl shadow-2xl flex flex-col hidden transition-all duration-300 overflow-hidden">
+        <div
+            class="p-4 bg-gradient-to-r from-purple-950/80 via-slate-900 to-slate-900 border-b border-slate-800/80 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-9 h-9 rounded-2xl bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-300">
+                    <i class="fa-solid fa-robot text-base"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-white leading-none">Trợ Lý AI Hành Chính</h3>
+                    <span class="text-[10px] text-emerald-400 font-medium flex items-center gap-1 mt-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Sẵn sàng 24/7
+                    </span>
+                </div>
+            </div>
+            <button onclick="toggleAiModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <div
+            class="px-3 py-2 bg-slate-950/60 border-b border-slate-800/60 flex gap-2 overflow-x-auto scrollbar-none text-[11px]">
+            <button onclick="sendQuickQuestion('Nghị định 30 quy định căn lề văn bản hành chính như thế nào?')" class="bg-purple-950/60 hover:bg-purple-900/80 border border-purple-800/50 text-purple-200 px-2.5 py-1 rounded-full whitespace-nowrap transition">
+                <i class="fa-solid fa-bolt mr-1 text-amber-400"></i>Căn lề NĐ 30
+            </button>
+            <button onclick="sendQuickQuestion('Cách sửa lỗi Blocked Macro trong Excel khi mở file Add-in?')" class="bg-purple-950/60 hover:bg-purple-900/80 border border-purple-800/50 text-purple-200 px-2.5 py-1 rounded-full whitespace-nowrap transition">
+                <i class="fa-solid fa-file-excel mr-1 text-emerald-400"></i>Sửa Macro Excel
+            </button>
+        </div>
+
+        <div id="aiChatBody" class="p-4 flex-1 overflow-y-auto space-y-3 scrollbar-none text-xs">
+            <div class="flex gap-2.5 items-start">
+                <div
+                    class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] shadow-sm leading-relaxed">
+                    Xin chào! Tôi là <strong>Trợ lý AI Số Hóa Hành Chính</strong>. Bạn cần hỗ trợ gì về thể thức văn
+                    bản, OCR quét ảnh/PDF hay kỹ năng Excel hôm nay?
+                </div>
+            </div>
+        </div>
+
+        <form onsubmit="handleAiChatSubmit(event)"
+            class="p-3 border-t border-slate-800/80 bg-slate-950/80 flex gap-2 items-center">
+            <input id="aiChatInput" type="text" placeholder="Hỏi AI về NĐ 30, Excel..." class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-purple-500 transition-colors">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-3.5 py-2.5 rounded-2xl text-xs shadow-md transition-all active:scale-95 flex items-center justify-center">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"
+        class="fixed bottom-5 right-5 bg-slate-900/95 backdrop-blur-md text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 z-50 toast-enter transition-all duration-300 border border-slate-800">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage" class="text-xs font-bold">Thông báo thành công!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

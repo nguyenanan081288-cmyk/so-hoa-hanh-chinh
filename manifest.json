@@ -1,0 +1,16 @@
+{
+    "name": "Số Hóa Hành Chính",
+    "short_name": "Số Hóa HC",
+    "description": "Kho Phần Mềm & Tiện Ích Chuẩn Nghị Định 30",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#0f172a",
+    "icons": [
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        }
+    ]
+}

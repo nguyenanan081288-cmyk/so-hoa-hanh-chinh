@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO META TAGS -->
+    <title>Kiểu Trình Bày Văn Bản Hành Chính & Sửa Lỗi Ngắt Bảng, Mất Số Trang Word</title>
+    <meta name="description" content="Hướng dẫn kiểu trình bày văn bản hành chính theo khổ A4 chuẩn Nghị định 30, xử lý lỗi lệch Header/Footer khi xoay ngang trang và lỗi bảng biểu bị tràn nhảy trang trong Word.">
+    <meta name="keywords" content="kiểu trình bày văn bản hành chính, nghị định 30, xoay ngang 1 trang word, lỗi mất số trang header footer, lặp lại tiêu đề bảng excel word, repeat as header row">
+    <link rel="canonical" href="https://sohoahanhchinh.vn/kieu-trinh-bay-van-ban.html">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="Kiểu Trình Bày Văn Bản Hành Chính & Cách Sửa Lỗi Bảng Biểu Trong Word">
+    <meta property="og:description" content="Bí quyết khắc phục triệt để lỗi nhảy số trang khi xoay ngang giấy và lỗi đứt quãng hàng bảng biểu khi tràn trang.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sohoahanhchinh.vn/kieu-trinh-bay-van-ban.html">
+    <meta property="og:image" content="https://sohoahanhchinh.vn/images/word-section-break.png">
+
+    <!-- SCHEMA ARTICLE -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Kiểu Trình Bày Văn Bản Hành Chính & Sửa Lỗi Ngắt Bảng, Mất Số Trang Word",
+      "description": "Hướng dẫn chi tiết kiểu trình bày văn bản hành chính và cách sửa lỗi kỹ thuật Word phổ biến.",
+      "author": { "@type": "Organization", "name": "Số Hóa Hành Chính" },
+      "publisher": { "@type": "Organization", "name": "Số Hóa Hành Chính" },
+      "datePublished": "2026-09-09",
+      "dateModified": "2026-09-09"
+    }
+    </script>
+
+    <!-- FONTS & TAILWIND CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Be Vietnam Pro"', 'sans-serif'] } } } }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900/90 backdrop-blur-xl text-white shadow-lg sticky top-0 z-40 border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold"><i class="fa-solid fa-file-invoice text-xl"></i></div>
+                <div>
+                    <span class="font-extrabold text-base sm:text-lg text-white block leading-tight">SỐ HÓA HÀNH CHÍNH</span>
+                    <span class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase block">Hướng Dẫn Kỹ Thuật Word</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="/" class="text-xs sm:text-sm font-bold text-slate-300 hover:text-white transition"><i class="fa-solid fa-arrow-left mr-1.5"></i> Về trang chủ</a>
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-slate-800 text-amber-400 flex items-center justify-center" aria-label="Đổi giao diện"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NỘI DUNG MAIN -->
+    <main class="max-w-4xl mx-auto px-4 py-10">
+        
+        <!-- Breadcrumb -->
+        <nav class="flex text-xs text-slate-400 gap-2 mb-6">
+            <a href="/" class="hover:underline">Trang chủ</a> <span>/</span>
+            <a href="/#phan-mem" class="hover:underline">Bài viết nghiệp vụ</a> <span>/</span>
+            <span class="text-slate-600 dark:text-slate-200 font-medium truncate">Kiểu trình bày văn bản hành chính</span>
+        </nav>
+
+        <!-- Tiêu đề H1 -->
+        <h1 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-4">
+            Kiểu Trình Bày Văn Bản Hành Chính & Cách Khắc Phục Lỗi Xoay Trang, Ngắt Bảng Trong Word
+        </h1>
+
+        <!-- Meta bài viết -->
+        <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pb-6 mb-8 border-b border-slate-200 dark:border-slate-800">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-blue-500"></i> Ban Biên Tập Số Hóa</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar-check text-emerald-500"></i> 09/09/2026</span>
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-clock text-amber-500"></i> 5 phút đọc</span>
+        </div>
+
+        <!-- Sapo chào mừng -->
+        <div class="bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-purple-900/40 border-l-4 border-blue-500 p-6 rounded-r-3xl mb-8 text-sm sm:text-base font-medium text-slate-200 leading-relaxed shadow-sm">
+            📄 Trong công tác soạn thảo văn bản hành chính, việc nắm rõ <strong>quy định về kiểu trình bày khổ giấy</strong> là yêu cầu bắt buộc. Tuy nhiên, khi văn bản xuất hiện các bảng số liệu lớn cần xoay ngang trang giấy hoặc tràn trang, người soạn thảo rất dễ gặp các lỗi kĩ thuật như <i>lệch số trang, mất Header/Footer</i> hoặc <i>bảng biểu bị cắt xé dòng dữ liệu</i>. Bài viết này sẽ hướng dẫn bạn quy định chuẩn và cách xử lý triệt để các sự cố trên!
+        </div>
+
+        <!-- NỘI DUNG CHI TIẾT -->
+        <article class="space-y-8 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+            
+            <!-- Mục 1: Quy định kiểu trình bày -->
+            <section class="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-scroll text-blue-500"></i> 1. Quy định chuẩn về Kiểu trình bày văn bản hành chính
+                </h2>
+                <p>
+                    Theo quy định về thể thức văn bản hành chính:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 font-medium">
+                    <li>Văn bản hành chính được trình bày <strong>theo chiều dài của khổ giấy A4 (định hướng Portrait - dọc)</strong>.</li>
+                    <li><strong>Trường hợp đặc biệt:</strong> Khi nội dung văn bản có chứa các bảng, biểu số liệu lớn nhưng không được làm thành các phụ lục riêng, văn bản có thể được trình bày <strong>theo chiều rộng của khổ giấy (định hướng Landscape - ngang)</strong>.</li>
+                </ul>
+            </section>
+
+            <!-- Mục 2: Lỗi 1 -->
+            <section class="space-y-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 2. Lỗi mất hoặc sai số trang (Header & Footer) khi xoay ngang giấy
+                </h2>
+
+                <div class="bg-red-50 dark:bg-red-950/30 p-5 rounded-2xl border border-red-200 dark:border-red-900/50 space-y-2">
+                    <h3 class="font-bold text-red-800 dark:text-red-300 text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-circle-xmark"></i> Nguyên nhân sự cố:
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Khi chèn một trang xoay ngang (Landscape) cho bảng biểu nằm giữa các trang dọc (Portrait), Microsoft Word sẽ tự động chia tài liệu thành các <strong>Section (Phân đoạn)</strong> riêng biệt. Nếu người soạn thảo không ngắt liên kết (<i>Link to Previous</i>) giữa các Section, số trang hoặc tiêu đề đầu/cuối trang sẽ bị nhảy số, lặp lại bất thường hoặc hiển thị sai vị trí.
+                    </p>
+                </div>
+
+                <div class="bg-slate-100 dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-wrench"></i> Quy trình 3 bước khắc phục chuẩn:
+                    </h3>
+
+                    <ol class="list-decimal pl-6 space-y-3 font-medium text-xs sm:text-sm">
+                        <li>
+                            <strong>Tạo Section Break riêng cho trang ngang:</strong><br>
+                            Đặt dấu nháy chuột ở đầu trang cần xoay ngang $\rightarrow$ Vào thẻ <strong>Layout</strong> $\rightarrow$ Chọn <strong>Breaks</strong> $\rightarrow$ Chọn <strong>Next Page</strong> để tạo một Section độc lập.
+                        </li>
+                    </ol>
+
+                    <!-- HÌNH ẢNH 1: SECTION BREAK -->
+                    <figure class="my-4 text-center">
+                        <img src="/images/word-section-break.png" alt="Thao tác ngắt Section Break Next Page trong Word" class="rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md mx-auto max-w-full">
+                        <figcaption class="text-xs text-slate-500 mt-2 italic">Thao tác tạo Section Next Page trong tab Layout để xoay ngang giấy độc lập</figcaption>
+                    </figure>
+
+                    <ol start="2" class="list-decimal pl-6 space-y-3 font-medium text-xs sm:text-sm">
+                        <li>
+                            <strong>Ngắt liên kết Header & Footer với trang trước:</strong><br>
+                            Nhấp đôi chuột (Double-click) vào phần Header hoặc Footer của trang xoay ngang $\rightarrow$ Trên thanh công cụ <strong>Header & Footer Tools (Design)</strong>, bấm tắt chọn nút <strong>Link to Previous</strong> (để bỏ liên kết định dạng với trang dọc phía trước).
+                        </li>
+                        <li>
+                            <strong>Căn chỉnh số trang & Khôi phục trang dọc phía sau:</strong><br>
+                            Chỉnh lại vị trí số trang cho phù hợp với lề giấy ngang. Khi hết bảng biểu, tiếp tục tạo một <strong>Section Next Page</strong> nữa để chuyển định hướng các trang còn lại về lại dạng đứng (Portrait).
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Mục 3: Lỗi 2 -->
+            <section class="space-y-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-table text-purple-500"></i> 3. Lỗi bảng biểu bị nhảy trang tự động làm đứt quãng dữ liệu
+                </h2>
+
+                <div class="bg-red-50 dark:bg-red-950/30 p-5 rounded-2xl border border-red-200 dark:border-red-900/50 space-y-2">
+                    <h3 class="font-bold text-red-800 dark:text-red-300 text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-circle-xmark"></i> Nguyên nhân sự cố:
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Khi bảng biểu có chiều dài lớn vượt quá một trang giấy, tính năng ngắt trang mặc định của Word sẽ cắt ngang giữa chừng các dòng thông tin. Điều này khiến tiêu đề cột (Header row) bị mất ở trang sau và hàng chữ bị xé làm đôi ở mép cuối trang, gây mất thẩm mỹ và khó tra cứu.
+                    </p>
+                </div>
+
+                <div class="bg-slate-100 dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-5">
+                    <h3 class="font-bold text-emerald-600 dark:text-emerald-400 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-wrench"></i> Giải pháp tối ưu hóa Bảng biểu:
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- PHẦN A -->
+                        <div class="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                            <h4 class="font-bold text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">
+                                A. Tự động lặp lại dòng tiêu đề bảng ở trang tiếp theo (Repeat Header Row)
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                                Bôi đen dòng tiêu đề của bảng $\rightarrow$ Nhấp chuột phải chọn <strong>Table Properties</strong> $\rightarrow$ Chuyển sang tab <strong>Row</strong> $\rightarrow$ Tích chọn ô <strong>Repeat as header row at the top of each page</strong> $\rightarrow$ Bấm <strong>OK</strong>.
+                            </p>
+
+                            <!-- HÌNH ẢNH 2: REPEAT HEADER ROW -->
+                            <figure class="my-3 text-center">
+                                <img src="/images/word-repeat-header.png" alt="Trực quan hóa thông tin bằng Bảng biểu và cách lặp tiêu đề bảng" class="rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md mx-auto max-w-full">
+                                <figcaption class="text-xs text-slate-500 mt-2 italic">Trình bày bảng biểu chuẩn và định dạng lặp tiêu đề cột khi tràn sang trang mới</figcaption>
+                            </figure>
+                        </div>
+
+                        <!-- PHẦN B -->
+                        <div class="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                            <h4 class="font-bold text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">
+                                B. Ngăn không cho một hàng dữ liệu bị cắt đôi giữa 2 trang
+                            </h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                                Bôi đen toàn bộ bảng biểu $\rightarrow$ Nhấp chuột phải chọn <strong>Table Properties</strong> $\rightarrow$ Chuyển sang tab <strong>Row</strong> $\rightarrow$ <strong>Bỏ tích</strong> ở ô <strong>Allow row to break across pages</strong> $\rightarrow$ Bấm <strong>OK</strong>.
+                            </p>
+
+                            <!-- HÌNH ẢNH 3: TABLE PROPERTIES -->
+                            <figure class="my-3 text-center">
+                                <img src="/images/word-table-properties.png" alt="Bỏ chọn Allow row to break across pages trong Table Properties" class="rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md mx-auto max-w-full">
+                                <figcaption class="text-xs text-slate-500 mt-2 italic">Bỏ chọn "Allow row to break across pages" để ngăn dòng dữ liệu bị xé đôi giữa hai trang</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Box Kêu gọi hành động -->
+            <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white p-8 rounded-3xl shadow-xl text-center space-y-4 my-10">
+                <h3 class="text-xl sm:text-2xl font-black">Tải Ngay Bộ Mẫu Văn Bản Chuẩn Nghị Định 30!</h3>
+                <p class="text-xs sm:text-sm text-blue-100 max-w-xl mx-auto">
+                    Toàn bộ mẫu Công văn, Báo cáo, Tờ trình đã được căn lề chuẩn, tạo sẵn khung lặp lại tiêu đề bảng và ngắt trang an toàn.
+                </p>
+                <div class="pt-2 flex flex-wrap justify-center gap-3">
+                    <a href="/#phan-mem" class="bg-white text-blue-700 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-2xl hover:bg-slate-100 transition shadow-md active:scale-95">
+                        <i class="fa-solid fa-download mr-1.5"></i> Tải Bộ Mẫu Word Chuẩn
+                    </a>
+                    <a href="/#ai-hoi-dap" class="bg-slate-900 text-purple-300 border border-purple-400/30 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-2xl hover:bg-slate-800 transition shadow-md active:scale-95">
+                        <i class="fa-solid fa-comments mr-1.5"></i> Hỏi Trợ Lý AI
+                    </a>
+                </div>
+            </div>
+
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 py-8 border-t border-slate-800 text-center text-xs">
+        © 2026 Số Hóa Hành Chính. Bản quyền thuộc về Số Hóa Hành Chính.
+    </footer>
+
+    <script>
+        function initDarkMode(){if(localStorage.getItem('shhc_theme')==='dark'){document.documentElement.classList.add('dark');}}
+        function toggleDarkMode(){const h=document.documentElement;if(h.classList.contains('dark')){h.classList.remove('dark');localStorage.setItem('shhc_theme','light');}else{h.classList.add('dark');localStorage.setItem('shhc_theme','dark');}}
+        document.addEventListener('DOMContentLoaded',initDarkMode);
+    </script>
+</body>
+</html>

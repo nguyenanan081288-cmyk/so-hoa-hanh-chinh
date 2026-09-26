@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuyệt Chiêu Dọn Lỗi Chính Tả & Khoảng Trắng Hàng Loạt Bằng Find & Replace Trong Word</title>
+    <meta name="description" content="Kỹ thuật rà soát và sửa lỗi chính tả, khoảng trắng thừa siêu tốc bằng công cụ Find & Replace (Ctrl + H) trong Microsoft Word.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Be Vietnam Pro"', 'sans-serif'] } } } }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased">
+    
+    <!-- HEADER NỔI -->
+    <header class="bg-slate-900 text-white py-4 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md bg-slate-900/90">
+        <div class="max-w-4xl mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2 font-bold text-sm text-blue-400 hover:text-blue-300 transition">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ
+            </a>
+            <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Tự động hóa soạn thảo văn bản</span>
+        </div>
+    </header>
+
+    <!-- NỘI DUNG BÀI VIẾT -->
+    <main class="max-w-4xl mx-auto px-4 py-10 space-y-8">
+        
+        <header class="space-y-3 border-b border-slate-200 dark:border-slate-800 pb-6">
+            <span class="bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">Kỹ Thuật Xử Lý Siêu Tốc</span>
+            <h1 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+                Tuyệt Chiêu Dọn Lỗi Chính Tả & Khoảng Trắng Hàng Loạt Bằng Công Cụ Find & Replace Trong Word
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 flex items-center gap-4">
+                <span><i class="fa-solid fa-calendar mr-1"></i> 20/09/2026</span>
+                <span><i class="fa-solid fa-user-check mr-1"></i> Ban Biên Tập Số Hóa Hành Chính</span>
+            </p>
+        </header>
+
+        <article class="space-y-6 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+            
+            <!-- MỤC 1 & 2: THỰC TRẠNG VÀ TÁC HẠI -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <section class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                    <h2 class="text-base font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 1. Nhận diện thực trạng
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Do áp lực thời gian và gõ phím nhanh, cán bộ dễ gặp các lỗi vi phẩy như: <strong>gõ thừa 02 dấu cách liên tiếp</strong>, lỗi bỏ dấu sai vị trí do bộ gõ (<i>"nhiệm vự"</i>, <i>"quân dố"</i>...). Việc rà soát bằng mắt thường trên văn bản dài hàng chục trang rất mất thời gian, gây hoa mắt và dễ bỏ sót lỗi.
+                    </p>
+                </section>
+
+                <section class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+                    <h2 class="text-base font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-xmark"></i> 2. Tác hại nghiêm trọng
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Văn bản hành chính phát hành chứa lỗi chính tả sẽ thể hiện sự thiếu cẩn trọng, làm giảm uy tín của cơ quan tham mưu. Nếu lỗi sai rơi vào <strong>số liệu quan trọng hoặc tên riêng, phiên hiệu đơn vị</strong> có thể dẫn đến việc phải thu hồi văn bản và ký duyệt lại rất phiền phức.
+                    </p>
+                </section>
+            </div>
+
+            <!-- MỤC 3: HƯỚNG DẪN THAO TÁC CHUẨN -->
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 gap-2">
+                    <h2 class="text-lg font-bold text-purple-600 dark:text-purple-400 flex items-center gap-2">
+                        <span class="w-7 h-7 bg-purple-100 dark:bg-purple-950 rounded-xl flex items-center justify-center text-xs font-black">3</span>
+                        Hướng dẫn thao tác chuẩn (Biện pháp khắc phục)
+                    </h2>
+                    <span class="inline-flex items-center text-xs font-bold font-mono text-purple-600 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-3 py-1 rounded-xl border border-purple-200 dark:border-purple-800">
+                        <i class="fa-solid fa-keyboard mr-1.5"></i> Phím tắt: Ctrl + H
+                    </span>
+                </div>
+
+                <!-- a) DỌN DẸP KHOẢNG TRẮNG THỪA -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                        <i class="fa-solid fa-broom"></i> a) Thao tác dọn dẹp "khoảng trắng thừa" (Dấu cách kép)
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs">
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-purple-600 block mb-1">Bước 1</span>
+                            Mở file văn bản, nhấn tổ hợp <code class="font-mono bg-purple-100 dark:bg-purple-900/50 px-1 py-0.5 rounded font-bold text-purple-700 dark:text-purple-300">Ctrl + H</code>.
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-purple-600 block mb-1">Bước 2</span>
+                            Tại ô <strong>Find what</strong>: Nhấn phím Space (dấu cách) <strong>02 lần</strong>.
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-purple-600 block mb-1">Bước 3</span>
+                            Tại ô <strong>Replace with</strong>: Nhấn phím Space (dấu cách) <strong>01 lần</strong>.
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-purple-600 block mb-1">Bước 4</span>
+                            Nhấn nút <strong>Replace All</strong>. Word sẽ báo số lượng lỗi đã tìm thấy và sửa.
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-purple-600 block mb-1">Bước 5</span>
+                            Nhấn <strong>Replace All</strong> liên tục cho tới khi máy báo số lượng thay thế là <strong>"0"</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- b) SỬA LỖI CHÍNH TẢ LẮP ĐI LẮP LẠI -->
+                <div class="space-y-3 pt-2">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                        <i class="fa-solid fa-pen-to-square"></i> b) Thao tác sửa nhanh các lỗi gõ sai chính tả lặp đi lặp lại
+                    </h3>
+                    <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 text-xs sm:text-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div><strong>Bước 1:</strong> Nhấn tổ hợp phím <code class="font-mono bg-emerald-100 dark:bg-emerald-900/50 px-1 py-0.5 rounded font-bold text-emerald-700 dark:text-emerald-300">Ctrl + H</code>.</div>
+                            <div><strong>Bước 2:</strong> Tại ô <i>Find what</i>: Gõ từ bị viết sai (Ví dụ: <code class="text-rose-500 font-bold">"tham mưuu"</code>).</div>
+                            <div><strong>Bước 3:</strong> Tại ô <i>Replace with</i>: Gõ từ chuẩn (Ví dụ: <code class="text-emerald-500 font-bold">"tham mưu"</code>).</div>
+                            <div><strong>Bước 4:</strong> Bấm <strong>Replace All</strong> để tự động sửa toàn bộ trong tích tắc.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- c) TUYỆT CHIÊU RÀ SOÁT AN TOÀN NÂNG CAO -->
+                <div class="space-y-3 pt-2">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                        <i class="fa-solid fa-sliders"></i> c) Tuyệt chiêu rà soát an toàn nâng cao (Tránh thay thế nhầm)
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Nhấp vào nút <strong class="text-slate-800 dark:text-slate-200">More &gt;&gt;</strong> ở góc dưới cùng bên trái của hộp thoại Tìm kiếm để mở rộng các tùy chọn:</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                        <div class="p-3.5 bg-amber-50/60 dark:bg-amber-950/30 rounded-2xl border border-amber-200/80 dark:border-amber-900/50">
+                            <strong class="text-amber-800 dark:text-amber-300 block mb-1">✓ Match case (Phân biệt chữ hoa/thường):</strong>
+                            Giúp máy tính phân biệt rõ cụm từ <code class="font-bold">"Lữ đoàn"</code> và <code class="font-bold">"lữ đoàn"</code> để sửa chính xác lỗi viết hoa tùy tiện.
+                        </div>
+                        <div class="p-3.5 bg-amber-50/60 dark:bg-amber-950/30 rounded-2xl border border-amber-200/80 dark:border-amber-900/50">
+                            <strong class="text-amber-800 dark:text-amber-300 block mb-1">✓ Find whole words only (Chỉ tìm nguyên từ):</strong>
+                            Tránh sửa nhầm từ chứa cụm ký tự đó. <i>(Ví dụ: Muốn đổi "in" thành "in ấn", nếu không chọn ô này, từ "thông tin" có thể bị đổi nhầm thành "thông tin ấn").</i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LƯU Ý TÁC CHIẾN -->
+                <div class="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-2xl border border-purple-200 dark:border-purple-900/60 text-xs sm:text-sm">
+                    <h4 class="font-bold text-purple-900 dark:text-purple-300 flex items-center gap-1.5 mb-1">
+                        <i class="fa-solid fa-lightbulb text-amber-400"></i> Lưu ý tác chiến an toàn:
+                    </h4>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Nếu không chắc chắn từ đó xuất hiện ở những ngữ cảnh nào, thay vì bấm <strong>Replace All</strong> ngay, cán bộ nên bấm <strong>Find Next</strong> (Tìm từ tiếp theo), kiểm tra bằng mắt, nếu đúng là lỗi thì mới bấm <strong>Replace</strong> (Thay thế từng lỗi một) để bảo đảm an toàn tuyệt đối cho văn bản.
+                    </p>
+                </div>
+
+            </section>
+
+        </article>
+    </main>
+
+</body>
+</html>

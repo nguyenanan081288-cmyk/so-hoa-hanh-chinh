@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy Định Đánh Số Trang Văn Bản Hành Chính & Cách Sửa Lỗi Word</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.7;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 30px 15px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .nav-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .nav-back:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 24px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+        }
+        .meta-info {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+        }
+        .standard-box {
+            background-color: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            padding: 18px 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 15.5px;
+            color: #0369a1;
+        }
+        .standard-box strong {
+            color: #0c4a6e;
+        }
+        h2 {
+            color: #1e293b;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #0284c7;
+        }
+        .error-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .error-header {
+            background: #fff1f2;
+            color: #be123c;
+            padding: 14px 20px;
+            font-size: 16.5px;
+            font-weight: bold;
+            border-bottom: 1px solid #fecdd3;
+        }
+        .error-body {
+            padding: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .cause-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 14.5px;
+            color: #991b1b;
+        }
+        .solution-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 14.5px;
+            color: #166534;
+        }
+        .solution-box ul, .solution-box ol {
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+        .solution-box li {
+            margin-bottom: 8px;
+        }
+        .solution-box li:last-child {
+            margin-bottom: 0;
+        }
+        /* Style cho ảnh hướng dẫn */
+        .img-guide {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin: 15px 0;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        kbd {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="nav-back">&larr; Quay lại trang chủ</a>
+
+        <h1>Quy Định Đánh Số Trang Văn Bản Hành Chính</h1>
+
+        <div class="meta-info">
+            <span>📅 Cập nhật: 2026</span>
+            <span>🏷️ Chuyên mục: Thể thức văn bản - Kỹ năng Word</span>
+        </div>
+
+        <div class="standard-box">
+            <strong>Quy chuẩn bắt buộc (Nghị định 30/2020/NĐ-CP):</strong> Số trang văn bản được đánh từ <strong>số 1 (không hiển thị trang số 1)</strong>, bằng chữ số Ả Rập, <strong>cỡ chữ 14, kiểu chữ đứng</strong>, được đặt <strong>canh giữa theo chiều ngang và chiều dọc trong phần lề trên (Header)</strong> của văn bản.
+        </div>
+
+        <h2>Các Lỗi Thường Gặp & Cách Khắc Phục Khi Đánh Số Trang</h2>
+
+        <!-- Lỗi 1 -->
+        <div class="error-card">
+            <div class="error-header">
+                1. Lỗi hiển thị số trang ở trang đầu tiên (Trang bìa / Trang thủ trưởng ký duyệt)
+            </div>
+            <div class="error-body">
+                <span class="section-title" style="color: #991b1b;">📌 Nguyên nhân:</span>
+                <div class="cause-box">
+                    Khi chèn số trang tự động (Page Number), Word mặc định hiển thị số trang từ trang đầu tiên (trang số 1). Theo quy chuẩn hành chính, trang đầu tiên là trang tiêu đề/bìa không được phép hiển thị số trang.
+                </div>
+
+                <span class="section-title" style="color: #166534;">🛠️ Cách khắc phục:</span>
+                <div class="solution-box">
+                    <ul>
+                        <li>Double-click chuột vào khu vực <strong>Header / Footer</strong> của trang văn bản để mở thanh công cụ chỉnh sửa.</li>
+                        <li>Trên tab <strong>Header & Footer</strong> (hoặc tab <strong>Design</strong>), tìm mục <strong>Options</strong> và tích chọn vào ô <strong>Different First Page</strong> (Trang đầu tiên khác biệt).</li>
+                        <li>Lúc này số trang ở trang số 1 sẽ tự động ẩn đi mà vẫn giữ nguyên số trang liên tục từ trang số 2 trở đi.</li>
+                    </ul>
+
+                    <!-- Ảnh minh họa Lỗi 1 -->
+                    <img src="images/different-first-page.png" alt="Tích chọn Different First Page để ẩn số trang đầu tiên" class="img-guide">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lỗi 2 -->
+        <div class="error-card">
+            <div class="error-header">
+                2. Lỗi số trang bắt đầu bằng số khác thay vì số 1 từ trang thứ hai
+            </div>
+            <div class="error-body">
+                <span class="section-title" style="color: #991b1b;">📌 Nguyên nhân:</span>
+                <div class="cause-box">
+                    Do thiết lập cấu hình định dạng trang (Page Number Format) đang ở chế độ tự động liên kết với các Section trước hoặc khởi tạo giá trị trang bắt đầu bằng số 0 hoặc số khác.
+                </div>
+
+                <span class="section-title" style="color: #166534;">🛠️ Cách khắc phục:</span>
+                <div class="solution-box">
+                    <ol>
+                        <li>Vào tab <strong>Insert</strong> &rarr; chọn <strong>Page Number</strong> &rarr; chọn <strong>Format Page Numbers...</strong></li>
+                        <li>Tại cửa sổ mở ra, tìm mục <strong>Page numbering</strong>, tích chọn vào <strong>Start at:</strong> và điều chỉnh giá trị thành <strong>1</strong>.</li>
+                        <li>Nhấn <strong>OK</strong> để hoàn tất đồng bộ.</li>
+                    </ol>
+
+                    <!-- Ảnh minh họa Lỗi 2 -->
+                    <img src="images/format-page-number.png" alt="Chỉnh Start at thành 1 trong cửa sổ Format Page Numbers" class="img-guide">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lỗi 3 -->
+        <div class="error-card">
+            <div class="error-header">
+                3. Lỗi vị trí và định dạng số trang không chuẩn quy định (Sai cỡ chữ, sai kiểu chữ, không canh giữa)
+            </div>
+            <div class="error-body">
+                <span class="section-title" style="color: #991b1b;">📌 Nguyên nhân:</span>
+                <div class="cause-box">
+                    Do người soạn thảo sử dụng các mẫu số trang có sẵn (Built-in Page Numbers) của Word thường bị đặt lệch sang trái/phải, dùng phông chữ mặc định không đồng bộ (như Calibri) hoặc sai kích thước cỡ chữ.
+                </div>
+
+                <span class="section-title" style="color: #166534;">🛠️ Cách khắc phục:</span>
+                <div class="solution-box">
+                    <ul>
+                        <li>Double-click mở khu vực Header &rarr; Bôi đen số trang hiện tại.</li>
+                        <li><strong>Định dạng lại thủ công:</strong> Chuyển phông chữ về <strong>Times New Roman</strong>, cỡ chữ <strong>14</strong>, kiểu chữ <strong>đứng</strong> (bỏ in nghiêng, bỏ in đậm).</li>
+                        <li>Sử dụng tổ hợp phím tắt <kbd>Ctrl</kbd> + <kbd>E</kbd> để canh giữa tuyệt đối trong phần lề trên (Header) của văn bản.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2026 Số Hóa Hành Chính - Hướng Dẫn Chuẩn Hóa Văn Bản Điện Tử
+        </footer>
+    </div>
+
+</body>
+</html>

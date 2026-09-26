@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phông Chữ Trong Trình Bày Văn Bản Hành Chính & Cách Sửa Lỗi Font</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.7;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 30px 15px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .nav-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .nav-back:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 24px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+        }
+        .meta-info {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+        }
+        .standard-box {
+            background-color: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            padding: 18px 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 15.5px;
+            color: #0369a1;
+        }
+        .standard-box strong {
+            color: #0c4a6e;
+        }
+        h2 {
+            color: #1e293b;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #0284c7;
+        }
+        .error-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .error-header {
+            background: #fff1f2;
+            color: #be123c;
+            padding: 14px 20px;
+            font-size: 16.5px;
+            font-weight: bold;
+            border-bottom: 1px solid #fecdd3;
+        }
+        .error-body {
+            padding: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .cause-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 14.5px;
+            color: #991b1b;
+        }
+        .solution-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 14.5px;
+            color: #166534;
+        }
+        .solution-box ul {
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+        .solution-box li {
+            margin-bottom: 8px;
+        }
+        .solution-box li:last-child {
+            margin-bottom: 0;
+        }
+        kbd {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="nav-back">&larr; Quay lại trang chủ</a>
+
+        <h1>Phông Chữ Trong Trình Bày Văn Bản Hành Chính</h1>
+
+        <div class="meta-info">
+            <span>📅 Cập nhật: 2026</span>
+            <span>🏷️ Chuyên mục: Thể thức văn bản - Kỹ năng Word</span>
+        </div>
+
+        <div class="standard-box">
+            <strong>Quy chuẩn bắt buộc:</strong> Phông chữ sử dụng trình bày văn bản trên máy vi tính là phông chữ tiếng Việt của bộ mã ký tự <strong>Unicode / Times New Roman</strong> theo Tiêu chuẩn Việt Nam <strong>TCVN 6909:2001</strong>, màu đen.
+        </div>
+
+        <h2>Các Lỗi Thường Gặp & Cách Khắc Phục</h2>
+
+        <!-- Lỗi 1 -->
+        <div class="error-card">
+            <div class="error-header">
+                1. Lỗi chữ cái tiếng Việt bị biến thành ký tự lạ hoặc ô vuông (Lỗi font / Lỗi mã hóa)
+            </div>
+            <div class="error-body">
+                <span class="section-title" style="color: #991b1b;">📌 Nguyên nhân:</span>
+                <div class="cause-box">
+                    Do xung đột bộ mã giữa các chuẩn gõ cũ (như TCVN3 - ABC, VNI) với chuẩn quốc tế Unicode hiện hành. Khi nhận file từ máy khác dùng font như <code>.VnTime</code> hoặc <code>VNI-Times</code>, máy tính của người xem chưa cài đặt các font cũ này hoặc phần mềm soạn thảo không tự động chuyển đổi mã nguồn.
+                </div>
+
+                <span class="section-title" style="color: #166534;">🛠️ Cách khắc phục:</span>
+                <div class="solution-box">
+                    <ul>
+                        <li>Thống nhất sử dụng chuẩn Unicode với phông chữ <strong>Times New Roman</strong> (hoặc Arial, Calibri tùy loại văn bản) trên toàn bộ hệ thống theo đúng tiêu chuẩn TCVN 6909:2001.</li>
+                        <li>Nếu nhận được tài liệu cũ dùng mã TCVN3, sử dụng công cụ chuyển đổi nhanh (ví dụ: tính năng chuyển mã tích hợp trong bộ gõ <strong>Unikey / VietKey</strong>, chọn nguồn là <strong>TCVN3 (ABC)</strong> và đích là <strong>Unicode</strong>, sau đó tiến hành chuyển mã clipboard hoặc chọn trực tiếp file Word).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lỗi 2 -->
+        <div class="error-card">
+            <div class="error-header">
+                2. Lỗi nhảy font, mất định dạng hoặc thay đổi khoảng cách chữ khi gửi file qua máy khác
+            </div>
+            <div class="error-body">
+                <span class="section-title" style="color: #991b1b;">📌 Nguyên nhân:</span>
+                <div class="cause-box">
+                    Máy tính nhận file không có sẵn phông chữ Times New Roman phiên bản chuẩn hoặc định dạng phông chữ cục bộ trong đoạn văn bản bị thiết lập chồng chéo (vừa dùng phông mặc định của Normal Style, vừa định dạng đè phông thủ công).
+                </div>
+
+                <span class="section-title" style="color: #166534;">🛠️ Cách khắc phục:</span>
+                <div class="solution-box">
+                    <ul>
+                        <li><strong>Chuẩn hóa toàn bộ văn bản về một Style gốc:</strong> Bôi đen toàn bộ văn bản (<kbd>Ctrl</kbd> + <kbd>A</kbd>) &rarr; Vào tab <strong>Home</strong> &rarr; Chọn <strong>Normal</strong> trong khung Styles để đồng bộ hóa phông chữ, hoặc nhấn tổ hợp <kbd>Ctrl</kbd> + <kbd>Space</kbd> để xóa bỏ các định dạng phông chữ thủ công bị lỗi.</li>
+                        <li><strong>Cố định định dạng trước khi gửi:</strong> Khi cần gửi file đi để in ấn tại các cơ sở bên ngoài mà sợ lỗi máy trạm, hãy lưu file dưới dạng PDF trước khi gửi (<strong>File</strong> &rarr; <strong>Save As</strong> &rarr; chọn định dạng <strong>.pdf</strong>). Thao tác này giúp cố định hoàn toàn phông chữ, bố cục và lề trang như bản thiết kế gốc.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2026 Số Hóa Hành Chính - Hướng Dẫn Chuẩn Hóa Văn Bản Điện Tử
+        </footer>
+    </div>
+
+</body>
+</html>
