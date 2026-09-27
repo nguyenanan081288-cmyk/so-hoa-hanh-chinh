@@ -1157,6 +1157,7 @@ function sendQuickQuestion(questionText) {
 }
 
 // Kết nối Google Gemini API (An toàn tuyệt đối, báo lỗi chính xác)
+// Kết nối Google Gemini API (Đã sửa sạch lỗi thừa code)
 async function fetchGeminiResponse(prompt) {
     if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 15) {
         return "Xin chào! Bạn vui lòng dán API Key Gemini vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
@@ -1201,7 +1202,7 @@ async function fetchGeminiResponse(prompt) {
     }
 }
 
-// Định dạng câu trả lời AI (In đậm, mã code, gạch đầu dòng, xuống dòng)
+// Định dạng câu trả lời AI
 function formatAiText(text) {
     return text
         .replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300 font-bold">$1</strong>')
