@@ -1156,10 +1156,10 @@ function sendQuickQuestion(questionText) {
     }
 }
 
-// Kết nối Google Gemini API
+// Kết nối Google Gemini API (Chấp nhận cả mã AQ. mới và AIza... cũ)
 async function fetchGeminiResponse(prompt) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY_AIzaSy") || !GEMINI_API_KEY.startsWith("AIzaSy")) {
-        return "Xin chào! Bạn vui lòng dán đúng **API Key Gemini** (bắt đầu bằng `AIzaSy...`) vào file `script.js` để kích hoạt Trợ lý AI nhé!";
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 20) {
+        return "Xin chào! Bạn vui lòng dán API Key Gemini của bạn vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -1174,6 +1174,20 @@ async function fetchGeminiResponse(prompt) {
             }
         ]
     };
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        return formatAiText(data.candidates[0].content.parts[0].text);
+    } else {
+        throw new Error("Invalid response format");
+    }
+}
 
     const res = await fetch(url, {
         method: 'POST',
