@@ -1040,55 +1040,145 @@ function autoFixSpellInput() {
     showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
 }
 
-// --- 5. LÀM SẠCH VĂN BẢN PDF (CÔNG CỤ NÂNG CẤP) ---
-function processCleanPdfText() {
+// ==================== CÔNG CỤ LÀM SẠCH CHỮ PDF (SIÊU DỄ DÙNG) ====================
+
+// Chuyển đổi giữa 2 Tab: Tải File PDF hoặc Dán Đoạn Văn
+function switchCleanTab(mode) {
+    var fileArea = document.getElementById('cleanFileArea');
+    var textArea = document.getElementById('cleanTextArea');
+    var fileBtn = document.getElementById('cleanTabFileBtn');
+    var textBtn = document.getElementById('cleanTabTextBtn');
+
+    if (mode === 'file') {
+        fileArea?.classList.remove('hidden');
+        textArea?.classList.add('hidden');
+        fileBtn.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-cyan-600 text-white shadow';
+        textBtn.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+    } else {
+        fileArea?.classList.add('hidden');
+        textArea?.classList.remove('hidden');
+        textBtn.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-cyan-600 text-white shadow';
+        fileBtn.className = 'px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+    }
+}
+
+// Hàm cốt lõi: Thuật toán làm sạch văn bản thông minh (Smart Auto-Clean)
+function smartCleanText(rawText) {
+    if (!rawText) return "";
+
+    var text = rawText.normalize('NFC');
+
+    // 1. Nối các từ bị gạch nối ngắt ở cuối dòng (ví dụ: "chuyển-\nđổi" -> "chuyển đổi")
+    text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1$2');
+
+    // 2. Nối dòng bị ngắt câu sai cú pháp
+    text = text.replace(/\r\n/g, '\n');
+    text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___'); // Bảo vệ đoạn văn chuẩn
+    text = text.replace(/\n/g, ' '); // Nối dòng đơn
+    text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n'); // Khôi phục đoạn văn
+
+    // 3. Chuẩn hóa khoảng trắng quanh dấu câu
+    text = text.replace(/\s+([.,;:!?])/g, '$1'); // Xóa khoảng trắng trước dấu câu
+    text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 '); // Thêm khoảng trắng sau dấu câu
+
+    // 4. Lọc khoảng trắng thừa
+    text = text.replace(/[ \t]+/g, ' ');
+    text = text.split('\n').map(function (line) { return line.trim(); }).join('\n');
+
+    return text.trim();
+}
+
+// Xử lý khi chọn File PDF trực tiếp
+async function handlePdfCleanFileSelect(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+
+    var fileNameEl = document.getElementById('pdfCleanFileName');
+    var outputEl = document.getElementById('pdfCleanOutput');
+    var resultBox = document.getElementById('pdfCleanResultBox');
+
+    if (fileNameEl) {
+        fileNameEl.innerText = '📄 Đã chọn: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+        fileNameEl.classList.remove('hidden');
+    }
+
+    showToast('Đang đọc & tự động làm sạch file PDF...', 'info');
+
+    try {
+        await loadPdfJs();
+        var arrayBuffer = await file.arrayBuffer();
+        var pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        var numPages = pdfDoc.numPages;
+        var fullRawText = "";
+
+        for (var pageNum = 1; pageNum <= numPages; pageNum++) {
+            var page = await pdfDoc.getPage(pageNum);
+            var textContent = await page.getTextContent();
+            var pageStrings = textContent.items.map(function (item) { return item.str; });
+            fullRawText += pageStrings.join('\n') + '\n\n';
+        }
+
+        // Thực hiện làm sạch tự động
+        var cleanedText = smartCleanText(fullRawText);
+
+        if (outputEl) outputEl.value = cleanedText || "Không tìm thấy nội dung văn bản trong file PDF.";
+        resultBox?.classList.remove('hidden');
+        showToast('Đã làm sạch toàn bộ chữ trong PDF thành công!', 'success');
+
+    } catch (err) {
+        console.error("Lỗi làm sạch PDF:", err);
+        showToast('Lỗi khi đọc file PDF!', 'error');
+    }
+}
+
+// Xử lý khi dán đoạn văn thủ công
+function processCleanPdfTextFromInput() {
     var inputEl = document.getElementById('pdfCleanInput');
     var outputEl = document.getElementById('pdfCleanOutput');
+    var resultBox = document.getElementById('pdfCleanResultBox');
 
-    if (!inputEl || !outputEl) return;
-
-    var text = inputEl.value;
-
-    if (!text.trim()) {
-        showToast('Vui lòng dán văn bản cần làm sạch!', 'error');
+    var text = inputEl?.value;
+    if (!text || !text.trim()) {
+        showToast('Vui lòng dán đoạn văn cần làm sạch!', 'error');
         return;
     }
 
-    var optFixLineBreaks = document.getElementById('optFixLineBreaks') ? document.getElementById('optFixLineBreaks').checked : true;
-    var optRemoveSpaces = document.getElementById('optRemoveSpaces') ? document.getElementById('optRemoveSpaces').checked : true;
-    var optFixPunctuation = document.getElementById('optFixPunctuation') ? document.getElementById('optFixPunctuation').checked : true;
-    var optRemoveHyphens = document.getElementById('optRemoveHyphens') ? document.getElementById('optRemoveHyphens').checked : true;
-
-    // 1. Nối từ bị gạch nối cuối dòng
-    if (optRemoveHyphens) {
-        text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1$2');
-    }
-
-    // 2. Nối các dòng bị ngắt đoạn sai
-    if (optFixLineBreaks) {
-        text = text.replace(/\r\n/g, '\n');
-        text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
-        text = text.replace(/\n/g, ' ');
-        text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n');
-    }
-
-    // 3. Sửa lỗi khoảng trắng quanh dấu câu
-    if (optFixPunctuation) {
-        text = text.replace(/\s+([.,;:!?])/g, '$1');
-        text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 ');
-    }
-
-    // 4. Lọc khoảng trắng thừa
-    if (optRemoveSpaces) {
-        text = text.replace(/[ \t]+/g, ' ');
-        text = text.split('\n').map(function(line) { return line.trim(); }).join('\n');
-    }
-
-    outputEl.value = text.trim();
-    document.getElementById('pdfCleanResultBox')?.classList.remove('hidden');
-    showToast('Làm sạch văn bản PDF thành công!', 'success');
+    var cleanedText = smartCleanText(text);
+    if (outputEl) outputEl.value = cleanedText;
+    resultBox?.classList.remove('hidden');
+    showToast('Đã làm sạch đoạn văn thành công!', 'success');
 }
 
+// Xuất văn bản đã làm sạch sang File Word (.doc)
+function exportCleanPdfToWord() {
+    var outputEl = document.getElementById('pdfCleanOutput');
+    var text = outputEl?.value;
+
+    if (!text || !text.trim()) {
+        showToast('Chưa có nội dung văn bản để xuất Word!', 'error');
+        return;
+    }
+
+    var paragraphs = text.split('\n\n').map(function (p) {
+        return "<p style='margin:8px 0; text-align:justify; font-size:13pt; line-height:1.5; font-family:\"Times New Roman\", serif;'>" + p.replace(/\n/g, '<br>') + "</p>";
+    }).join('');
+
+    var wordDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head><meta charset="utf-8"><title>Van Ban Da Lam Sach</title></head>' +
+        '<body style="font-family:\'Times New Roman\', serif;">' + paragraphs + '</body></html>';
+
+    var blob = new Blob(['\ufeff' + wordDoc], { type: 'application/msword' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'Van_Ban_Lam_Sach_' + Date.now() + '.doc';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showToast('Đã xuất file Word (.doc) thành công!', 'success');
+}
+
+// Sao chép văn bản đã làm sạch
 function copyCleanPdfText() {
     var outputEl = document.getElementById('pdfCleanOutput');
     if (outputEl && outputEl.value) {
@@ -1097,15 +1187,16 @@ function copyCleanPdfText() {
     }
 }
 
+// Làm mới giao diện
 function resetCleanPdfText() {
     var inputEl = document.getElementById('pdfCleanInput');
     var outputEl = document.getElementById('pdfCleanOutput');
     if (inputEl) inputEl.value = '';
     if (outputEl) outputEl.value = '';
     document.getElementById('pdfCleanResultBox')?.classList.add('hidden');
+    document.getElementById('pdfCleanFileName')?.classList.add('hidden');
     showToast('Đã xóa nội dung', 'info');
 }
-
 // ==================== HÀM TIỆN ÍCH KHÁC ====================
 function toggleFavorite(id, e) {
     if (e) e.stopPropagation();
