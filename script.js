@@ -1156,12 +1156,13 @@ function sendQuickQuestion(questionText) {
     }
 }
 
-// Kết nối Google Gemini API (Chấp nhận cả mã AQ. mới và AIza... cũ)
+// Kết nối Google Gemini API (Bắt lỗi chi tiết từ Google)
 async function fetchGeminiResponse(prompt) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 20) {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY")) {
         return "Xin chào! Bạn vui lòng dán API Key Gemini của bạn vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
     }
 
+    // Sử dụng model gemini-1.5-flash
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     
     const payload = {
@@ -1174,6 +1175,28 @@ async function fetchGeminiResponse(prompt) {
             }
         ]
     };
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    // Nếu Google trả về mã lỗi (HTTP >= 400)
+    if (!res.ok) {
+        console.error("Google API Error Detail:", data);
+        const googleError = data.error?.message || `Lỗi HTTP ${res.status}`;
+        return `⚠️ Google API báo lỗi: ${googleError}`;
+    }
+
+    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        return formatAiText(data.candidates[0].content.parts[0].text);
+    } else {
+        return "⚠️ Không nhận được phản hồi phù hợp từ AI.";
+    }
+}
 
     const res = await fetch(url, {
         method: 'POST',
