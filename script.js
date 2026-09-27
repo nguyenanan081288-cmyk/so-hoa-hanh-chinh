@@ -131,7 +131,7 @@ function showToast(message, type) {
     if (!toast || !toastMsg) return;
 
     toastMsg.innerText = message || 'Thông báo!';
-    
+
     if (toastIcon) {
         if (type === 'error') {
             toastIcon.className = 'fa-solid fa-circle-xmark text-red-400 text-lg';
@@ -309,6 +309,11 @@ function openOnlineToolModal(toolTypeOrObject) {
         if (subEl) subEl.innerText = 'Chọn và loại bỏ các trang PDF thừa hoặc không cần thiết';
         if (iconEl) iconEl.className = 'fa-solid fa-file-circle-xmark text-2xl text-red-600';
         document.getElementById('pdfDeleteUI')?.classList.remove('hidden');
+    } else if (toolType === 'pdf-clean') {
+        if (titleEl) titleEl.innerText = 'Công Cụ Làm Sạch Văn Bản PDF';
+        if (subEl) subEl.innerText = 'Sửa lỗi ngắt dòng, dính chữ, thừa khoảng trắng khi copy từ PDF/Web';
+        if (iconEl) iconEl.className = 'fa-solid fa-broom text-2xl text-cyan-600';
+        document.getElementById('pdfCleanTextUI')?.classList.remove('hidden');
     } else if (toolType === 'ocr-online') {
         if (titleEl) titleEl.innerText = 'Quét & Nhận Diện Chữ OCR Tiếng Việt';
         if (subEl) subEl.innerText = 'Trích xuất chữ từ ảnh chụp hoặc PDF scan sang văn bản Word/Excel';
@@ -1035,6 +1040,72 @@ function autoFixSpellInput() {
     showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
 }
 
+// --- 5. LÀM SẠCH VĂN BẢN PDF (CÔNG CỤ NÂNG CẤP) ---
+function processCleanPdfText() {
+    var inputEl = document.getElementById('pdfCleanInput');
+    var outputEl = document.getElementById('pdfCleanOutput');
+
+    if (!inputEl || !outputEl) return;
+
+    var text = inputEl.value;
+
+    if (!text.trim()) {
+        showToast('Vui lòng dán văn bản cần làm sạch!', 'error');
+        return;
+    }
+
+    var optFixLineBreaks = document.getElementById('optFixLineBreaks') ? document.getElementById('optFixLineBreaks').checked : true;
+    var optRemoveSpaces = document.getElementById('optRemoveSpaces') ? document.getElementById('optRemoveSpaces').checked : true;
+    var optFixPunctuation = document.getElementById('optFixPunctuation') ? document.getElementById('optFixPunctuation').checked : true;
+    var optRemoveHyphens = document.getElementById('optRemoveHyphens') ? document.getElementById('optRemoveHyphens').checked : true;
+
+    // 1. Nối từ bị gạch nối cuối dòng
+    if (optRemoveHyphens) {
+        text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1$2');
+    }
+
+    // 2. Nối các dòng bị ngắt đoạn sai
+    if (optFixLineBreaks) {
+        text = text.replace(/\r\n/g, '\n');
+        text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
+        text = text.replace(/\n/g, ' ');
+        text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n');
+    }
+
+    // 3. Sửa lỗi khoảng trắng quanh dấu câu
+    if (optFixPunctuation) {
+        text = text.replace(/\s+([.,;:!?])/g, '$1');
+        text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 ');
+    }
+
+    // 4. Lọc khoảng trắng thừa
+    if (optRemoveSpaces) {
+        text = text.replace(/[ \t]+/g, ' ');
+        text = text.split('\n').map(function(line) { return line.trim(); }).join('\n');
+    }
+
+    outputEl.value = text.trim();
+    document.getElementById('pdfCleanResultBox')?.classList.remove('hidden');
+    showToast('Làm sạch văn bản PDF thành công!', 'success');
+}
+
+function copyCleanPdfText() {
+    var outputEl = document.getElementById('pdfCleanOutput');
+    if (outputEl && outputEl.value) {
+        navigator.clipboard.writeText(outputEl.value);
+        showToast('Đã sao chép văn bản đã làm sạch!', 'success');
+    }
+}
+
+function resetCleanPdfText() {
+    var inputEl = document.getElementById('pdfCleanInput');
+    var outputEl = document.getElementById('pdfCleanOutput');
+    if (inputEl) inputEl.value = '';
+    if (outputEl) outputEl.value = '';
+    document.getElementById('pdfCleanResultBox')?.classList.add('hidden');
+    showToast('Đã xóa nội dung', 'info');
+}
+
 // ==================== HÀM TIỆN ÍCH KHÁC ====================
 function toggleFavorite(id, e) {
     if (e) e.stopPropagation();
@@ -1089,102 +1160,68 @@ function handleGoogleRegister() {
     toggleRegisterModal();
 }
 
-// ========================================================
-// 🤖 HÀM GIỮ CHỖ AI (AN TOÀN TRUYỆT ĐỐI, KHÔNG LỖI CÚ PHÁP)
-// ========================================================
+// ==================== TRỢ LÝ AI TIN HỌC (TƯƠNG TÁC THÔNG MINH) ====================
 function toggleAiModal() {
     var popup = document.getElementById('aiChatPopup');
     if (popup) popup.classList.toggle('hidden');
 }
 
+function sendQuickQuestion(text) {
+    var input = document.getElementById('aiChatInput');
+    if (input) input.value = text;
+    handleAiChatSubmit();
+}
+
 function handleAiChatSubmit(e) {
     if (e) e.preventDefault();
-    showToast('Tính năng Trợ lý AI đang trong quá trình nâng cấp hệ thống!', 'info');
+    var input = document.getElementById('aiChatInput');
+    var body = document.getElementById('aiChatBody');
+    if (!input || !body) return;
+
+    var userMsg = input.value.trim();
+    if (!userMsg) return;
+
+    // 1. Hiện câu hỏi người dùng
+    var userBubble = document.createElement('div');
+    userBubble.className = 'flex justify-end';
+    userBubble.innerHTML = '<div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm leading-relaxed">' + escapeHtml(userMsg) + '</div>';
+    body.appendChild(userBubble);
+    input.value = '';
+    body.scrollTop = body.scrollHeight;
+
+    // 2. Hiện trạng thái AI đang gõ
+    var aiTyping = document.createElement('div');
+    aiTyping.className = 'flex gap-2.5 items-start ai-typing-indicator';
+    aiTyping.innerHTML = '<div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:0.2s]"></span><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:0.4s]"></span></div>';
+    body.appendChild(aiTyping);
+    body.scrollTop = body.scrollHeight;
+
+    // 3. Phản hồi tự động từ AI sau 0.8 giây
+    setTimeout(function () {
+        aiTyping.remove();
+        var replyText = generateAiAnswer(userMsg);
+        var aiBubble = document.createElement('div');
+        aiBubble.className = 'flex gap-2.5 items-start';
+        aiBubble.innerHTML = '<div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] shadow-sm leading-relaxed">' + replyText + '</div>';
+        body.appendChild(aiBubble);
+        body.scrollTop = body.scrollHeight;
+    }, 800);
 }
 
-function sendQuickQuestion(text) {
-    showToast('Tính năng Trợ lý AI đang trong quá trình nâng cấp hệ thống!', 'info');
+function generateAiAnswer(prompt) {
+    var query = prompt.toLowerCase();
+    if (query.includes('font') || query.includes('phông') || query.includes('tcvn3') || query.includes('vni')) {
+        return 'Để sửa lỗi Font chữ TCVN3 / VNI-Times bị lỗi ô vuông trong Word:<br>1. Bấm <strong>Ctrl + A</strong> copy toàn bộ văn bản.<br>2. Bấm <strong>Ctrl + Shift + F6</strong> mở Unikey Chuyển Mã.<br>3. Chọn Mã nguồn là <strong>TCVN3(ABC)</strong>, Mã đích là <strong>Unicode</strong> rồi bấm <strong>Chuyển mã</strong>.<br>4. Dán lại vào Word là hoàn tất!';
+    }
+    if (query.includes('excel') || query.includes('vlookup') || query.includes('xlookup') || query.includes('hàm')) {
+        return 'Mẹo dùng hàm tìm kiếm trong Excel:<br>- Với phiên bản Office mới, bạn nên ưu tiên dùng <strong>XLOOKUP</strong> vì nó tìm ngược được và không cần đếm số cột.<br>- Cú pháp: <code>=XLOOKUP(giá_trị_tìm, cột_tìm, cột_kết_quả)</code>.';
+    }
+    if (query.includes('pdf') || query.includes('ghép') || query.includes('xóa')) {
+        return 'Bạn có thể sử dụng trực tiếp các công cụ PDF trực tuyến của <strong>Mẹo Tin Học</strong> ở thanh menu trên đầu trang: Ghép file PDF, Xóa trang PDF thừa hoặc Làm sạch văn bản hoàn toàn miễn phí & an toàn 100%.';
+    }
+    return 'Cảm ơn bạn đã đặt câu hỏi! Câu hỏi của bạn về <strong>"' + escapeHtml(prompt) + '"</strong> đã được hệ thống ghi nhận. Admin sẽ tiếp tục cập nhật bài viết thủ thuật chi tiết về chủ đề này trên website meotinhoc.com.';
 }
 
-// ==================== CÔNG CỤ LÀM SẠCH VĂN BẢN COPY TỪ PDF ====================
-
-function processCleanPdfText() {
-    var inputEl = document.getElementById('pdfCleanInput');
-    var outputEl = document.getElementById('pdfCleanOutput');
-
-    if (!inputEl || !outputEl) return;
-
-    var text = inputEl.value;
-
-    if (!text.trim()) {
-        showToast('Vui lòng dán văn bản cần làm sạch!', 'error');
-        return;
-    }
-
-    // Đọc trạng thái các tùy chọn
-    var optFixLineBreaks = document.getElementById('optFixLineBreaks')?.checked ?? true;
-    var optRemoveSpaces = document.getElementById('optRemoveSpaces')?.checked ?? true;
-    var optFixPunctuation = document.getElementById('optFixPunctuation')?.checked ?? true;
-    var optRemoveHyphens = document.getElementById('optRemoveHyphens')?.checked ?? true;
-
-    // 1. Khôi phục từ bị ngắt bởi dấu gạch nối ở cuối dòng (ví dụ: "chuyển-\nđổi" -> "chuyển đổi")
-    if (optRemoveHyphens) {
-        text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1 $2');
-    }
-
-    // 2. Nối các dòng bị ngắt đoạn sai cú pháp
-    if (optFixLineBreaks) {
-        // Chuẩn hóa ký tự xuống dòng
-        text = text.replace(/\r\n/g, '\n');
-
-        // Tạm thời bảo vệ các đoạn văn thật (nơi có 2 dấu xuống dòng liên tiếp)
-        text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
-
-        // Thay thế các dấu xuống dòng đơn bằng 1 khoảng trắng
-        text = text.replace(/\n/g, ' ');
-
-        // Khôi phục lại các đoạn văn thật
-        text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n');
-    }
-
-    // 3. Sửa lỗi khoảng trắng quanh dấu câu
-    if (optFixPunctuation) {
-        // Xóa khoảng trắng trước dấu câu (ví dụ: "văn bản , " -> "văn bản, ")
-        text = text.replace(/\s+([.,;:!?])/g, '$1');
-
-        // Thêm khoảng trắng sau dấu câu nếu bị dính chữ (không áp dụng cho số như 15.500.000)
-        text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 ');
-    }
-
-    // 4. Lọc khoảng trắng thừa
-    if (optRemoveSpaces) {
-        // Gom nhiều khoảng trắng liên tiếp thành 1 khoảng trắng
-        text = text.replace(/[ \t]+/g, ' ');
-
-        // Xóa khoảng trắng thừa ở đầu và cuối mỗi dòng
-        text = text.split('\n').map(line => line.trim()).join('\n');
-    }
-
-    outputEl.value = text.trim();
-    document.getElementById('pdfCleanResultBox')?.classList.remove('hidden');
-    showToast('Làm sạch văn bản PDF thành công!', 'success');
-}
-
-// Sao chép kết quả vào bộ nhớ tạm
-function copyCleanPdfText() {
-    var outputEl = document.getElementById('pdfCleanOutput');
-    if (outputEl && outputEl.value) {
-        navigator.clipboard.writeText(outputEl.value);
-        showToast('Đã sao chép văn bản đã làm sạch!', 'success');
-    }
-}
-
-// Xóa trắng để làm lại
-function resetCleanPdfText() {
-    var inputEl = document.getElementById('pdfCleanInput');
-    var outputEl = document.getElementById('pdfCleanOutput');
-    if (inputEl) inputEl.value = '';
-    if (outputEl) outputEl.value = '';
-    document.getElementById('pdfCleanResultBox')?.classList.add('hidden');
-    showToast('Đã xóa nội dung', 'info');
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
