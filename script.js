@@ -1,6 +1,4 @@
-// ========================================================
-// 1. KHỞI TẠO BIẾN CẤU HÌNH GLOBAL & TRẠNG THÁI
-// ========================================================
+// ==================== KHỞI TẠO BIẾN CẤU HÌNH GLOBAL ====================
 var allProducts = [];
 var currentCategoryFilter = 'tất cả';
 var showingOnlyFavorites = false;
@@ -13,9 +11,7 @@ try {
 var selectedMergeFiles = [];
 var selectedDeleteFile = null;
 
-// ========================================================
-// 2. TẢI THƯ VIỆN CẦN THIẾT KHI DÙNG (CDN LOADERS)
-// ========================================================
+// ==================== TẢI THƯ VIỆN CẦN THIẾT (CDN) ====================
 function loadPdfLib() {
     if (window.PDFLib) return Promise.resolve();
     return new Promise(function (resolve, reject) {
@@ -74,9 +70,7 @@ function loadMammoth() {
     });
 }
 
-// ========================================================
-// 3. KHỞI TẠO GIAO DIỆN & TIỆN ÍCH HỆ THỐNG
-// ========================================================
+// ==================== KHI TRANG LÊN NỀN (INIT) ====================
 document.addEventListener('DOMContentLoaded', function () {
     fetchData();
     initTheme();
@@ -88,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// --- Dark Mode ---
+// --- Quản lý Giao diện Sáng/Tối (Dark Mode) ---
 function initTheme() {
     var savedTheme = localStorage.getItem('theme');
     var isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -118,7 +112,7 @@ function updateThemeIcon() {
     }
 }
 
-// --- Menu Mobile ---
+// --- Menu Di Động ---
 function toggleMobileMenu() {
     var menu = document.getElementById('mobileMenu');
     if (menu) menu.classList.toggle('hidden');
@@ -129,7 +123,7 @@ function closeMobileMenu() {
     if (menu) menu.classList.add('hidden');
 }
 
-// --- Toast Notification ---
+// --- Thông Báo Toast ---
 function showToast(message, type) {
     var toast = document.getElementById('toast');
     var toastMsg = document.getElementById('toastMessage');
@@ -158,9 +152,7 @@ function showToast(message, type) {
     }, 3000);
 }
 
-// ========================================================
-// 4. BỘ LỌC VÀ HIỂN THỊ DỮ LIỆU SẢN PHẨM / BÀI VIẾT
-// ========================================================
+// --- Nạp Dữ Liệu Sản Phẩm & Bài Viết ---
 async function fetchData() {
     try {
         var response = await fetch('data.json');
@@ -188,6 +180,7 @@ function updateCategoryCounts() {
     if (document.getElementById('countDocs')) document.getElementById('countDocs').innerText = countDocs;
 }
 
+// ==================== BỘ LỌC VÀ HIỂN THỊ SẢN PHẨM ====================
 function filterProducts() {
     var keyword = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
 
@@ -293,9 +286,7 @@ function resetSearch() {
     setCategoryFilter('tất cả', document.querySelector('.filter-btn'));
 }
 
-// ========================================================
-// 5. CÔNG CỤ XỬ LÝ FILE PDF (GHÉP & XÓA TRANG)
-// ========================================================
+// ==================== MỞ POPUP CÔNG CỤ TRỰC TUYẾN ====================
 function openOnlineToolModal(toolTypeOrObject) {
     var modal = document.getElementById('onlineToolModal');
     if (!modal) return;
@@ -337,7 +328,7 @@ function closeOnlineToolModal() {
     document.getElementById('onlineToolModal')?.classList.add('hidden');
 }
 
-// --- Ghép PDF ---
+// --- 1. GHÉP PDF ---
 function handlePdfSelect(e) {
     var files = Array.from(e.target.files);
     if (!files.length) return;
@@ -397,7 +388,7 @@ async function processPdfMerge() {
     }
 }
 
-// --- Xóa trang PDF ---
+// --- 2. XÓA TRANG PDF ---
 function handlePdfDeleteSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -476,9 +467,7 @@ async function processPdfDelete() {
     }
 }
 
-// ========================================================
-// 6. THUẬT TOÁN OCR NHẬN DIỆN VĂN BẢN & BẢNG KẺ
-// ========================================================
+// --- 3. THUẬT TOÁN OCR HÓA ĐƠN & BẢNG KẺ ---
 function handleOcrSelect(e) {
     var file = e.target.files[0];
     if (file) {
@@ -919,9 +908,7 @@ function copyOcrText() {
     }
 }
 
-// ========================================================
-// 7. SOÁT LỖI CHÍNH TẢ & ĐỌC NỘI DUNG TỆP (WORD/EXCEL/TXT)
-// ========================================================
+// --- 4. SOÁT LỖI CHÍNH TẢ & ĐỌC FILE TẢI LÊN ---
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1048,7 +1035,7 @@ function autoFixSpellInput() {
     showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
 }
 
-// --- Hàm Modal & Yêu Thích ---
+// ==================== HÀM TIỆN ÍCH KHÁC ====================
 function toggleFavorite(id, e) {
     if (e) e.stopPropagation();
     var idx = favorites.indexOf(id);
@@ -1103,175 +1090,18 @@ function handleGoogleRegister() {
 }
 
 // ========================================================
-// 8. TRỢ LÝ AI MẸO TIN HỌC (GOOGLE GEMINI API INTEGRATION)
+// 🤖 HÀM GIỮ CHỖ AI (AN TOÀN TRUYỆT ĐỐI, KHÔNG LỖI CÚ PHÁP)
 // ========================================================
-
-// 💡 API Key Gemini đã được định dạng chuỗi ngoặc kép an toàn
-const GEMINI_API_KEY = "AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ";
-
-// 💡 Prompt huấn luyện trí thông minh cho AI
-const AI_SYSTEM_INSTRUCTION = `
-Bạn là "Mẹo Tin Học AI" - Chuyên gia tin học văn phòng cực kỳ thạo nghề, hiện đại và tinh tế của website meotinhoc.com.
-
-[PHONG CÁCH VÀ XƯNG HÔ]
-- Xưng "Mình", gọi người dùng là "Bạn".
-- Tông giọng thân thiện, ngắn gọn, đi thẳng vào đáp án trong câu đầu tiên.
-- Trình bày dạng danh sách các bước 1, 2, 3 rõ ràng, mạch lạc.
-- Bắt buộc bọc công thức Excel hoặc phím tắt trong dấu nháy đơn \` \` (Ví dụ: \`=XLOOKUP(A2, B:B, C:C)\` hoặc \`Ctrl + Shift + L\`).
-
-[CHUYÊN MÔN SÂU]
-- Excel: Viết công thức (VLOOKUP, INDEX/MATCH, XLOOKUP, SUMIFS...), xử lý lỗi #N/A, #VALUE!, viết code VBA tự động hóa báo cáo.
-- Word & PowerPoint: Sửa lỗi font chữ TCVN3, định dạng trang in, căn lề, hiệu ứng slide chuyên nghiệp.
-- PDF & Máy tính: Ghép/xóa PDF, quét OCR, phím tắt Windows 11/10.
-`;
-
-// Bật/Tắt cửa sổ Chat AI
 function toggleAiModal() {
-    const popup = document.getElementById('aiChatPopup');
-    if (popup) {
-        popup.classList.toggle('hidden');
-        if (!popup.classList.contains('hidden')) {
-            document.getElementById('aiChatInput')?.focus();
-        }
-    }
+    var popup = document.getElementById('aiChatPopup');
+    if (popup) popup.classList.toggle('hidden');
 }
 
-// Xử lý gửi câu hỏi từ ô nhập liệu
-async function handleAiChatSubmit(event) {
-    event.preventDefault();
-    const inputEl = document.getElementById('aiChatInput');
-    const userMessage = inputEl.value.trim();
-    if (!userMessage) return;
-
-    appendChatMessage('user', userMessage);
-    inputEl.value = '';
-
-    const loadingId = appendLoadingMessage();
-
-    try {
-        const responseText = await fetchGeminiResponse(userMessage);
-        removeLoadingMessage(loadingId);
-        appendChatMessage('ai', responseText);
-    } catch (error) {
-        removeLoadingMessage(loadingId);
-        appendChatMessage('ai', '⚠️ Rất tiếc, hệ thống đang bận hoặc không thể kết nối tới Google AI Studio.');
-        console.error('Gemini API Error:', error);
-    }
+function handleAiChatSubmit(e) {
+    if (e) e.preventDefault();
+    showToast('Tính năng Trợ lý AI đang trong quá trình nâng cấp hệ thống!', 'info');
 }
 
-// Gửi câu hỏi nhanh từ nút gợi ý
-function sendQuickQuestion(questionText) {
-    const inputEl = document.getElementById('aiChatInput');
-    if (inputEl) {
-        inputEl.value = questionText;
-        const form = inputEl.closest('form');
-        if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }
-}
-
-// Kết nối Google Gemini API (An toàn, bắt lỗi chi tiết)
-async function fetchGeminiResponse(prompt) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 15) {
-        return "Xin chào! Bạn vui lòng dán API Key Gemini vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
-    }
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    
-    const payload = {
-        contents: [
-            {
-                role: "user",
-                parts: [
-                    { text: `${AI_SYSTEM_INSTRUCTION}\n\nCâu hỏi của người dùng: ${prompt}` }
-                ]
-            }
-        ]
-    };
-
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            console.error("Google API Error:", data);
-            const msg = data.error?.message || `Mã lỗi HTTP ${res.status}`;
-            return `⚠️ Google API báo lỗi: ${msg}`;
-        }
-
-        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-            return formatAiText(data.candidates[0].content.parts[0].text);
-        } else {
-            return "⚠️ AI không trả về phản hồi phù hợp. Bạn hãy thử lại nhé!";
-        }
-    } catch (err) {
-        console.error("Fetch Exception:", err);
-        return `⚠️ Lỗi kết nối mạng: ${err.message}`;
-    }
-}
-
-// Định dạng câu trả lời AI (Markdown -> HTML)
-function formatAiText(text) {
-    return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300 font-bold">$1</strong>')
-        .replace(/`(.*?)`/g, '<code class="bg-slate-950 text-emerald-400 px-2 py-0.5 rounded border border-slate-800 font-mono text-xs">$1</code>')
-        .replace(/^\s*[\-\*]\s+(.*)$/gm, '• $1')
-        .replace(/\n/g, '<br>');
-}
-
-// Thêm tin nhắn vào khung chat
-function appendChatMessage(sender, text) {
-    const chatBody = document.getElementById('aiChatBody');
-    if (!chatBody) return;
-
-    const msgDiv = document.createElement('div');
-    msgDiv.className = sender === 'user' 
-        ? 'flex justify-end' 
-        : 'flex gap-2.5 items-start';
-
-    if (sender === 'user') {
-        msgDiv.innerHTML = `
-            <div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm leading-relaxed">
-                ${text}
-            </div>
-        `;
-    } else {
-        msgDiv.innerHTML = `
-            <div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] shadow-sm leading-relaxed space-y-1">
-                ${text}
-            </div>
-        `;
-    }
-
-    chatBody.appendChild(msgDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-// Bong bóng chờ "Đang suy nghĩ..."
-function appendLoadingMessage() {
-    const chatBody = document.getElementById('aiChatBody');
-    const id = 'loading-' + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = id;
-    loadingDiv.className = 'flex gap-2.5 items-start';
-    loadingDiv.innerHTML = `
-        <div class="bg-slate-800/90 border border-slate-700/60 text-slate-300 p-3 rounded-2xl rounded-tl-none flex items-center gap-1.5">
-            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
-            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
-            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
-            <span class="text-[11px] text-slate-400 ml-1">Mẹo Tin Học AI đang suy nghĩ...</span>
-        </div>
-    `;
-    chatBody.appendChild(loadingDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return id;
-}
-
-function removeLoadingMessage(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
+function sendQuickQuestion(text) {
+    showToast('Tính năng Trợ lý AI đang trong quá trình nâng cấp hệ thống!', 'info');
 }
