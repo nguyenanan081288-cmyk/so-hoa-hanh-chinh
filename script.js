@@ -1094,7 +1094,7 @@ function handleGoogleRegister() {
 // ========================================================
 
 // 💡 1. Dán API Key Gemini của bạn vào đây (Đã bọc ngoặc kép chuẩn)
-const GEMINI_API_KEY = "AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ";
+const GEMINI_API_KEY = "AQ.Ab8RN6JoZrw4PjCt7Brl5A3vYo-W0uHA8q3SLWFbWuzEwq1KKA";
 
 // 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn sâu cho AI
 const AI_SYSTEM_INSTRUCTION = `
