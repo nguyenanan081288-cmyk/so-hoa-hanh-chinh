@@ -4,7 +4,7 @@ var currentCategoryFilter = 'tất cả';
 var showingOnlyFavorites = false;
 var favorites = [];
 try {
-    favorites = JSON.parse(localStorage.getItem('shhc_favorites') || '[]');
+    favorites = JSON.parse(localStorage.getItem('mth_favorites') || localStorage.getItem('shhc_favorites') || '[]');
 } catch (e) {
     favorites = [];
 }
@@ -70,7 +70,7 @@ function loadMammoth() {
     });
 }
 
-// ==================== KHI TRANG LÊN NỀN ====================
+// ==================== KHI TRANG LÊN NỀN (INIT) ====================
 document.addEventListener('DOMContentLoaded', function () {
     fetchData();
     initTheme();
@@ -82,6 +82,77 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// --- Quản lý Giao diện Sáng/Tối (Dark Mode) ---
+function initTheme() {
+    var savedTheme = localStorage.getItem('theme');
+    var isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    updateThemeIcon();
+}
+
+function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+    var isDark = document.documentElement.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+    showToast('Đã chuyển sang giao diện ' + (isDark ? 'Tối' : 'Sáng'), 'info');
+}
+
+function updateThemeIcon() {
+    var icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    if (document.documentElement.classList.contains('dark')) {
+        icon.className = 'fa-solid fa-sun text-sm sm:text-base text-amber-400';
+    } else {
+        icon.className = 'fa-solid fa-moon text-sm sm:text-base text-amber-400';
+    }
+}
+
+// --- Menu Di Động ---
+function toggleMobileMenu() {
+    var menu = document.getElementById('mobileMenu');
+    if (menu) menu.classList.toggle('hidden');
+}
+
+function closeMobileMenu() {
+    var menu = document.getElementById('mobileMenu');
+    if (menu) menu.classList.add('hidden');
+}
+
+// --- Thông Báo Toast ---
+function showToast(message, type) {
+    var toast = document.getElementById('toast');
+    var toastMsg = document.getElementById('toastMessage');
+    var toastIcon = document.getElementById('toastIcon');
+    if (!toast || !toastMsg) return;
+
+    toastMsg.innerText = message || 'Thông báo!';
+    
+    if (toastIcon) {
+        if (type === 'error') {
+            toastIcon.className = 'fa-solid fa-circle-xmark text-red-400 text-lg';
+        } else if (type === 'info') {
+            toastIcon.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
+        } else {
+            toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+        }
+    }
+
+    toast.classList.remove('toast-enter', 'hidden');
+    toast.classList.add('toast-show');
+
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(function () {
+        toast.classList.remove('toast-show');
+        toast.classList.add('toast-enter');
+    }, 3000);
+}
+
+// --- Nạp Dữ Liệu Sản Phẩm & Bài Viết ---
 async function fetchData() {
     try {
         var response = await fetch('data.json');
@@ -100,9 +171,9 @@ function updateCategoryCounts() {
     var countAllEl = document.getElementById('countAll');
     if (countAllEl) countAllEl.innerText = allProducts.length;
 
-    var countSoftware = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('phần mềm'); }).length;
-    var countExcel = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('tiện ích excel/word'); }).length;
-    var countDocs = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('mẫu biểu'); }).length;
+    var countSoftware = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('phần mềm') || (p.category || '').toLowerCase().includes('software'); }).length;
+    var countExcel = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('tiện ích excel/word') || (p.category || '').toLowerCase().includes('mẹo excel'); }).length;
+    var countDocs = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('mẫu biểu') || (p.category || '').toLowerCase().includes('bài viết'); }).length;
 
     if (document.getElementById('countSoftware')) document.getElementById('countSoftware').innerText = countSoftware;
     if (document.getElementById('countExcel')) document.getElementById('countExcel').innerText = countExcel;
@@ -244,8 +315,8 @@ function openOnlineToolModal(toolTypeOrObject) {
         if (iconEl) iconEl.className = 'fa-solid fa-bolt text-2xl text-teal-600';
         document.getElementById('ocrOnlineUI')?.classList.remove('hidden');
     } else if (toolType === 'spell-online') {
-        if (titleEl) titleEl.innerText = 'Soát Lỗi Chính Tả & Văn Phong Hành Chính';
-        if (subEl) subEl.innerText = 'Soát lỗi từ ngữ và căn chỉnh dấu câu chuẩn Nghị định 30';
+        if (titleEl) titleEl.innerText = 'Soát Lỗi Chính Tả & Căn Chỉnh Khoảng Trắng';
+        if (subEl) subEl.innerText = 'Soát lỗi từ ngữ, khoảng trắng và chuẩn hóa văn phong tiếng Việt';
         if (iconEl) iconEl.className = 'fa-solid fa-magnifying-glass-chart text-2xl text-purple-600';
         document.getElementById('spellOnlineUI')?.classList.remove('hidden');
     }
@@ -396,8 +467,7 @@ async function processPdfDelete() {
     }
 }
 
-// ==================== 3. THUẬT TOÁN OCR HÓA ĐƠN & BẢNG KẺ CHUẨN XÁC ====================
-
+// --- 3. THUẬT TOÁN OCR HÓA ĐƠN & BẢNG KẺ CHUẨN XÁC ---
 function handleOcrSelect(e) {
     var file = e.target.files[0];
     if (file) {
@@ -723,7 +793,7 @@ async function processOcrExtract() {
         var finalStructuredText = reconstructParagraphs(fixedText);
 
         resultTextarea.value = finalStructuredText || "Không trích xuất được văn bản.";
-        showToast('Trích xuất & bảo toàn cấu trúc hóa đơn/bảng thành công!', 'success');
+        showToast('Trích xuất & bảo toàn cấu trúc thành công!', 'success');
 
     } catch (err) {
         console.error("Lỗi OCR:", err);
@@ -838,8 +908,7 @@ function copyOcrText() {
     }
 }
 
-// ==================== 4. SOÁT LỖI CHÍNH TẢ & ĐỌC FILE TẢI LÊN (WORD/EXCEL/TEXT) ====================
-
+// --- 4. SOÁT LỖI CHÍNH TẢ & ĐỌC FILE TẢI LÊN (WORD/EXCEL/TEXT) ---
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -854,16 +923,13 @@ async function handleSpellFileSelect(e) {
     var ext = file.name.split('.').pop().toLowerCase();
 
     try {
-        // 1. Nhóm file Word hiện đại (.docx, .docm, .dotx, .dotm)
         if (['docx', 'docm', 'dotx', 'dotm'].includes(ext)) {
             await loadMammoth();
             var arrayBuffer = await file.arrayBuffer();
             var result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
             textarea.value = result.value || '';
             showToast('Đã trích xuất văn bản từ file Word!', 'success');
-        } 
-        // 2. Nhóm file Word cũ (.doc, .dot)
-        else if (['doc', 'dot'].includes(ext)) {
+        } else if (['doc', 'dot'].includes(ext)) {
             await loadMammoth();
             var arrayBuffer = await file.arrayBuffer();
             try {
@@ -881,9 +947,7 @@ async function handleSpellFileSelect(e) {
                 textarea.value = cleanText;
             }
             showToast('Đã trích xuất nội dung file .doc!', 'success');
-        }
-        // 3. Nhóm file Bảng tính Excel (.xlsx, .xls, .xlsm, .xlsb, .csv, .ods)
-        else if (['xlsx', 'xls', 'xlsm', 'xlsb', 'csv', 'ods'].includes(ext)) {
+        } else if (['xlsx', 'xls', 'xlsm', 'xlsb', 'csv', 'ods'].includes(ext)) {
             await loadXlsxLib();
             var arrayBuffer = await file.arrayBuffer();
             var workbook = XLSX.read(arrayBuffer, { type: 'array' });
@@ -901,14 +965,11 @@ async function handleSpellFileSelect(e) {
 
             textarea.value = extractedText.join('\n');
             showToast('Đã trích xuất dữ liệu từ file Excel!', 'success');
-        } 
-        // 4. Nhóm file văn bản thuần (.txt, .rtf, .log)
-        else if (['txt', 'rtf', 'log'].includes(ext)) {
+        } else if (['txt', 'rtf', 'log'].includes(ext)) {
             var text = await file.text();
             textarea.value = text;
             showToast('Đã nạp file văn bản!', 'success');
-        } 
-        else {
+        } else {
             showToast('Định dạng file không được hỗ trợ!', 'error');
         }
     } catch (err) {
@@ -942,7 +1003,7 @@ function processSpellCheck() {
 
     var unaccentedMatches = val.match(/\b(Cong hoa|Xa hoi|Doc lap|Tu do|Hanh phuc|Nghi đinh|Quyet đinh|Thong bao|Bao cao)\b/gi);
     if (unaccentedMatches && unaccentedMatches.length > 0) {
-        issues.push('Phát hiện <strong>' + unaccentedMatches.length + ' từ</strong> bị sai/thiếu dấu hành chính (VD: ' + unaccentedMatches.slice(0, 3).join(', ') + ').');
+        issues.push('Phát hiện <strong>' + unaccentedMatches.length + ' từ</strong> thiếu/sai dấu tiếng Việt (VD: ' + unaccentedMatches.slice(0, 3).join(', ') + ').');
     }
 
     var issueHtml = '';
@@ -985,7 +1046,7 @@ function toggleFavorite(id, e) {
         favorites.push(id);
         showToast('Đã thêm vào danh sách yêu thích!', 'success');
     }
-    localStorage.setItem('shhc_favorites', JSON.stringify(favorites));
+    localStorage.setItem('mth_favorites', JSON.stringify(favorites));
     updateFavCount();
     filterProducts();
 }
@@ -1002,7 +1063,7 @@ function openDownloadModal(id) {
     document.getElementById('modalTitle').innerText = item.title || '';
     document.getElementById('modalDesc').innerText = item.desc || '';
     document.getElementById('modalType').innerText = item.fileType || '.ZIP';
-    document.getElementById('modalCouponCode').innerText = item.coupon || 'SOHOA2026';
+    document.getElementById('modalCouponCode').innerText = item.coupon || 'MEOTINHOC2026';
     document.getElementById('modalChangelog').innerText = item.changelog || 'Phiên bản chuẩn mới nhất';
     document.getElementById('modalDownloadBtn').href = item.downloadUrl || '#';
 
@@ -1018,114 +1079,174 @@ function triggerDownloadNotification() {
     closeModal();
 }
 
-// ==================== CỬA SỔ AI & DI ĐỘNG ====================
-function toggleAiModal() {
-    document.getElementById('aiChatPopup')?.classList.toggle('hidden');
-}
-
-function sendQuickQuestion(text) {
-    var input = document.getElementById('aiChatInput');
-    if (input) {
-        input.value = text;
-        handleAiChatSubmit(new Event('submit'));
-    }
-}
-
-function handleAiChatSubmit(e) {
-    e.preventDefault();
-    var input = document.getElementById('aiChatInput');
-    var body = document.getElementById('aiChatBody');
-
-    if (!input || !input.value.trim()) return;
-
-    var userText = input.value.trim();
-
-    var userMsg = document.createElement('div');
-    userMsg.className = 'flex justify-end';
-    userMsg.innerHTML = '<div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] leading-relaxed">' + userText + '</div>';
-    body.appendChild(userMsg);
-
-    input.value = '';
-    body.scrollTop = body.scrollHeight;
-
-    setTimeout(function () {
-        var aiMsg = document.createElement('div');
-        aiMsg.className = 'flex gap-2.5 items-start';
-        aiMsg.innerHTML = '<div class="bg-slate-800 border border-slate-700 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] leading-relaxed">Dựa trên <strong>Nghị định 30/2020/NĐ-CP</strong>, quy định chuẩn được thực hiện như sau: Khổ giấy A4, căn lề trên/dưới 20-25mm, lề trái 30-35mm, lề phải 15-20mm.</div>';
-        body.appendChild(aiMsg);
-        body.scrollTop = body.scrollHeight;
-    }, 800);
-}
-
-function toggleMobileMenu() {
-    document.getElementById('mobileMenu')?.classList.toggle('hidden');
-}
-
-function closeMobileMenu() {
-    document.getElementById('mobileMenu')?.classList.add('hidden');
-}
-
 function toggleRegisterModal() {
-    document.getElementById('registerModal')?.classList.toggle('hidden');
+    var modal = document.getElementById('registerModal');
+    if (modal) modal.classList.toggle('hidden');
 }
 
 function handleGoogleRegister() {
-    showToast('Đang kết nối tài khoản Google...', 'info');
-    setTimeout(function () {
-        showToast('Đăng ký tài khoản thành công!', 'success');
-        toggleRegisterModal();
-    }, 1200);
+    showToast('Tính năng đăng ký Gmail đang được đồng bộ!', 'info');
+    toggleRegisterModal();
 }
 
-function initTheme() {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        var themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-amber-400';
-    } else {
-        document.documentElement.classList.remove('dark');
-        var themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-amber-400';
+// ========================================================
+// 🤖 CẤU HÌNH TRỢ LÝ AI MẸO TIN HỌC (GEMINI API INTEGRATION)
+// ========================================================
+
+// 💡 1. Dán API Key Gemini của bạn vào đây (BẮT BUỘC BẮT ĐẦU BẰNG AIzaSy...)
+const GEMINI_API_KEY = AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ;
+
+// 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn sâu cho AI
+const AI_SYSTEM_INSTRUCTION = `
+Bạn là "Mẹo Tin Học AI" - Chuyên gia tin học văn phòng cực kỳ thạo nghề, hiện đại và tinh tế của website meotinhoc.com.
+
+[PHONG CÁCH VÀ XƯNG HÔ]
+- Xưng "Mình", gọi người dùng là "Bạn".
+- Tông giọng thân thiện, ngắn gọn, đi thẳng vào đáp án trong câu đầu tiên.
+- Trình bày dạng danh sách các bước 1, 2, 3 rõ ràng, mạch lạc.
+- Bắt buộc bọc công thức Excel hoặc phím tắt trong dấu nháy đơn \` \` (Ví dụ: \`=XLOOKUP(A2, B:B, C:C)\` hoặc \`Ctrl + Shift + L\`).
+
+[CHUYÊN MÔN SÂU]
+- Excel: Viết công thức (VLOOKUP, INDEX/MATCH, XLOOKUP, SUMIFS...), xử lý lỗi #N/A, #VALUE!, viết code VBA tự động hóa báo cáo.
+- Word & PowerPoint: Sửa lỗi font chữ TCVN3, định dạng trang in, căn lề, hiệu ứng slide chuyên nghiệp.
+- PDF & Máy tính: Ghép/xóa PDF, quét OCR, phím tắt Windows 11/10.
+`;
+
+// Bật/Tắt cửa sổ Chat AI
+function toggleAiModal() {
+    const popup = document.getElementById('aiChatPopup');
+    if (popup) {
+        popup.classList.toggle('hidden');
+        if (!popup.classList.contains('hidden')) {
+            document.getElementById('aiChatInput')?.focus();
+        }
     }
 }
 
-function toggleDarkMode() {
-    if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-        var themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-amber-400';
-    } else {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        var themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-amber-400';
+// Xử lý gửi câu hỏi từ ô nhập liệu
+async function handleAiChatSubmit(event) {
+    event.preventDefault();
+    const inputEl = document.getElementById('aiChatInput');
+    const userMessage = inputEl.value.trim();
+    if (!userMessage) return;
+
+    appendChatMessage('user', userMessage);
+    inputEl.value = '';
+
+    const loadingId = appendLoadingMessage();
+
+    try {
+        const responseText = await fetchGeminiResponse(userMessage);
+        removeLoadingMessage(loadingId);
+        appendChatMessage('ai', responseText);
+    } catch (error) {
+        removeLoadingMessage(loadingId);
+        appendChatMessage('ai', '⚠️ Rất tiếc, hệ thống đang bận hoặc API Key chưa được cấu hình đúng. Bạn hãy kiểm tra lại GEMINI_API_KEY nhé!');
+        console.error('Gemini API Error:', error);
     }
 }
 
-function showToast(message, type) {
-    if (!type) type = 'success';
-    var toast = document.getElementById('toast');
-    var toastMsg = document.getElementById('toastMessage');
-    var toastIcon = document.getElementById('toastIcon');
+// Gửi câu hỏi nhanh từ nút gợi ý
+function sendQuickQuestion(questionText) {
+    const inputEl = document.getElementById('aiChatInput');
+    if (inputEl) {
+        inputEl.value = questionText;
+        const form = inputEl.closest('form');
+        if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+}
 
-    if (!toast || !toastMsg) return;
-
-    toastMsg.innerText = message;
-
-    if (type === 'error') {
-        if (toastIcon) toastIcon.className = 'fa-solid fa-circle-xmark text-red-400 text-lg';
-    } else if (type === 'info') {
-        if (toastIcon) toastIcon.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
-    } else {
-        if (toastIcon) toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+// Kết nối Google Gemini API
+async function fetchGeminiResponse(prompt) {
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY_AIzaSy") || !GEMINI_API_KEY.startsWith("AIzaSy")) {
+        return "Xin chào! Bạn vui lòng dán đúng **API Key Gemini** (bắt đầu bằng `AIzaSy...`) vào file `script.js` để kích hoạt Trợ lý AI nhé!";
     }
 
-    toast.classList.remove('toast-enter');
-    toast.classList.add('toast-show');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    
+    const payload = {
+        contents: [
+            {
+                role: "user",
+                parts: [
+                    { text: `${AI_SYSTEM_INSTRUCTION}\n\nCâu hỏi của người dùng: ${prompt}` }
+                ]
+            }
+        ]
+    };
 
-    setTimeout(function () {
-        toast.classList.remove('toast-show');
-        toast.classList.add('toast-enter');
-    }, 3000);
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        return formatAiText(data.candidates[0].content.parts[0].text);
+    } else {
+        throw new Error("Invalid response format");
+    }
+}
+
+// Định dạng câu trả lời AI (In đậm, mã code, gạch đầu dòng, xuống dòng)
+function formatAiText(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300 font-bold">$1</strong>')
+        .replace(/`(.*?)`/g, '<code class="bg-slate-950 text-emerald-400 px-2 py-0.5 rounded border border-slate-800 font-mono text-xs">$1</code>')
+        .replace(/^\s*[\-\*]\s+(.*)$/gm, '• $1')
+        .replace(/\n/g, '<br>');
+}
+
+// Thêm tin nhắn vào giao diện
+function appendChatMessage(sender, text) {
+    const chatBody = document.getElementById('aiChatBody');
+    if (!chatBody) return;
+
+    const msgDiv = document.createElement('div');
+    msgDiv.className = sender === 'user' 
+        ? 'flex justify-end' 
+        : 'flex gap-2.5 items-start';
+
+    if (sender === 'user') {
+        msgDiv.innerHTML = `
+            <div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm leading-relaxed">
+                ${text}
+            </div>
+        `;
+    } else {
+        msgDiv.innerHTML = `
+            <div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] shadow-sm leading-relaxed space-y-1">
+                ${text}
+            </div>
+        `;
+    }
+
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// Hiển thị trạng thái đang nhập
+function appendLoadingMessage() {
+    const chatBody = document.getElementById('aiChatBody');
+    const id = 'loading-' + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = id;
+    loadingDiv.className = 'flex gap-2.5 items-start';
+    loadingDiv.innerHTML = `
+        <div class="bg-slate-800/90 border border-slate-700/60 text-slate-300 p-3 rounded-2xl rounded-tl-none flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-purple-400 rounded-full typing-dot"></span>
+            <span class="text-[11px] text-slate-400 ml-1">Mẹo Tin Học AI đang suy nghĩ...</span>
+        </div>
+    `;
+    chatBody.appendChild(loadingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return id;
+}
+
+function removeLoadingMessage(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
 }
