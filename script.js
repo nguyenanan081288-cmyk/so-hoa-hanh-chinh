@@ -1,4 +1,6 @@
-// ==================== KHỞI TẠO BIẾN CẤU HÌNH GLOBAL ====================
+// ========================================================
+// 1. KHỞI TẠO BIẾN CẤU HÌNH GLOBAL & TRẠNG THÁI
+// ========================================================
 var allProducts = [];
 var currentCategoryFilter = 'tất cả';
 var showingOnlyFavorites = false;
@@ -11,7 +13,9 @@ try {
 var selectedMergeFiles = [];
 var selectedDeleteFile = null;
 
-// ==================== TẢI THƯ VIỆN CẦN THIẾT (CDN) ====================
+// ========================================================
+// 2. TẢI THƯ VIỆN CẦN THIẾT KHI DÙNG (CDN LOADERS)
+// ========================================================
 function loadPdfLib() {
     if (window.PDFLib) return Promise.resolve();
     return new Promise(function (resolve, reject) {
@@ -70,7 +74,9 @@ function loadMammoth() {
     });
 }
 
-// ==================== KHI TRANG LÊN NỀN (INIT) ====================
+// ========================================================
+// 3. KHỞI TẠO GIAO DIỆN & TIỆN ÍCH HỆ THỐNG
+// ========================================================
 document.addEventListener('DOMContentLoaded', function () {
     fetchData();
     initTheme();
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// --- Quản lý Giao diện Sáng/Tối (Dark Mode) ---
+// --- Dark Mode ---
 function initTheme() {
     var savedTheme = localStorage.getItem('theme');
     var isDark = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -112,7 +118,7 @@ function updateThemeIcon() {
     }
 }
 
-// --- Menu Di Động ---
+// --- Menu Mobile ---
 function toggleMobileMenu() {
     var menu = document.getElementById('mobileMenu');
     if (menu) menu.classList.toggle('hidden');
@@ -123,7 +129,7 @@ function closeMobileMenu() {
     if (menu) menu.classList.add('hidden');
 }
 
-// --- Thông Báo Toast ---
+// --- Toast Notification ---
 function showToast(message, type) {
     var toast = document.getElementById('toast');
     var toastMsg = document.getElementById('toastMessage');
@@ -152,7 +158,9 @@ function showToast(message, type) {
     }, 3000);
 }
 
-// --- Nạp Dữ Liệu Sản Phẩm & Bài Viết ---
+// ========================================================
+// 4. BỘ LỌC VÀ HIỂN THỊ DỮ LIỆU SẢN PHẨM / BÀI VIẾT
+// ========================================================
 async function fetchData() {
     try {
         var response = await fetch('data.json');
@@ -180,7 +188,6 @@ function updateCategoryCounts() {
     if (document.getElementById('countDocs')) document.getElementById('countDocs').innerText = countDocs;
 }
 
-// ==================== BỘ LỌC VÀ HIỂN THỊ SẢN PHẨM ====================
 function filterProducts() {
     var keyword = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
 
@@ -286,7 +293,9 @@ function resetSearch() {
     setCategoryFilter('tất cả', document.querySelector('.filter-btn'));
 }
 
-// ==================== MỞ POPUP CÔNG CỤ TRỰC TUYẾN ====================
+// ========================================================
+// 5. CÔNG CỤ XỬ LÝ FILE PDF (GHÉP & XÓA TRANG)
+// ========================================================
 function openOnlineToolModal(toolTypeOrObject) {
     var modal = document.getElementById('onlineToolModal');
     if (!modal) return;
@@ -328,7 +337,7 @@ function closeOnlineToolModal() {
     document.getElementById('onlineToolModal')?.classList.add('hidden');
 }
 
-// --- 1. GHÉP PDF ---
+// --- Ghép PDF ---
 function handlePdfSelect(e) {
     var files = Array.from(e.target.files);
     if (!files.length) return;
@@ -388,7 +397,7 @@ async function processPdfMerge() {
     }
 }
 
-// --- 2. XÓA TRANG PDF ---
+// --- Xóa trang PDF ---
 function handlePdfDeleteSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -467,7 +476,9 @@ async function processPdfDelete() {
     }
 }
 
-// --- 3. THUẬT TOÁN OCR HÓA ĐƠN & BẢNG KẺ CHUẨN XÁC ---
+// ========================================================
+// 6. THUẬT TOÁN OCR NHẬN DIỆN VĂN BẢN & BẢNG KẺ
+// ========================================================
 function handleOcrSelect(e) {
     var file = e.target.files[0];
     if (file) {
@@ -908,7 +919,9 @@ function copyOcrText() {
     }
 }
 
-// --- 4. SOÁT LỖI CHÍNH TẢ & ĐỌC FILE TẢI LÊN (WORD/EXCEL/TEXT) ---
+// ========================================================
+// 7. SOÁT LỖI CHÍNH TẢ & ĐỌC NỘI DUNG TỆP (WORD/EXCEL/TXT)
+// ========================================================
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1035,7 +1048,7 @@ function autoFixSpellInput() {
     showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
 }
 
-// ==================== HÀM TIỆN ÍCH KHÁC ====================
+// --- Hàm Modal & Yêu Thích ---
 function toggleFavorite(id, e) {
     if (e) e.stopPropagation();
     var idx = favorites.indexOf(id);
@@ -1090,13 +1103,13 @@ function handleGoogleRegister() {
 }
 
 // ========================================================
-// 🤖 CẤU HÌNH TRỢ LÝ AI MẸO TIN HỌC (GEMINI API INTEGRATION)
+// 8. TRỢ LÝ AI MẸO TIN HỌC (GOOGLE GEMINI API INTEGRATION)
 // ========================================================
 
-// 💡 1. Mã API Key Gemini của bạn (Đã được bọc ngoặc kép chuẩn)
+// 💡 API Key Gemini đã được định dạng chuỗi ngoặc kép an toàn
 const GEMINI_API_KEY = "AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ";
 
-// 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn cho AI
+// 💡 Prompt huấn luyện trí thông minh cho AI
 const AI_SYSTEM_INSTRUCTION = `
 Bạn là "Mẹo Tin Học AI" - Chuyên gia tin học văn phòng cực kỳ thạo nghề, hiện đại và tinh tế của website meotinhoc.com.
 
@@ -1156,8 +1169,7 @@ function sendQuickQuestion(questionText) {
     }
 }
 
-// Kết nối Google Gemini API (An toàn tuyệt đối, báo lỗi chính xác)
-// Kết nối Google Gemini API (Đã sửa sạch lỗi thừa code)
+// Kết nối Google Gemini API (An toàn, bắt lỗi chi tiết)
 async function fetchGeminiResponse(prompt) {
     if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 15) {
         return "Xin chào! Bạn vui lòng dán API Key Gemini vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
@@ -1202,7 +1214,7 @@ async function fetchGeminiResponse(prompt) {
     }
 }
 
-// Định dạng câu trả lời AI
+// Định dạng câu trả lời AI (Markdown -> HTML)
 function formatAiText(text) {
     return text
         .replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300 font-bold">$1</strong>')
@@ -1211,7 +1223,7 @@ function formatAiText(text) {
         .replace(/\n/g, '<br>');
 }
 
-// Thêm tin nhắn vào giao diện
+// Thêm tin nhắn vào khung chat
 function appendChatMessage(sender, text) {
     const chatBody = document.getElementById('aiChatBody');
     if (!chatBody) return;
@@ -1239,7 +1251,7 @@ function appendChatMessage(sender, text) {
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-// Hiển thị trạng thái đang nhập
+// Bong bóng chờ "Đang suy nghĩ..."
 function appendLoadingMessage() {
     const chatBody = document.getElementById('aiChatBody');
     const id = 'loading-' + Date.now();
