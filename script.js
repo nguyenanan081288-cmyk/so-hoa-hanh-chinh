@@ -1105,3 +1105,86 @@ function handleAiChatSubmit(e) {
 function sendQuickQuestion(text) {
     showToast('Tính năng Trợ lý AI đang trong quá trình nâng cấp hệ thống!', 'info');
 }
+
+// ==================== CÔNG CỤ LÀM SẠCH VĂN BẢN COPY TỪ PDF ====================
+
+function processCleanPdfText() {
+    var inputEl = document.getElementById('pdfCleanInput');
+    var outputEl = document.getElementById('pdfCleanOutput');
+
+    if (!inputEl || !outputEl) return;
+
+    var text = inputEl.value;
+
+    if (!text.trim()) {
+        showToast('Vui lòng dán văn bản cần làm sạch!', 'error');
+        return;
+    }
+
+    // Đọc trạng thái các tùy chọn
+    var optFixLineBreaks = document.getElementById('optFixLineBreaks')?.checked ?? true;
+    var optRemoveSpaces = document.getElementById('optRemoveSpaces')?.checked ?? true;
+    var optFixPunctuation = document.getElementById('optFixPunctuation')?.checked ?? true;
+    var optRemoveHyphens = document.getElementById('optRemoveHyphens')?.checked ?? true;
+
+    // 1. Khôi phục từ bị ngắt bởi dấu gạch nối ở cuối dòng (ví dụ: "chuyển-\nđổi" -> "chuyển đổi")
+    if (optRemoveHyphens) {
+        text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1 $2');
+    }
+
+    // 2. Nối các dòng bị ngắt đoạn sai cú pháp
+    if (optFixLineBreaks) {
+        // Chuẩn hóa ký tự xuống dòng
+        text = text.replace(/\r\n/g, '\n');
+
+        // Tạm thời bảo vệ các đoạn văn thật (nơi có 2 dấu xuống dòng liên tiếp)
+        text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
+
+        // Thay thế các dấu xuống dòng đơn bằng 1 khoảng trắng
+        text = text.replace(/\n/g, ' ');
+
+        // Khôi phục lại các đoạn văn thật
+        text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n');
+    }
+
+    // 3. Sửa lỗi khoảng trắng quanh dấu câu
+    if (optFixPunctuation) {
+        // Xóa khoảng trắng trước dấu câu (ví dụ: "văn bản , " -> "văn bản, ")
+        text = text.replace(/\s+([.,;:!?])/g, '$1');
+
+        // Thêm khoảng trắng sau dấu câu nếu bị dính chữ (không áp dụng cho số như 15.500.000)
+        text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 ');
+    }
+
+    // 4. Lọc khoảng trắng thừa
+    if (optRemoveSpaces) {
+        // Gom nhiều khoảng trắng liên tiếp thành 1 khoảng trắng
+        text = text.replace(/[ \t]+/g, ' ');
+
+        // Xóa khoảng trắng thừa ở đầu và cuối mỗi dòng
+        text = text.split('\n').map(line => line.trim()).join('\n');
+    }
+
+    outputEl.value = text.trim();
+    document.getElementById('pdfCleanResultBox')?.classList.remove('hidden');
+    showToast('Làm sạch văn bản PDF thành công!', 'success');
+}
+
+// Sao chép kết quả vào bộ nhớ tạm
+function copyCleanPdfText() {
+    var outputEl = document.getElementById('pdfCleanOutput');
+    if (outputEl && outputEl.value) {
+        navigator.clipboard.writeText(outputEl.value);
+        showToast('Đã sao chép văn bản đã làm sạch!', 'success');
+    }
+}
+
+// Xóa trắng để làm lại
+function resetCleanPdfText() {
+    var inputEl = document.getElementById('pdfCleanInput');
+    var outputEl = document.getElementById('pdfCleanOutput');
+    if (inputEl) inputEl.value = '';
+    if (outputEl) outputEl.value = '';
+    document.getElementById('pdfCleanResultBox')?.classList.add('hidden');
+    showToast('Đã xóa nội dung', 'info');
+}
