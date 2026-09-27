@@ -1093,8 +1093,8 @@ function handleGoogleRegister() {
 // 🤖 CẤU HÌNH TRỢ LÝ AI MẸO TIN HỌC (GEMINI API INTEGRATION)
 // ========================================================
 
-// 💡 1. Dán API Key Gemini của bạn vào đây (BẮT BUỘC BẮT ĐẦU BẰNG AIzaSy...)
-const GEMINI_API_KEY = AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ;
+// 💡 1. Dán API Key Gemini của bạn vào đây (Đã bọc ngoặc kép chuẩn)
+const GEMINI_API_KEY = "AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ";
 
 // 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn sâu cho AI
 const AI_SYSTEM_INSTRUCTION = `
@@ -1174,20 +1174,6 @@ async function fetchGeminiResponse(prompt) {
             }
         ]
     };
-
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-        return formatAiText(data.candidates[0].content.parts[0].text);
-    } else {
-        throw new Error("Invalid response format");
-    }
-}
 
     const res = await fetch(url, {
         method: 'POST',
