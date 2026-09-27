@@ -1093,10 +1093,10 @@ function handleGoogleRegister() {
 // 🤖 CẤU HÌNH TRỢ LÝ AI MẸO TIN HỌC (GEMINI API INTEGRATION)
 // ========================================================
 
-// 💡 1. Mã API Key Gemini của bạn (Đã được bọc ngoặc kép chuẩn)
+// 💡 1. Dán API Key Gemini của bạn vào đây (Đã bọc ngoặc kép chuẩn)
 const GEMINI_API_KEY = "AQ.Ab8RN6KRNs25wb6l31y9616wTLlEFtIsQNFdF9r8G22orwpOfQ";
 
-// 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn cho AI
+// 💡 2. Kịch bản huấn luyện nhân cách & chuyên môn sâu cho AI
 const AI_SYSTEM_INSTRUCTION = `
 Bạn là "Mẹo Tin Học AI" - Chuyên gia tin học văn phòng cực kỳ thạo nghề, hiện đại và tinh tế của website meotinhoc.com.
 
@@ -1141,7 +1141,7 @@ async function handleAiChatSubmit(event) {
         appendChatMessage('ai', responseText);
     } catch (error) {
         removeLoadingMessage(loadingId);
-        appendChatMessage('ai', '⚠️ Rất tiếc, hệ thống đang bận hoặc không thể kết nối tới Google AI Studio.');
+        appendChatMessage('ai', '⚠️ Rất tiếc, hệ thống đang bận hoặc API Key chưa được cấu hình đúng. Bạn hãy kiểm tra lại GEMINI_API_KEY nhé!');
         console.error('Gemini API Error:', error);
     }
 }
@@ -1156,10 +1156,10 @@ function sendQuickQuestion(questionText) {
     }
 }
 
-// Kết nối Google Gemini API (An toàn tuyệt đối, báo lỗi chính xác)
+// Kết nối Google Gemini API (Chấp nhận cả mã AQ. mới và AIza... cũ)
 async function fetchGeminiResponse(prompt) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 15) {
-        return "Xin chào! Bạn vui lòng dán API Key Gemini vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
+    if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("ĐÁN_KEY") || GEMINI_API_KEY.length < 20) {
+        return "Xin chào! Bạn vui lòng dán API Key Gemini của bạn vào biến GEMINI_API_KEY trong file `script.js` để kích hoạt Trợ lý AI nhé!";
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -1175,29 +1175,17 @@ async function fetchGeminiResponse(prompt) {
         ]
     };
 
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            console.error("Google API Error:", data);
-            const msg = data.error?.message || `Mã lỗi HTTP ${res.status}`;
-            return `⚠️ Google API báo lỗi: ${msg}`;
-        }
-
-        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-            return formatAiText(data.candidates[0].content.parts[0].text);
-        } else {
-            return "⚠️ AI không trả về phản hồi phù hợp. Bạn hãy thử lại nhé!";
-        }
-    } catch (err) {
-        console.error("Fetch Exception:", err);
-        return `⚠️ Lỗi kết nối mạng: ${err.message}`;
+    const data = await res.json();
+    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        return formatAiText(data.candidates[0].content.parts[0].text);
+    } else {
+        throw new Error("Invalid response format");
     }
 }
 
