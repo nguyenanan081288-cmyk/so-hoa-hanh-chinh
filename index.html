@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mẹo Tin Học | Kho Thủ Thuật & Tiện Ích Văn Phòng Online</title>
-    <meta name="description" content="Website chia sẻ mẹo tin học, thủ thuật Word, Excel, ghép PDF, xóa trang PDF, quét chữ OCR và kiểm tra chính tả tiếng Việt trực tuyến.">
+    <meta name="description" content="Website chia sẻ mẹo tin học, thủ thuật Word, Excel, ghép PDF, xóa trang PDF, làm sạch văn bản PDF, quét chữ OCR và kiểm tra chính tả tiếng Việt trực tuyến.">
     
     <!-- THẺ XÁC MINH GOOGLE SEARCH CONSOLE -->
     <meta name="google-site-verification" content="a3rw-S0290kG49rj3sIaw3aRy_kt8PeoFsmLNEOL9L8" />
@@ -145,7 +145,7 @@
                     Cổng Tiện Ích & Mẹo Tin Học <br class="hidden sm:inline">Văn Phòng Online
                 </h1>
                 <p class="text-slate-300 text-xs sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
-                    Xử lý nhanh tài liệu trực tuyến: Ghép PDF, xóa trang PDF, quét chữ OCR từ ảnh, kiểm tra chính tả tiếng Việt & thủ thuật Excel/Word chuyên sâu.
+                    Xử lý nhanh tài liệu trực tuyến: Ghép PDF, xóa trang PDF, làm sạch chữ PDF, quét chữ OCR từ ảnh, kiểm tra chính tả tiếng Việt & thủ thuật Excel/Word chuyên sâu.
                 </p>
             </div>
         </section>
@@ -165,7 +165,7 @@
                     </span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                     <!-- TOOL 1: GHÉP PDF -->
                     <div onclick="openOnlineToolModal('pdf-merge')" class="group cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-blue-200/60 dark:border-blue-900/40 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
@@ -187,7 +187,7 @@
                             <div class="w-12 h-12 bg-red-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-red-600/30 group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-file-circle-xmark"></i>
                             </div>
-                            <span class="bg-red-600/10 dark:bg-red-400/20 text-red-600 dark:text-red-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">MỚI</span>
+                            <span class="bg-red-600/10 dark:bg-red-400/20 text-red-600 dark:text-red-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">CẮT FILE</span>
                         </div>
                         <h3 class="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Xóa Trang PDF</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 line-clamp-2">Loại bỏ các trang thừa, trang trống trong tài liệu PDF.</p>
@@ -196,7 +196,22 @@
                         </button>
                     </div>
 
-                    <!-- TOOL 3: QUÉT OCR -->
+                    <!-- TOOL 3: LÀM SẠCH CHỮ PDF (MỚI THÊM) -->
+                    <div onclick="openOnlineToolModal('pdf-clean')" class="group cursor-pointer bg-gradient-to-br from-cyan-50 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-cyan-200/60 dark:border-cyan-900/40 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-12 h-12 bg-cyan-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-cyan-600/30 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-broom"></i>
+                            </div>
+                            <span class="bg-cyan-600/10 dark:bg-cyan-400/20 text-cyan-600 dark:text-cyan-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">HÀNH CHÍNH</span>
+                        </div>
+                        <h3 class="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">Làm Sạch Chữ PDF</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4 line-clamp-2">Sửa lỗi đứt đoạn xuống dòng, thừa khoảng trắng khi copy từ PDF/Web.</p>
+                        <button class="w-full py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-circle-play"></i> Dùng Ngay
+                        </button>
+                    </div>
+
+                    <!-- TOOL 4: QUÉT OCR -->
                     <div onclick="openOnlineToolModal('ocr-online')" class="group cursor-pointer bg-gradient-to-br from-teal-50 to-emerald-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-teal-200/60 dark:border-teal-900/40 hover:border-teal-500 dark:hover:border-teal-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-teal-600/30 group-hover:scale-110 transition-transform">
@@ -211,7 +226,7 @@
                         </button>
                     </div>
 
-                    <!-- TOOL 4: SOÁT CHÍNH TẢ -->
+                    <!-- TOOL 5: SOÁT CHÍNH TẢ -->
                     <div onclick="openOnlineToolModal('spell-online')" class="group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-purple-200/60 dark:border-purple-900/40 hover:border-purple-500 dark:hover:border-purple-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
                             <div class="w-12 h-12 bg-purple-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-purple-600/30 group-hover:scale-110 transition-transform">
@@ -256,7 +271,7 @@
             <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row gap-4 justify-between items-center">
                 <div class="relative w-full md:w-1/2">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input id="searchInput" type="text" placeholder="Tìm kiếm ghép PDF, xóa trang PDF, OCR quét ảnh, soát chính tả, tiện ích Excel..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm">
+                    <input id="searchInput" type="text" placeholder="Tìm kiếm ghép PDF, xóa trang PDF, làm sạch văn bản, OCR quét ảnh, soát chính tả..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm">
                 </div>
                 <div class="flex flex-wrap md:flex-nowrap gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 scrollbar-none">
                     <button onclick="setCategoryFilter('tất cả', this)" class="filter-btn px-4 py-2.5 rounded-2xl bg-blue-600 text-white text-xs font-bold whitespace-nowrap shadow-sm">Tất cả (<span id="countAll">0</span>)</button>
@@ -466,6 +481,59 @@
                 <button onclick="processPdfDelete()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-2xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                     <i class="fa-solid fa-trash-can"></i> Tiến hành xóa trang & Tải về
                 </button>
+            </div>
+
+            <!-- KHUNG LÀM SẠCH VĂN BẢN PDF (MỚI THÊM) -->
+            <div id="pdfCleanTextUI" class="tool-ui-box hidden space-y-4">
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-paste text-blue-500"></i> Dán văn bản copy từ PDF/Web vào đây:
+                        </label>
+                        <button onclick="resetCleanPdfText()" class="text-[11px] font-semibold text-slate-400 hover:text-red-500 transition">
+                            <i class="fa-solid fa-rotate-left"></i> LÀM MỚI
+                        </button>
+                    </div>
+                    <textarea id="pdfCleanInput" rows="6" placeholder="Dán văn bản bị lỗi xuống dòng, dính chữ hoặc thừa khoảng trắng vào đây..." class="w-full p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs focus:outline-none focus:border-blue-500 dark:text-white leading-relaxed font-sans"></textarea>
+                </div>
+
+                <div class="p-3 bg-slate-100/70 dark:bg-slate-800/50 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                    <span class="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">Cấu hình làm sạch:</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="optFixLineBreaks" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                            <span>Nối các dòng bị ngắt câu sai</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="optRemoveSpaces" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                            <span>Xóa khoảng trắng thừa</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="optFixPunctuation" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                            <span>Sửa lỗi khoảng trắng dấu câu</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="optRemoveHyphens" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                            <span>Gộp từ bị gạch nối cuối dòng</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="processCleanPdfText()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-2xl shadow-lg shadow-blue-600/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tiến Hành Làm Sạch Văn Bản
+                </button>
+
+                <div id="pdfCleanResultBox" class="hidden space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> Văn bản đã hoàn thiện:
+                        </span>
+                        <button onclick="copyCleanPdfText()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 active:scale-95 shadow">
+                            <i class="fa-solid fa-copy"></i> Sao chép kết quả
+                        </button>
+                    </div>
+                    <textarea id="pdfCleanOutput" rows="7" readonly class="w-full p-3 bg-emerald-50/50 dark:bg-slate-950 border border-emerald-200 dark:border-emerald-900/60 rounded-2xl text-xs dark:text-white leading-relaxed font-sans focus:outline-none"></textarea>
+                </div>
             </div>
 
             <!-- KHUNG QUÉT OCR CẢI TIẾN -->
