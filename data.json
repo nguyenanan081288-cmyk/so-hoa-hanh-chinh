@@ -289,5 +289,31 @@
         "icon": "fa-newspaper",
         "isArticle": true,
         "articleUrl": "bai-viet-cong-cu-tien-ich.html"
-    }
+    },
+    [
+  {
+    "id": "pm-noi-bo-01",
+    "title": "Phần Mềm Xử Lý PDF_Tool Standalone (Offline)",
+    "desc": "Công cụ Python PyQt hỗ trợ tách, gộp, xoay trang, xóa trang và làm sạch văn bản PDF hoàn toàn offline trên máy tính cơ quan.",
+    "category": "phần mềm nội bộ",
+    "icon": "fa-file-shield",
+    "fileType": ".EXE / .ZIP",
+    "downloadUrl": "/downloads/PDF_Tool_v2.zip",
+    "coupon": "INTERNAL2026",
+    "changelog": "Phiên bản v2.0 - Tích hợp bộ đọc PyMuPDF tốc độ cao",
+    "isInternal": true,
+    "pinCode": "7272" 
+  },
+  {
+    "id": "pm-noi-bo-02",
+    "title": "Bộ Macro Chuẩn Hóa Văn Bản Word Hành Chính",
+    "desc": "Tự động căn chỉnh font chữ Times New Roman 14, giãn dòng 1.5, dọn khoảng trắng thừa và sửa lỗi giãn chữ tự động.",
+    "category": "phần mềm nội bộ",
+    "icon": "fa-code",
+    "fileType": ".BAS / .DOCM",
+    "downloadUrl": "/downloads/Macro_Format_Word.zip",
+    "changelog": "Cập nhật bảng mã Unicode chuẩn",
+    "isInternal": true
+  }
+]
 ]
