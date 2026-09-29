@@ -3,20 +3,101 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mẹo Tin Học | Kho Thủ Thuật & Tiện Ích Văn Phòng Online</title>
-    <meta name="description" content="Website chia sẻ mẹo tin học, thủ thuật Word, Excel, ghép PDF, xóa trang PDF, làm sạch văn bản PDF, quét chữ OCR và kiểm tra chính tả tiếng Việt trực tuyến.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- THẺ XÁC MINH GOOGLE SEARCH CONSOLE -->
-    <meta name="google-site-verification" content="a3rw-S0290kG49rj3sIaw3aRy_kt8PeoFsmLNEOL9L8" />
+    <!-- THẺ SEO TIÊU ĐỀ & MÔ TẢ (CHUẨN ĐỘ DÀI GOOGLE) -->
+    <title>Mẹo Tin Học | Công Cụ Office, Ghép PDF & OCR Online Miễn Phí</title>
+    <meta name="description" content="Website chia sẻ mẹo tin học văn phòng, thủ thuật Word/Excel, công cụ ghép PDF, xóa trang PDF, làm sạch chữ PDF, quét chữ OCR tiếng Việt & kiểm tra chính tả trực tuyến miễn phí.">
+    <meta name="keywords" content="mẹo tin học, thủ thuật excel, thủ thuật word, ghép pdf online, xóa trang pdf, làm sạch chữ pdf, quét ocr tiếng việt, soát lỗi chính tả, meotinhoc, tiện ích văn phòng">
+    <meta name="author" content="Mẹo Tin Học">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
-    <!-- THƯ VIỆN GOOGLE IDENTITY SERVICES -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+    <!-- CANONICAL URL -->
     <link rel="canonical" href="https://meotinhoc.com/">
+
+    <!-- FAVICON & TOUCH ICONS -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
 
+    <!-- OPEN GRAPH (HIỂN THỊ ĐẸP TRÊN ZALO, FACEBOOK, MESSENGER) -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:url" content="https://meotinhoc.com/">
+    <meta property="og:site_name" content="Mẹo Tin Học">
+    <meta property="og:title" content="Mẹo Tin Học | Công Cụ Office, Ghép PDF & OCR Online Miễn Phí">
+    <meta property="og:description" content="Bộ tiện ích xử lý văn bản trực tuyến: Ghép PDF, xóa trang PDF, làm sạch chữ PDF, quét OCR tiếng Việt và kiểm tra chính tả miễn phí 100%.">
+    <meta property="og:image" content="https://meotinhoc.com/assets/og-share-banner.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Cổng Tiện Ích & Mẹo Tin Học Văn Phòng Online">
+
+    <!-- TWITTER CARDS -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mẹo Tin Học | Công Cụ Office & PDF Online Miễn Phí">
+    <meta name="twitter:description" content="Ghép PDF, xóa trang PDF, quét OCR chữ từ ảnh & soát lỗi chính tả trực tuyến.">
+    <meta name="twitter:image" content="https://meotinhoc.com/assets/og-share-banner.jpg">
+
+    <!-- THẺ XÁC MINH GOOGLE SEARCH CONSOLE -->
+    <meta name="google-site-verification" content="a3rw-S0290kG49rj3sIaw3aRy_kt8PeoFsmLNEOL9L8" />
+
+    <!-- DỮ LIỆU CẤU TRÚC SCHEMA.ORG (GIÚP GOOGLE TĂNG XẾP HẠNG & HIỂN THỊ SITELINKS) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://meotinhoc.com/#website",
+          "url": "https://meotinhoc.com/",
+          "name": "Mẹo Tin Học",
+          "description": "Cổng Tiện Ích & Mẹo Tin Học Văn Phòng Online",
+          "inLanguage": "vi-VN",
+          "publisher": {
+            "@id": "https://meotinhoc.com/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://meotinhoc.com/?s={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://meotinhoc.com/#organization",
+          "name": "Mẹo Tin Học",
+          "url": "https://meotinhoc.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://meotinhoc.com/assets/logo.png"
+          },
+          "email": "contact@meotinhoc.com"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://meotinhoc.com/#webapp",
+          "name": "Bộ Tiện Ích Trực Tuyến Mẹo Tin Học",
+          "url": "https://meotinhoc.com/#cong-cu-truc-tuyen",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "VND"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- CDN THƯ VIỆN & FONTS -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -37,8 +118,9 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- CUSTOM CSS PERFORMANCE & ANIMATION -->
     <style>
-        /* Lưới Chấm & Khung Công Nghệ */
         .bg-tech-grid {
             background-image: 
                 radial-gradient(rgba(99, 102, 241, 0.15) 1.5px, transparent 1.5px),
@@ -47,7 +129,6 @@
             background-size: 24px 24px, 40px 40px, 40px 40px;
         }
 
-        /* Hiệu ứng Vệt Sáng Chuyển Động Lướt Qua Card */
         .card-shimmer {
             position: relative;
             overflow: hidden;
@@ -73,7 +154,6 @@
             left: 100%;
         }
 
-        /* Chữ Gradient Đổi Màu Động */
         .text-gradient-animate {
             background: linear-gradient(-45deg, #60a5fa, #a855f7, #ec4899, #3b82f6);
             background-size: 300% 300%;
@@ -88,29 +168,13 @@
             100% { background-position: 0% 50%; }
         }
 
-        .toast-enter {
-            transform: translateY(120%);
-            opacity: 0;
-        }
+        .toast-enter { transform: translateY(120%); opacity: 0; }
+        .toast-show { transform: translateY(0); opacity: 1; }
 
-        .toast-show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .scrollbar-none::-webkit-scrollbar {
-            display: none;
-        }
-
-        .scrollbar-none {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .typing-dot {
-            animation: typing 1.4s infinite ease-in-out both;
-        }
-
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
         .typing-dot:nth-child(1) { animation-delay: 0s; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
@@ -121,7 +185,6 @@
         }
     </style>
 </head>
-
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-blue-600 selection:text-white">
 
     <!-- THANH DEAL HOT / THỦ THUẬT NỔI BẬT -->
