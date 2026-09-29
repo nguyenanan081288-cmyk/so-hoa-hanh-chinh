@@ -13,14 +13,14 @@ try {
 var selectedMergeFiles = [];
 var selectedDeleteFile = null;
 
-// ==================== TẢI THƯ VIỆN CẦN THIẾT (CDN) ====================
+// ==================== TẢI THƯ VIỆN CẦN THIẾT (CDN DYNAMIC LOADER) ====================
 function loadPdfLib() {
     if (window.PDFLib) return Promise.resolve();
     return new Promise(function (resolve, reject) {
         var script = document.createElement('script');
         script.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
         script.onload = resolve;
-        script.onerror = function () { reject('Không thể tải thư viện PDF-LIB'); };
+        script.onerror = function () { reject(new Error('Không thể tải thư viện PDF-LIB')); };
         document.head.appendChild(script);
     });
 }
@@ -72,6 +72,32 @@ function loadMammoth() {
     });
 }
 
+// ==================== HÀM TIỆN ÍCH THÔNG MINH (UTILITIES) ====================
+// Xử lý chuỗi tiếng Việt không dấu cho tìm kiếm thông minh
+function removeVietnameseTones(str) {
+    if (!str) return "";
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    return str.toLowerCase().trim();
+}
+
+function escapeHtml(text) {
+    if (!text) return "";
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 // ==================== KHI TRANG LÊN NỀN (INIT) ====================
 document.addEventListener('DOMContentLoaded', function () {
     fetchData();
@@ -79,12 +105,22 @@ document.addEventListener('DOMContentLoaded', function () {
     updateFavCount();
     checkAutoLogin();
 
-    // Thử khởi tạo SDK Google sau khi trang tải xong
     setTimeout(initGoogleAuth, 1000);
 
     var searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', filterProducts);
+    }
+    
+    // Lắng nghe phím Enter trong ô chat AI
+    var aiInput = document.getElementById('aiChatInput');
+    if (aiInput) {
+        aiInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleAiChatSubmit();
+            }
+        });
     }
 });
 
@@ -245,7 +281,7 @@ function showToast(message, type) {
     window.toastTimer = setTimeout(function () {
         toast.classList.remove('toast-show');
         toast.classList.add('toast-enter');
-    }, 3000);
+    }, 3200);
 }
 
 // --- Nạp Dữ Liệu Sản Phẩm & Bài Viết ---
@@ -276,17 +312,18 @@ function updateCategoryCounts() {
     if (document.getElementById('countDocs')) document.getElementById('countDocs').innerText = countDocs;
 }
 
-// ==================== BỘ LỌC VÀ HIỂN THỊ SẢN PHẨM ====================
+// ==================== BỘ LỌC VÀ HIỂN THỊ SẢN PHẨM THÔNG MINH ====================
 function filterProducts() {
-    var keyword = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+    var rawInput = document.getElementById('searchInput')?.value || '';
+    var keyword = removeVietnameseTones(rawInput);
 
     var filtered = allProducts.filter(function (item) {
-        var itemTitle = (item.title || '').toLowerCase();
-        var itemDesc = (item.desc || '').toLowerCase();
-        var itemCat = (item.category || '').toLowerCase();
+        var itemTitle = removeVietnameseTones(item.title || '');
+        var itemDesc = removeVietnameseTones(item.desc || '');
+        var itemCat = removeVietnameseTones(item.category || '');
 
-        var matchesKeyword = !keyword || itemTitle.includes(keyword) || itemDesc.includes(keyword);
-        var matchesCategory = (currentCategoryFilter === 'tất cả') || itemCat.includes(currentCategoryFilter);
+        var matchesKeyword = !keyword || itemTitle.includes(keyword) || itemDesc.includes(keyword) || itemCat.includes(keyword);
+        var matchesCategory = (currentCategoryFilter === 'tất cả') || removeVietnameseTones(item.category || '').includes(removeVietnameseTones(currentCategoryFilter));
         var matchesFav = !showingOnlyFavorites || favorites.includes(item.id);
         return matchesKeyword && matchesCategory && matchesFav;
     });
@@ -367,9 +404,9 @@ function renderProducts(products) {
             '<i class="fa-' + (isFav ? 'solid' : 'regular') + ' fa-heart text-base"></i>' +
             '</button>' +
             '</div>' +
-            '<span class="text-[10px] font-black tracking-widest uppercase text-blue-600 dark:text-blue-400 block mb-1">' + (item.category || '') + '</span>' +
-            '<h3 class="font-extrabold text-base text-slate-900 dark:text-white mb-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">' + (item.title || '') + '</h3>' +
-            '<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-6">' + (item.desc || '') + '</p>' +
+            '<span class="text-[10px] font-black tracking-widest uppercase text-blue-600 dark:text-blue-400 block mb-1">' + escapeHtml(item.category || '') + '</span>' +
+            '<h3 class="font-extrabold text-base text-slate-900 dark:text-white mb-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">' + escapeHtml(item.title || '') + '</h3>' +
+            '<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-6">' + escapeHtml(item.desc || '') + '</p>' +
             '</div>' +
             '<div>' + buttonHTML + '</div>';
         grid.appendChild(card);
@@ -429,27 +466,55 @@ function closeOnlineToolModal() {
     document.getElementById('onlineToolModal')?.classList.add('hidden');
 }
 
-// --- 1. GHÉP PDF ---
+// --- 1. GHÉP PDF (BỔ SUNG ĐIỀU KIỆN THÔNG MINH) ---
 function handlePdfSelect(e) {
     var files = Array.from(e.target.files);
     if (!files.length) return;
-    selectedMergeFiles = selectedMergeFiles.concat(files);
 
+    // ĐK Thông Minh: Lọc chỉ lấy file .pdf & loại bỏ trùng tên
+    var validPdfFiles = files.filter(function(file) {
+        var isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (!isPdf) {
+            showToast('Bỏ qua file không phải PDF: ' + file.name, 'error');
+        }
+        return isPdf;
+    });
+
+    var existingNames = selectedMergeFiles.map(function(f) { return f.name; });
+    validPdfFiles.forEach(function(f) {
+        if (!existingNames.includes(f.name)) {
+            selectedMergeFiles.push(f);
+        } else {
+            showToast('Tệp đã có trong danh sách: ' + f.name, 'info');
+        }
+    });
+
+    // Reset value input để chọn lại cùng tệp nếu cần
+    e.target.value = '';
+
+    renderPdfMergeList();
+}
+
+function renderPdfMergeList() {
     var listEl = document.getElementById('pdfFileList');
-    if (listEl) {
-        listEl.innerHTML = selectedMergeFiles.map(function (f, i) {
-            return '<li class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-2 rounded-xl">' +
-                '<span class="truncate font-semibold text-slate-700 dark:text-slate-300">' + (i + 1) + '. ' + f.name + ' (' + (f.size / 1024 / 1024).toFixed(2) + ' MB)</span>' +
-                '<button onclick="removePdfFile(' + i + ')" class="text-red-500 font-bold px-2">Xóa</button>' +
-                '</li>';
-        }).join('');
+    if (!listEl) return;
+
+    if (selectedMergeFiles.length === 0) {
+        listEl.innerHTML = '<li class="text-xs text-slate-400 text-center py-2">Chưa chọn tệp PDF nào</li>';
+        return;
     }
+
+    listEl.innerHTML = selectedMergeFiles.map(function (f, i) {
+        return '<li class="flex justify-between items-center bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">' +
+            '<span class="truncate font-semibold text-xs text-slate-700 dark:text-slate-300 max-w-[80%]">' + (i + 1) + '. ' + escapeHtml(f.name) + ' (' + (f.size / 1024 / 1024).toFixed(2) + ' MB)</span>' +
+            '<button onclick="removePdfFile(' + i + ')" class="text-red-500 hover:text-red-700 font-bold text-xs px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition">Xóa</button>' +
+            '</li>';
+    }).join('');
 }
 
 function removePdfFile(index) {
     selectedMergeFiles.splice(index, 1);
-    var event = { target: { files: [] } };
-    handlePdfSelect(event);
+    renderPdfMergeList();
 }
 
 async function processPdfMerge() {
@@ -458,7 +523,7 @@ async function processPdfMerge() {
         return;
     }
 
-    showToast('Đang tiến hành ghép PDF...', 'info');
+    showToast('Đang tiến hành ghép ' + selectedMergeFiles.length + ' file PDF...', 'info');
 
     try {
         await loadPdfLib();
@@ -478,24 +543,34 @@ async function processPdfMerge() {
 
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'Da_Ghep_' + Date.now() + '.pdf';
+        a.download = 'MeoTinHoc_Ghep_' + Date.now() + '.pdf';
         a.click();
+        
+        setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
 
         showToast('Ghép PDF thành công! Đã bắt đầu tải về.', 'success');
+        selectedMergeFiles = [];
+        renderPdfMergeList();
         closeOnlineToolModal();
     } catch (err) {
         console.error(err);
-        showToast('Lỗi ghép PDF!', 'error');
+        showToast('Lỗi ghép PDF: Tệp bị khóa mật khẩu hoặc hư hỏng!', 'error');
     }
 }
 
-// --- 2. XÓA TRANG PDF ---
+// --- 2. XÓA TRANG PDF (BỔ SUNG ĐIỀU KIỆN THÔNG MINH) ---
 function handlePdfDeleteSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
-    selectedDeleteFile = file;
 
-    document.getElementById('pdfDeleteFileName').innerText = 'Tệp đã chọn: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+        showToast('Tệp đã chọn không phải định dạng PDF!', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    selectedDeleteFile = file;
+    document.getElementById('pdfDeleteFileName').innerText = '📄 Đã chọn: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
     document.getElementById('pdfDeletePageBox')?.classList.remove('hidden');
 }
 
@@ -511,7 +586,7 @@ async function processPdfDelete() {
         return;
     }
 
-    showToast('Đang tiến hành xóa trang...', 'info');
+    showToast('Đang phân tích & xóa trang PDF...', 'info');
 
     try {
         await loadPdfLib();
@@ -526,19 +601,29 @@ async function processPdfDelete() {
             p = p.trim();
             if (p.includes('-')) {
                 var range = p.split('-').map(Number);
-                if (range[0] && range[1]) {
-                    for (var i = range[0]; i <= range[1]; i++) {
+                if (!isNaN(range[0]) && !isNaN(range[1])) {
+                    var start = Math.min(range[0], range[1]);
+                    var end = Math.max(range[0], range[1]);
+                    for (var i = start; i <= end; i++) {
                         if (i >= 1 && i <= totalPages) pagesToDelete.add(i - 1);
                     }
                 }
             } else {
                 var pageNum = Number(p);
-                if (pageNum >= 1 && pageNum <= totalPages) pagesToDelete.add(pageNum - 1);
+                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+                    pagesToDelete.add(pageNum - 1);
+                }
             }
         });
 
         if (pagesToDelete.size === 0) {
-            showToast('Số trang cần xóa không hợp lệ!', 'error');
+            showToast('Số trang cần xóa vượt quá tổng số trang (' + totalPages + ' trang) hoặc không hợp lệ!', 'error');
+            return;
+        }
+
+        // ĐK Thông minh: Kiểm tra không cho phép xóa sạch 100% số trang
+        if (pagesToDelete.size >= totalPages) {
+            showToast('Không thể xóa toàn bộ ' + totalPages + ' trang của tài liệu!', 'error');
             return;
         }
 
@@ -557,14 +642,16 @@ async function processPdfDelete() {
 
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'Da_Xoa_Trang_' + Date.now() + '.pdf';
+        a.download = 'MeoTinHoc_Da_Xoa_Trang_' + Date.now() + '.pdf';
         a.click();
 
-        showToast('Xóa trang PDF thành công!', 'success');
+        setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+
+        showToast('Xóa thành công ' + pagesToDelete.size + ' trang! Đã bắt đầu tải tệp về.', 'success');
         closeOnlineToolModal();
     } catch (err) {
         console.error(err);
-        showToast('Lỗi xử lý xóa trang PDF!', 'error');
+        showToast('Lỗi xử lý file PDF!', 'error');
     }
 }
 
@@ -765,6 +852,7 @@ function reconstructParagraphs(rawText) {
     return formattedText.join('\n');
 }
 
+// Bổ sung từ điển sửa lỗi chính tả hành chính thông minh
 function fixVietnameseSpellingText(text) {
     if (!text) return "";
 
@@ -791,7 +879,9 @@ function fixVietnameseSpellingText(text) {
         [/\bUy ban\b/gi, 'Ủy ban'],
         [/\bHoi đong\b/gi, 'Hội đồng'],
         [/\bCăn cư\b/gi, 'Căn cứ'],
-        [/\bBan hanh\b/gi, 'Ban hành']
+        [/\bBan hanh\b/gi, 'Ban hành'],
+        [/\bLuu van thu\b/gi, 'Lưu văn thư'],
+        [/\bThanh pho\b/gi, 'Thành phố']
     ];
 
     errorMap.forEach(function (item) {
@@ -924,7 +1014,7 @@ function exportOcrToWord() {
             }
             var cells = line.includes('\t') ? line.split('\t') : line.split(/\s{2,}/);
             var cols = cells.map(function (c, idx) {
-                return "<td style='padding:6px 8px; border:1px solid #000; vertical-align:top; font-size:12pt;" + (idx === 0 ? " text-align:center;" : "") + "'>" + c.trim() + "</td>";
+                return "<td style='padding:6px 8px; border:1px solid #000; vertical-align:top; font-size:12pt;" + (idx === 0 ? " text-align:center;" : "") + "'>" + escapeHtml(c.trim()) + "</td>";
             }).join('');
             htmlContent += '<tr>' + cols + '</tr>';
         } else {
@@ -933,7 +1023,7 @@ function exportOcrToWord() {
                 inTable = false;
             }
             if (line.trim()) {
-                htmlContent += "<p style='margin:6px 0; text-align:justify; font-size:13pt;'>" + line.trim() + "</p>";
+                htmlContent += "<p style='margin:6px 0; text-align:justify; font-size:13pt;'>" + escapeHtml(line.trim()) + "</p>";
             } else {
                 htmlContent += "<br>";
             }
@@ -952,7 +1042,7 @@ function exportOcrToWord() {
     a.href = url;
     a.download = 'Van_Ban_OCR_' + Date.now() + '.doc';
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
 
     showToast('Đã xuất file Word (.doc) đóng khung bảng kẻ chuẩn!', 'success');
 }
@@ -1244,7 +1334,7 @@ function exportCleanPdfToWord() {
     }
 
     var paragraphs = text.split('\n\n').map(function (p) {
-        return "<p style='margin:8px 0; text-align:justify; font-size:13pt; line-height:1.5; font-family:\"Times New Roman\", serif;'>" + p.replace(/\n/g, '<br>') + "</p>";
+        return "<p style='margin:8px 0; text-align:justify; font-size:13pt; line-height:1.5; font-family:\"Times New Roman\", serif;'>" + escapeHtml(p).replace(/\n/g, '<br>') + "</p>";
     }).join('');
 
     var wordDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
@@ -1257,7 +1347,7 @@ function exportCleanPdfToWord() {
     a.href = url;
     a.download = 'Van_Ban_Lam_Sach_' + Date.now() + '.doc';
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
 
     showToast('Đã xuất file Word (.doc) thành công!', 'success');
 }
@@ -1329,7 +1419,7 @@ function toggleRegisterModal() {
     if (modal) modal.classList.toggle('hidden');
 }
 
-// ==================== TRỢ LÝ AI TIN HỌC ====================
+// ==================== TRỢ LÝ AI TIN HỌC THÔNG MINH ====================
 function toggleAiModal() {
     var popup = document.getElementById('aiChatPopup');
     if (popup) popup.classList.toggle('hidden');
@@ -1371,23 +1461,26 @@ function handleAiChatSubmit(e) {
         aiBubble.innerHTML = '<div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] shadow-sm leading-relaxed">' + replyText + '</div>';
         body.appendChild(aiBubble);
         body.scrollTop = body.scrollHeight;
-    }, 800);
+    }, 700);
 }
 
 function generateAiAnswer(prompt) {
-    var query = prompt.toLowerCase();
-    if (query.includes('font') || query.includes('phông') || query.includes('tcvn3') || query.includes('vni')) {
+    var query = removeVietnameseTones(prompt);
+
+    if (query.includes('font') || query.includes('phong') || query.includes('tcvn3') || query.includes('vni')) {
         return 'Để sửa lỗi Font chữ TCVN3 / VNI-Times bị lỗi ô vuông trong Word:<br>1. Bấm <strong>Ctrl + A</strong> copy toàn bộ văn bản.<br>2. Bấm <strong>Ctrl + Shift + F6</strong> mở Unikey Chuyển Mã.<br>3. Chọn Mã nguồn là <strong>TCVN3(ABC)</strong>, Mã đích là <strong>Unicode</strong> rồi bấm <strong>Chuyển mã</strong>.<br>4. Dán lại vào Word là hoàn tất!';
     }
-    if (query.includes('excel') || query.includes('vlookup') || query.includes('xlookup') || query.includes('hàm')) {
+    if (query.includes('excel') || query.includes('vlookup') || query.includes('xlookup') || query.includes('ham')) {
         return 'Mẹo dùng hàm tìm kiếm trong Excel:<br>- Với phiên bản Office mới, bạn nên ưu tiên dùng <strong>XLOOKUP</strong> vì nó tìm ngược được và không cần đếm số cột.<br>- Cú pháp: <code>=XLOOKUP(giá_trị_tìm, cột_tìm, cột_kết_quả)</code>.';
     }
-    if (query.includes('pdf') || query.includes('ghép') || query.includes('xóa')) {
+    if (query.includes('pdf') || query.includes('ghep') || query.includes('xoa')) {
         return 'Bạn có thể sử dụng trực tiếp các công cụ PDF trực tuyến của <strong>Mẹo Tin Học</strong> ở thanh menu trên đầu trang: Ghép file PDF, Xóa trang PDF thừa hoặc Làm sạch văn bản hoàn toàn miễn phí & an toàn 100%.';
     }
+    if (query.includes('in') || query.includes('may in') || query.includes('canon') || query.includes('driver')) {
+        return 'Để cài đặt driver máy in Canon / Fuji Xerox nhanh nhất:<br>1. Tải đúng bản Driver tương thích với Windows (32bit hoặc 64bit).<br>2. Mở <strong>Device Manager</strong> -> Chọn máy in và cập nhật thủ công nếu gặp lỗi cài tự động.';
+    }
+    if (query.includes('phim tat') || query.includes('chup man hinh')) {
+        return 'Phím tắt thông dụng hữu ích:<br>- Chụp ảnh màn hình khoanh vùng: <strong>Windows + Shift + S</strong>.<br>- Khóa màn hình nhanh: <strong>Windows + L</strong>.<br>- Mở lại tab vừa đóng trên trình duyệt: <strong>Ctrl + Shift + T</strong>.';
+    }
     return 'Cảm ơn bạn đã đặt câu hỏi! Câu hỏi của bạn về <strong>"' + escapeHtml(prompt) + '"</strong> đã được hệ thống ghi nhận. Admin sẽ tiếp tục cập nhật bài viết thủ thuật chi tiết về chủ đề này trên website meotinhoc.com.';
-}
-
-function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
