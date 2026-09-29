@@ -73,7 +73,6 @@ function loadMammoth() {
 }
 
 // ==================== HÀM TIỆN ÍCH THÔNG MINH (UTILITIES) ====================
-// Xử lý chuỗi tiếng Việt không dấu cho tìm kiếm thông minh
 function removeVietnameseTones(str) {
     if (!str) return "";
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -112,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.addEventListener('input', filterProducts);
     }
     
-    // Lắng nghe phím Enter trong ô chat AI
     var aiInput = document.getElementById('aiChatInput');
     if (aiInput) {
         aiInput.addEventListener('keypress', function(e) {
@@ -303,10 +301,20 @@ function updateCategoryCounts() {
     var countAllEl = document.getElementById('countAll');
     if (countAllEl) countAllEl.innerText = allProducts.length;
 
-    var countSoftware = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('phần mềm') || (p.category || '').toLowerCase().includes('software'); }).length;
-    var countExcel = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('tiện ích excel/word') || (p.category || '').toLowerCase().includes('mẹo excel'); }).length;
-    var countDocs = allProducts.filter(function (p) { return (p.category || '').toLowerCase().includes('mẫu biểu') || (p.category || '').toLowerCase().includes('bài viết'); }).length;
+    var countInternal = allProducts.filter(function (p) { 
+        return p.isInternal || (p.category || '').toLowerCase().includes('nội bộ'); 
+    }).length;
+    var countSoftware = allProducts.filter(function (p) { 
+        return (p.category || '').toLowerCase().includes('phần mềm quản lý') || (p.category || '').toLowerCase().includes('software'); 
+    }).length;
+    var countExcel = allProducts.filter(function (p) { 
+        return (p.category || '').toLowerCase().includes('tiện ích excel/word') || (p.category || '').toLowerCase().includes('mẹo excel'); 
+    }).length;
+    var countDocs = allProducts.filter(function (p) { 
+        return (p.category || '').toLowerCase().includes('mẫu biểu') || (p.category || '').toLowerCase().includes('bài viết'); 
+    }).length;
 
+    if (document.getElementById('countInternal')) document.getElementById('countInternal').innerText = countInternal;
     if (document.getElementById('countSoftware')) document.getElementById('countSoftware').innerText = countSoftware;
     if (document.getElementById('countExcel')) document.getElementById('countExcel').innerText = countExcel;
     if (document.getElementById('countDocs')) document.getElementById('countDocs').innerText = countDocs;
@@ -323,7 +331,11 @@ function filterProducts() {
         var itemCat = removeVietnameseTones(item.category || '');
 
         var matchesKeyword = !keyword || itemTitle.includes(keyword) || itemDesc.includes(keyword) || itemCat.includes(keyword);
-        var matchesCategory = (currentCategoryFilter === 'tất cả') || removeVietnameseTones(item.category || '').includes(removeVietnameseTones(currentCategoryFilter));
+        
+        var matchesCategory = (currentCategoryFilter === 'tất cả') || 
+            (currentCategoryFilter === 'phần mềm nội bộ' && (item.isInternal || itemCat.includes('noi bo'))) ||
+            itemCat.includes(removeVietnameseTones(currentCategoryFilter));
+            
         var matchesFav = !showingOnlyFavorites || favorites.includes(item.id);
         return matchesKeyword && matchesCategory && matchesFav;
     });
@@ -336,7 +348,9 @@ function setCategoryFilter(category, btnElement) {
     showingOnlyFavorites = false;
 
     document.querySelectorAll('.filter-btn').forEach(function (btn) {
-        btn.className = 'filter-btn px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold whitespace-nowrap';
+        if (!btn.id || btn.id !== 'favFilterBtn') {
+            btn.className = 'filter-btn px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold whitespace-nowrap';
+        }
     });
 
     if (btnElement) {
@@ -383,14 +397,21 @@ function renderProducts(products) {
 
     products.forEach(function (item) {
         var isFav = favorites.includes(item.id);
+        var isInternal = item.isInternal || (item.category || '').toLowerCase().includes('nội bộ');
         var card = document.createElement('div');
         card.className = 'bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between group hover:-translate-y-1 relative';
+
+        var categoryBadge = isInternal
+            ? '<span class="inline-flex items-center gap-1 bg-amber-500/10 dark:bg-amber-400/20 text-amber-600 dark:text-amber-400 border border-amber-300/60 dark:border-amber-800/60 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase mb-1"><i class="fa-solid fa-lock text-[9px]"></i> Nội Bổ</span>'
+            : '<span class="text-[10px] font-black tracking-widest uppercase text-blue-600 dark:text-blue-400 block mb-1">' + escapeHtml(item.category || '') + '</span>';
 
         var buttonHTML = '';
         if (item.isOnlineTool) {
             buttonHTML = '<button onclick="openOnlineToolModal(\'' + (item.toolType || '') + '\')" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"><i class="fa-solid fa-circle-play"></i> Mở Công Cụ Trực Tuyến</button>';
         } else if (item.isArticle) {
             buttonHTML = '<a href="' + (item.articleUrl || '#') + '" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-bold text-xs rounded-2xl transition-all flex items-center justify-center gap-1.5"><i class="fa-solid fa-book-open"></i> Đọc Bài Viết</a>';
+        } else if (isInternal) {
+            buttonHTML = '<button onclick="openDownloadModal(\'' + item.id + '\')" class="w-full py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs rounded-2xl shadow-md shadow-amber-600/20 transition-all flex items-center justify-center gap-1.5 active:scale-95"><i class="fa-solid fa-key"></i> Tải Phần Mềm Nội Bộ</button>';
         } else {
             buttonHTML = '<button onclick="openDownloadModal(\'' + item.id + '\')" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"><i class="fa-solid fa-download"></i> Tải Phần Mềm / Mẫu</button>';
         }
@@ -404,7 +425,7 @@ function renderProducts(products) {
             '<i class="fa-' + (isFav ? 'solid' : 'regular') + ' fa-heart text-base"></i>' +
             '</button>' +
             '</div>' +
-            '<span class="text-[10px] font-black tracking-widest uppercase text-blue-600 dark:text-blue-400 block mb-1">' + escapeHtml(item.category || '') + '</span>' +
+            categoryBadge +
             '<h3 class="font-extrabold text-base text-slate-900 dark:text-white mb-2 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">' + escapeHtml(item.title || '') + '</h3>' +
             '<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-6">' + escapeHtml(item.desc || '') + '</p>' +
             '</div>' +
@@ -466,12 +487,11 @@ function closeOnlineToolModal() {
     document.getElementById('onlineToolModal')?.classList.add('hidden');
 }
 
-// --- 1. GHÉP PDF (BỔ SUNG ĐIỀU KIỆN THÔNG MINH) ---
+// --- 1. GHÉP PDF ---
 function handlePdfSelect(e) {
     var files = Array.from(e.target.files);
     if (!files.length) return;
 
-    // ĐK Thông Minh: Lọc chỉ lấy file .pdf & loại bỏ trùng tên
     var validPdfFiles = files.filter(function(file) {
         var isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
         if (!isPdf) {
@@ -489,9 +509,7 @@ function handlePdfSelect(e) {
         }
     });
 
-    // Reset value input để chọn lại cùng tệp nếu cần
     e.target.value = '';
-
     renderPdfMergeList();
 }
 
@@ -558,7 +576,7 @@ async function processPdfMerge() {
     }
 }
 
-// --- 2. XÓA TRANG PDF (BỔ SUNG ĐIỀU KIỆN THÔNG MINH) ---
+// --- 2. XÓA TRANG PDF ---
 function handlePdfDeleteSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -621,7 +639,6 @@ async function processPdfDelete() {
             return;
         }
 
-        // ĐK Thông minh: Kiểm tra không cho phép xóa sạch 100% số trang
         if (pagesToDelete.size >= totalPages) {
             showToast('Không thể xóa toàn bộ ' + totalPages + ' trang của tài liệu!', 'error');
             return;
@@ -852,7 +869,6 @@ function reconstructParagraphs(rawText) {
     return formattedText.join('\n');
 }
 
-// Bổ sung từ điển sửa lỗi chính tả hành chính thông minh
 function fixVietnameseSpellingText(text) {
     if (!text) return "";
 
@@ -1395,12 +1411,24 @@ function openDownloadModal(id) {
     var item = allProducts.find(function (p) { return p.id === id; });
     if (!item) return;
 
-    document.getElementById('modalTitle').innerText = item.title || '';
-    document.getElementById('modalDesc').innerText = item.desc || '';
-    document.getElementById('modalType').innerText = item.fileType || '.ZIP';
-    document.getElementById('modalCouponCode').innerText = item.coupon || 'MEOTINHOC2026';
-    document.getElementById('modalChangelog').innerText = item.changelog || 'Phiên bản chuẩn mới nhất';
-    document.getElementById('modalDownloadBtn').href = item.downloadUrl || '#';
+    // Kiểm tra mã PIN bảo vệ với phần mềm nội bộ (nếu có)
+    if (item.pinCode) {
+        var inputPin = prompt("🔒 Đây là phần mềm lưu hành nội bộ. Vui lòng nhập mã PIN xác thực:");
+        if (inputPin !== item.pinCode) {
+            showToast('Mã PIN không chính xác! Không thể tải tệp nội bộ.', 'error');
+            return;
+        }
+        showToast('Xác thực mã PIN thành công!', 'success');
+    }
+
+    if (document.getElementById('modalTitle')) document.getElementById('modalTitle').innerText = item.title || '';
+    if (document.getElementById('modalDesc')) document.getElementById('modalDesc').innerText = item.desc || '';
+    if (document.getElementById('modalType')) document.getElementById('modalType').innerText = (item.fileType || '.ZIP') + (item.fileSize ? ' (' + item.fileSize + ')' : '');
+    if (document.getElementById('modalCouponCode')) document.getElementById('modalCouponCode').innerText = item.coupon || 'MEOTINHOC2026';
+    if (document.getElementById('modalChangelog')) document.getElementById('modalChangelog').innerText = item.changelog || 'Phiên bản chuẩn mới nhất';
+    
+    var downloadBtn = document.getElementById('modalDownloadBtn');
+    if (downloadBtn) downloadBtn.href = item.downloadUrl || '#';
 
     document.getElementById('downloadModal')?.classList.remove('hidden');
 }
@@ -1475,6 +1503,9 @@ function generateAiAnswer(prompt) {
     }
     if (query.includes('pdf') || query.includes('ghep') || query.includes('xoa')) {
         return 'Bạn có thể sử dụng trực tiếp các công cụ PDF trực tuyến của <strong>Mẹo Tin Học</strong> ở thanh menu trên đầu trang: Ghép file PDF, Xóa trang PDF thừa hoặc Làm sạch văn bản hoàn toàn miễn phí & an toàn 100%.';
+    }
+    if (query.includes('noi bo') || query.includes('pin') || query.includes('mat khau')) {
+        return 'Các phần mềm nội bộ yêu cầu mã PIN xác thực khi tải. Bạn vui lòng liên hệ Ban Biên Tập/Admin để lấy mã PIN truy cập các công cụ này.';
     }
     if (query.includes('in') || query.includes('may in') || query.includes('canon') || query.includes('driver')) {
         return 'Để cài đặt driver máy in Canon / Fuji Xerox nhanh nhất:<br>1. Tải đúng bản Driver tương thích với Windows (32bit hoặc 64bit).<br>2. Mở <strong>Device Manager</strong> -> Chọn máy in và cập nhật thủ công nếu gặp lỗi cài tự động.';
