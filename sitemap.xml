@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Trang chủ -->
   <url>
     <loc>https://sohoahanhchinh.vn/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- Bài viết 1: Tên cơ quan, số ký hiệu văn bản -->
   <url>
     <loc>https://sohoahanhchinh.vn/ten-co-quan-so-ky-hieu-van-ban.html</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Bài viết 2: Tổ hợp phím tắt tác chiến nhanh -->
   <url>
     <loc>https://sohoahanhchinh.vn/to-hop-phim-tat-tac-chien-nhanh.html</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Bài viết 3: Thiết lập lưu tự động Word, Excel -->
   <url>
     <loc>https://sohoahanhchinh.vn/thiet-lap-luu-tu-dong-word-excel.html</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Bài viết 4: Rà soát khắc phục lỗi chính tả Word -->
   <url>
     <loc>https://sohoahanhchinh.vn/ra-soat-khac-phuc-loi-chinh-ta-word.html</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://sohoahanhchinh.vn/#micro-tools-section</loc>
-    <priority>0.9</priority>
-  </url>
+
 </urlset>
