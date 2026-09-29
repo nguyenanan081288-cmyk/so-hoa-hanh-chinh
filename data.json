@@ -55,7 +55,7 @@
         "fileSize": "14.5 MB",
         "downloadUrl": "#",
         "changelog": "Phiên bản v2.4: Tối ưu cơ sở dữ liệu SQLite chạy mượt trên mạng nội bộ/Offline.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "sw-quet-ma-qr",
@@ -69,7 +69,7 @@
         "fileSize": "18.2 MB",
         "downloadUrl": "#",
         "changelog": "Phiên bản v1.2: Bổ sung tính năng xuất danh sách ra file Excel.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "excel-add-in-doc-tien",
@@ -83,7 +83,7 @@
         "fileSize": "1.2 MB",
         "downloadUrl": "#",
         "changelog": "Cập nhật hàm VND() không bị lỗi Blocked Macro trên Microsoft Office 365.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "excel-tool-font-converter",
@@ -97,7 +97,7 @@
         "fileSize": "3.5 MB",
         "downloadUrl": "#",
         "changelog": "Tự động giữ nguyên định dạng bảng và công thức Excel.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "doc-mau-nghi-quyet",
@@ -111,7 +111,7 @@
         "fileSize": "8.2 MB",
         "downloadUrl": "#",
         "changelog": "Bộ mẫu được cập nhật đầy đủ cấu trúc mới nhất.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "doc-mau-ke-hoach-cong-tac",
@@ -125,7 +125,7 @@
         "fileSize": "4.1 MB",
         "downloadUrl": "#",
         "changelog": "Chuẩn hóa bố cục trình bày theo thể thức hành chính.",
-        "coupon": "SOHOA2026"
+        "coupon": "MEOTINHOC2026"
     },
     {
         "id": "art-chao-mung",
@@ -283,37 +283,44 @@
     },
     {
         "id": "bai-viet-cong-cu-online",
+        "category": "Mẫu biểu chuẩn",
         "title": "Cổng Công Cụ Văn Phòng Online Miễn Phí: Ghép PDF, Quét OCR & Soát Lỗi Nghị Định 30",
         "desc": "Khám phá bộ công cụ xử lý văn bản trực tuyến: Ghép PDF, xóa trang PDF, AI OCR bóc tách bảng kẻ và soát lỗi chính tả chuẩn Nghị định 30.",
-        "category": "Mẫu biểu chuẩn",
         "icon": "fa-newspaper",
+        "badge": "BÀI VIẾT",
+        "badgeColor": "blue",
         "isArticle": true,
-        "articleUrl": "bai-viet-cong-cu-tien-ich.html"
+        "articleUrl": "/bai-viet-cong-cu-tien-ich.html"
     },
-    [
-  {
-    "id": "pm-noi-bo-01",
-    "title": "Phần Mềm Xử Lý PDF_Tool Standalone (Offline)",
-    "desc": "Công cụ Python PyQt hỗ trợ tách, gộp, xoay trang, xóa trang và làm sạch văn bản PDF hoàn toàn offline trên máy tính cơ quan.",
-    "category": "phần mềm nội bộ",
-    "icon": "fa-file-shield",
-    "fileType": ".EXE / .ZIP",
-    "downloadUrl": "/downloads/PDF_Tool_v2.zip",
-    "coupon": "INTERNAL2026",
-    "changelog": "Phiên bản v2.0 - Tích hợp bộ đọc PyMuPDF tốc độ cao",
-    "isInternal": true,
-    "pinCode": "7272" 
-  },
-  {
-    "id": "pm-noi-bo-02",
-    "title": "Bộ Macro Chuẩn Hóa Văn Bản Word Hành Chính",
-    "desc": "Tự động căn chỉnh font chữ Times New Roman 14, giãn dòng 1.5, dọn khoảng trắng thừa và sửa lỗi giãn chữ tự động.",
-    "category": "phần mềm nội bộ",
-    "icon": "fa-code",
-    "fileType": ".BAS / .DOCM",
-    "downloadUrl": "/downloads/Macro_Format_Word.zip",
-    "changelog": "Cập nhật bảng mã Unicode chuẩn",
-    "isInternal": true
-  }
-]
+    {
+        "id": "pm-noi-bo-01",
+        "category": "phần mềm nội bộ",
+        "title": "Phần Mềm Xử Lý PDF_Tool Standalone (Offline)",
+        "desc": "Công cụ Python PyQt hỗ trợ tách, gộp, xoay trang, xóa trang và làm sạch văn bản PDF hoàn toàn offline trên máy tính cơ quan.",
+        "icon": "fa-file-shield",
+        "badge": "NỘI BỘ",
+        "badgeColor": "amber",
+        "fileType": ".EXE / .ZIP",
+        "fileSize": "25.8 MB",
+        "downloadUrl": "/downloads/PDF_Tool_v2.zip",
+        "coupon": "MEOTINHOC2026",
+        "changelog": "Phiên bản v2.0 - Tích hợp bộ đọc PyMuPDF tốc độ cao",
+        "isInternal": true,
+        "pinCode": "7272"
+    },
+    {
+        "id": "pm-noi-bo-02",
+        "category": "phần mềm nội bộ",
+        "title": "Bộ Macro Chuẩn Hóa Văn Bản Word Hành Chính",
+        "desc": "Tự động căn chỉnh font chữ Times New Roman 14, giãn dòng 1.5, dọn khoảng trắng thừa và sửa lỗi giãn chữ tự động.",
+        "icon": "fa-code",
+        "badge": "NỘI BỘ",
+        "badgeColor": "amber",
+        "fileType": ".BAS / .DOCM",
+        "fileSize": "1.8 MB",
+        "downloadUrl": "/downloads/Macro_Format_Word.zip",
+        "coupon": "MEOTINHOC2026",
+        "changelog": "Cập nhật bảng mã Unicode chuẩn",
+        "isInternal": true
+    }
 ]
