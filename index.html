@@ -10,6 +10,9 @@
     <!-- THẺ XÁC MINH GOOGLE SEARCH CONSOLE -->
     <meta name="google-site-verification" content="a3rw-S0290kG49rj3sIaw3aRy_kt8PeoFsmLNEOL9L8" />
 
+    <!-- THƯ VIỆN GOOGLE IDENTITY SERVICES (ĐÃ BỔ SUNG) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <link rel="canonical" href="https://meotinhoc.com/">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -284,7 +287,7 @@
         </section>
 
         <!-- KHO CARDS DYNAMIC -->
-        <section id="phan-mem" class="max-w-7xl mx-auto px-4 py-4 mb-12">
+        <section id="phan-mem" class="max-w-7xl mx-auto px-4 py-4 mb-8">
             <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Data render tự động từ script.js -->
             </div>
@@ -292,6 +295,34 @@
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white">Không tìm thấy kết quả</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Thử thay đổi từ khóa hoặc bộ lọc danh mục.</p>
                 <button onclick="resetSearch()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-xl">Xóa tìm kiếm</button>
+            </div>
+        </section>
+
+        <!-- KHỐI GIỚI THIỆU TÁC GIẢ DẤU ẤN CÁ NHÂN (ĐÃ ĐƯỢC CHUYỂN BÊN NGOÀI NÀY) -->
+        <section class="max-w-7xl mx-auto px-4 py-8 mb-12">
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 justify-between">
+                <div class="flex items-center gap-5">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-3xl sm:text-4xl shadow-lg shadow-blue-500/30 border-2 border-white/20 shrink-0">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <div class="space-y-1.5">
+                        <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                            Về Tác Giả / Admin
+                        </span>
+                        <h3 class="text-xl sm:text-2xl font-black text-white">Mẹo Tin Học - Chia Sẻ Từ Trải Nghiệm Thực Chiến</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                            Chào bạn! Tôi tạo ra trang web này với mục đích chia sẻ những thủ thuật Excel, Word, phím tắt máy tính và công cụ tiện ích được đúc kết từ <strong>chính kinh nghiệm xử lý công việc hàng ngày</strong>. Hy vọng sẽ giúp bạn tiết kiệm tối đa thời gian làm việc!
+                        </p>
+                    </div>
+                </div>
+                <div class="flex sm:flex-col gap-2.5 w-full md:w-auto shrink-0">
+                    <button onclick="toggleAiModal()" class="w-full px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-comments"></i> Hỏi Admin Qua AI
+                    </button>
+                    <a href="mailto:contact@meotinhoc.com" class="w-full px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Gửi Yêu Cầu Bài Viết
+                    </a>
+                </div>
             </div>
         </section>
     </main>
@@ -423,34 +454,6 @@
                 </div>
             </div>
 
-            <!-- KHỐI GIỚI THIỆU TÁC GIẢ DẤU ẤN CÁ NHÂN -->
-            <section class="max-w-7xl mx-auto px-4 py-8">
-                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 justify-between">
-                    <div class="flex items-center gap-5">
-                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-3xl sm:text-4xl shadow-lg shadow-blue-500/30 border-2 border-white/20 shrink-0">
-                            <i class="fa-solid fa-user-gear"></i>
-                        </div>
-                        <div class="space-y-1.5">
-                            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
-                                Về Tác Giả / Admin
-                            </span>
-                            <h3 class="text-xl sm:text-2xl font-black text-white">Mẹo Tin Học - Chia Sẻ Từ Trải Nghiệm Thực Chiến</h3>
-                            <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-                                Chào bạn! Tôi tạo ra trang web này với mục đích chia sẻ những thủ thuật Excel, Word, phím tắt máy tính và công cụ tiện ích được đúc kết từ <strong>chính kinh nghiệm xử lý công việc hàng ngày</strong>. Hy vọng sẽ giúp bạn tiết kiệm tối đa thời gian làm việc!
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex sm:flex-col gap-2.5 w-full md:w-auto shrink-0">
-                        <button onclick="toggleAiModal()" class="w-full px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-comments"></i> Hỏi Admin Qua AI
-                        </button>
-                        <a href="mailto:contact@meotinhoc.com" class="w-full px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Gửi Yêu Cầu Bài Viết
-                        </a>
-                    </div>
-                </div>
-            </section>
-
             <!-- KHUNG GHÉP PDF -->
             <div id="pdfMergeUI" class="tool-ui-box hidden space-y-3">
                 <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-slate-50 dark:bg-slate-950 hover:border-blue-500 transition-colors">
@@ -483,9 +486,8 @@
                 </button>
             </div>
 
-            <!-- KHUNG LÀM SẠCH VĂN BẢN PDF (CẢI TIẾN SIÊU DỄ DÙNG) -->
+            <!-- KHUNG LÀM SẠCH VĂN BẢN PDF -->
             <div id="pdfCleanTextUI" class="tool-ui-box hidden space-y-4">
-                <!-- TAB CHUYỂN ĐỔI CHẾ ĐỘ -->
                 <div class="flex border-b border-slate-200 dark:border-slate-800 gap-2 pb-2">
                     <button id="cleanTabFileBtn" onclick="switchCleanTab('file')" class="px-4 py-2 text-xs font-bold rounded-xl bg-cyan-600 text-white shadow">
                         <i class="fa-solid fa-file-pdf mr-1.5"></i> 1. Tải File PDF Lên (Tự động 100%)
@@ -495,7 +497,6 @@
                     </button>
                 </div>
 
-                <!-- KHU VỰC 1: TẢI FILE PDF TRỰC TIẾP -->
                 <div id="cleanFileArea" class="space-y-3">
                     <div class="border-2 border-dashed border-cyan-300 dark:border-cyan-800 rounded-2xl p-6 text-center bg-cyan-50/40 dark:bg-slate-950 hover:border-cyan-500 transition-colors cursor-pointer" onclick="document.getElementById('pdfCleanFileInput').click()">
                         <i class="fa-solid fa-cloud-arrow-up text-3xl text-cyan-600 mb-2"></i>
@@ -506,7 +507,6 @@
                     <span id="pdfCleanFileName" class="text-xs font-semibold text-cyan-600 dark:text-cyan-400 block text-center hidden"></span>
                 </div>
 
-                <!-- KHU VỰC 2: DÁN VĂN BẢN THỦ CÔNG -->
                 <div id="cleanTextArea" class="hidden space-y-2">
                     <textarea id="pdfCleanInput" rows="5" placeholder="Dán đoạn văn bị lỗi ngắt dòng, dính chữ từ PDF/Web vào đây..." class="w-full p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs focus:outline-none focus:border-cyan-500 dark:text-white leading-relaxed font-sans"></textarea>
                     <button onclick="processCleanPdfTextFromInput()" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
@@ -514,7 +514,6 @@
                     </button>
                 </div>
 
-                <!-- KẾT QUẢ LÀM SẠCH VĂN BẢN -->
                 <div id="pdfCleanResultBox" class="hidden space-y-2.5 pt-2 border-t border-slate-200 dark:border-slate-800">
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
@@ -533,7 +532,7 @@
                 </div>
             </div>
 
-            <!-- KHUNG QUÉT OCR CẢI TIẾN -->
+            <!-- KHUNG QUÉT OCR -->
             <div id="ocrOnlineUI" class="tool-ui-box hidden space-y-3">
                 <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 text-center bg-slate-50 dark:bg-slate-950 hover:border-indigo-500 transition-colors">
                     <input type="file" id="ocrFileInput" accept="image/*,.pdf" class="hidden" onchange="handleOcrSelect(event)">
@@ -543,7 +542,6 @@
                     <span id="ocrFileName" class="text-xs text-slate-500 block mt-1">Chưa chọn file</span>
                 </div>
 
-                <!-- Thanh công cụ xử lý nhanh -->
                 <div class="flex flex-wrap gap-2 items-center justify-between">
                     <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Kết quả trích xuất:</span>
                     <button onclick="autoFixVietnameseSpellingUI()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5 active:scale-95">
@@ -553,7 +551,6 @@
 
                 <textarea id="ocrResultText" rows="7" placeholder="Kết quả trích xuất chữ OCR sẽ hiển thị tại đây..." class="w-full p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs focus:outline-none dark:text-white leading-relaxed font-sans"></textarea>
 
-                <!-- Hàng nút xuất file và sao chép -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <button onclick="processOcrExtract()" class="py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5 active:scale-95">
                         <i class="fa-solid fa-bolt"></i> Quét OCR
@@ -602,7 +599,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl relative border border-slate-200 dark:border-slate-800 space-y-4">
             <button onclick="toggleRegisterModal()" class="absolute top-4 right-4 text-slate-400 text-xl font-bold"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="text-xl font-extrabold text-slate-900 dark:text-white text-center">Đăng Ký Thành Viên</h3>
-            <button onclick="handleGoogleRegister()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-2">
+            <button onclick="handleGoogleRegister()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                 <span>Đăng ký nhanh bằng <strong>Gmail / Google</strong></span>
             </button>
         </div>
