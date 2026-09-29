@@ -1,16 +1,21 @@
 {
-    "name": "Số Hóa Hành Chính",
-    "short_name": "Số Hóa HC",
-    "description": "Kho Phần Mềm & Tiện Ích Chuẩn Nghị Định 30",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#0f172a",
-    "theme_color": "#0f172a",
-    "icons": [
-        {
-            "src": "/favicon-32x32.png",
-            "sizes": "32x32",
-            "type": "image/png"
-        }
-    ]
+  "name": "Mẹo Tin Học - Cổng Tiện Ích Văn Phòng",
+  "short_name": "Mẹo Tin Học",
+  "description": "Kho thủ thuật Excel, Word, ghép PDF, xóa trang PDF và quét chữ OCR trực tuyến miễn phí.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/assets/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
 }
