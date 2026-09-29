@@ -10,7 +10,7 @@
     <!-- THẺ XÁC MINH GOOGLE SEARCH CONSOLE -->
     <meta name="google-site-verification" content="a3rw-S0290kG49rj3sIaw3aRy_kt8PeoFsmLNEOL9L8" />
 
-    <!-- THƯ VIỆN GOOGLE IDENTITY SERVICES (ĐÃ BỔ SUNG) -->
+    <!-- THƯ VIỆN GOOGLE IDENTITY SERVICES -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <link rel="canonical" href="https://meotinhoc.com/">
@@ -38,9 +38,54 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .bg-grid-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 24px 24px;
+        /* Lưới Chấm & Khung Công Nghệ */
+        .bg-tech-grid {
+            background-image: 
+                radial-gradient(rgba(99, 102, 241, 0.15) 1.5px, transparent 1.5px),
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 24px 24px, 40px 40px, 40px 40px;
+        }
+
+        /* Hiệu ứng Vệt Sáng Chuyển Động Lướt Qua Card */
+        .card-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .card-shimmer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.08),
+                transparent
+            );
+            transform: rotate(30deg);
+            transition: 0.8s;
+            pointer-events: none;
+        }
+        .card-shimmer:hover::before {
+            left: 100%;
+        }
+
+        /* Chữ Gradient Đổi Màu Động */
+        .text-gradient-animate {
+            background: linear-gradient(-45deg, #60a5fa, #a855f7, #ec4899, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 6s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .toast-enter {
@@ -135,8 +180,14 @@
 
     <main>
         <!-- HERO BANNER -->
-        <section class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white pt-12 pb-20 px-4 text-center relative overflow-hidden bg-grid-pattern">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+        <section class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white pt-12 pb-20 px-4 text-center relative overflow-hidden bg-tech-grid">
+            <!-- Ambient Glowing Background Blobs -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden -z-0">
+                <div class="absolute -top-20 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute top-20 right-1/4 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+                <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[500px] h-64 bg-indigo-500/15 rounded-full blur-3xl"></div>
+            </div>
+
             <div class="max-w-4xl mx-auto space-y-5 relative z-10">
                 <div class="flex justify-center">
                     <span class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30 px-4 py-1.5 rounded-full text-xs font-bold transition shadow-md backdrop-blur-md">
@@ -144,7 +195,7 @@
                     </span>
                 </div>
 
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-purple-300 leading-tight tracking-tight">
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-gradient-animate leading-tight tracking-tight drop-shadow-lg">
                     Cổng Tiện Ích & Mẹo Tin Học <br class="hidden sm:inline">Văn Phòng Online
                 </h1>
                 <p class="text-slate-300 text-xs sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
@@ -170,10 +221,19 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                     <!-- TOOL 1: GHÉP PDF -->
-                    <div onclick="openOnlineToolModal('pdf-merge')" class="group cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-blue-200/60 dark:border-blue-900/40 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    <div onclick="openOnlineToolModal('pdf-merge')" class="card-shimmer group cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-blue-200/60 dark:border-blue-900/40 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-blue-600/30 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-object-group"></i>
+                            <div class="w-12 h-12 bg-blue-600/10 dark:bg-blue-500/20 rounded-2xl flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 11V19C19 20.1046 18.1046 21 17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H13L19 9V11Z" stroke="url(#pdf_merge_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M12 9V15M9 12H15" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"/>
+                                    <defs>
+                                        <linearGradient id="pdf_merge_grad" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#3B82F6"/>
+                                            <stop offset="1" stop-color="#8B5CF6"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
                             </div>
                             <span class="bg-blue-600/10 dark:bg-blue-400/20 text-blue-600 dark:text-blue-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">HOT</span>
                         </div>
@@ -185,10 +245,19 @@
                     </div>
 
                     <!-- TOOL 2: XÓA TRANG PDF -->
-                    <div onclick="openOnlineToolModal('pdf-delete')" class="group cursor-pointer bg-gradient-to-br from-red-50 to-rose-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-red-200/60 dark:border-red-900/40 hover:border-red-500 dark:hover:border-red-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    <div onclick="openOnlineToolModal('pdf-delete')" class="card-shimmer group cursor-pointer bg-gradient-to-br from-red-50 to-rose-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-red-200/60 dark:border-red-900/40 hover:border-red-500 dark:hover:border-red-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="w-12 h-12 bg-red-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-red-600/30 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-file-circle-xmark"></i>
+                            <div class="w-12 h-12 bg-red-600/10 dark:bg-red-500/20 rounded-2xl flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="url(#pdf_del_grad)" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M9.5 12.5L14.5 17.5M14.5 12.5L9.5 17.5" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+                                    <defs>
+                                        <linearGradient id="pdf_del_grad" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#EF4444"/>
+                                            <stop offset="1" stop-color="#F43F5E"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
                             </div>
                             <span class="bg-red-600/10 dark:bg-red-400/20 text-red-600 dark:text-red-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">CẮT FILE</span>
                         </div>
@@ -200,10 +269,20 @@
                     </div>
 
                     <!-- TOOL 3: LÀM SẠCH CHỮ PDF -->
-                    <div onclick="openOnlineToolModal('pdf-clean')" class="group cursor-pointer bg-gradient-to-br from-cyan-50 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-cyan-200/60 dark:border-cyan-900/40 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    <div onclick="openOnlineToolModal('pdf-clean')" class="card-shimmer group cursor-pointer bg-gradient-to-br from-cyan-50 to-blue-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-cyan-200/60 dark:border-cyan-900/40 hover:border-cyan-500 dark:hover:border-cyan-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="w-12 h-12 bg-cyan-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-cyan-600/30 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-broom"></i>
+                            <div class="w-12 h-12 bg-cyan-600/10 dark:bg-cyan-500/20 rounded-2xl flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15 4L20 9L9 20H4V15L15 4Z" stroke="url(#pdf_clean_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M3 21H21" stroke="#06B6D4" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M19 3L19.5 4.5L21 5L19.5 5.5L19 7L18.5 5.5L17 5L18.5 4.5L19 3Z" fill="#38BDF8"/>
+                                    <defs>
+                                        <linearGradient id="pdf_clean_grad" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#06B6D4"/>
+                                            <stop offset="1" stop-color="#3B82F6"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
                             </div>
                             <span class="bg-cyan-600/10 dark:bg-cyan-400/20 text-cyan-600 dark:text-cyan-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">HÀNH CHÍNH</span>
                         </div>
@@ -215,10 +294,20 @@
                     </div>
 
                     <!-- TOOL 4: QUÉT OCR -->
-                    <div onclick="openOnlineToolModal('ocr-online')" class="group cursor-pointer bg-gradient-to-br from-teal-50 to-emerald-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-teal-200/60 dark:border-teal-900/40 hover:border-teal-500 dark:hover:border-teal-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    <div onclick="openOnlineToolModal('ocr-online')" class="card-shimmer group cursor-pointer bg-gradient-to-br from-teal-50 to-emerald-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-teal-200/60 dark:border-teal-900/40 hover:border-teal-500 dark:hover:border-teal-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-teal-600/30 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-bolt"></i>
+                            <div class="w-12 h-12 bg-teal-600/10 dark:bg-teal-500/20 rounded-2xl flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 7V5C3 3.89543 3.89543 3 5 3H7M17 3H19C20.1046 3 21 3.89543 21 5V7M21 17V19C21 20.1046 20.1046 21 19 21H17M7 21H5C3.89543 21 3 20.1046 3 19V17" stroke="url(#ocr_grad)" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M7 12H17" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2"/>
+                                    <path d="M7 9H14M7 15H11" stroke="#A7F3D0" stroke-width="2" stroke-linecap="round"/>
+                                    <defs>
+                                        <linearGradient id="ocr_grad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#10B981"/>
+                                            <stop offset="1" stop-color="#14B8A6"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
                             </div>
                             <span class="bg-teal-600/10 dark:bg-teal-400/20 text-teal-600 dark:text-teal-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">AI OCR</span>
                         </div>
@@ -230,10 +319,19 @@
                     </div>
 
                     <!-- TOOL 5: SOÁT CHÍNH TẢ -->
-                    <div onclick="openOnlineToolModal('spell-online')" class="group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-purple-200/60 dark:border-purple-900/40 hover:border-purple-500 dark:hover:border-purple-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+                    <div onclick="openOnlineToolModal('spell-online')" class="card-shimmer group cursor-pointer bg-gradient-to-br from-purple-50 to-indigo-50/50 dark:from-slate-800/80 dark:to-slate-800/40 p-5 rounded-2xl border border-purple-200/60 dark:border-purple-900/40 hover:border-purple-500 dark:hover:border-purple-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="w-12 h-12 bg-purple-600 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg shadow-purple-600/30 group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            <div class="w-12 h-12 bg-purple-600/10 dark:bg-purple-500/20 rounded-2xl flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform">
+                                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="url(#spell_grad)" stroke-width="2"/>
+                                    <path d="M7.5 12L10.5 15L16.5 9" stroke="#C084FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <defs>
+                                        <linearGradient id="spell_grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#A855F7"/>
+                                            <stop offset="1" stop-color="#EC4899"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
                             </div>
                             <span class="bg-purple-600/10 dark:bg-purple-400/20 text-purple-600 dark:text-purple-300 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">SỬA LỖI</span>
                         </div>
@@ -298,7 +396,7 @@
             </div>
         </section>
 
-        <!-- KHỐI GIỚI THIỆU TÁC GIẢ DẤU ẤN CÁ NHÂN (ĐÃ ĐƯỢC CHUYỂN BÊN NGOÀI NÀY) -->
+        <!-- KHỐI GIỚI THIỆU TÁC GIẢ -->
         <section class="max-w-7xl mx-auto px-4 py-8 mb-12">
             <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center gap-6 justify-between">
                 <div class="flex items-center gap-5">
@@ -381,7 +479,18 @@
         <div class="p-4 bg-gradient-to-r from-purple-950/80 via-slate-900 to-slate-900 border-b border-slate-800/80 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-2xl bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-300">
-                    <i class="fa-solid fa-robot text-base"></i>
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="12" rx="4" stroke="url(#ai_bot_header)" stroke-width="2"/>
+                        <circle cx="8.5" cy="12" r="1.5" fill="#C084FC"/>
+                        <circle cx="15.5" cy="12" r="1.5" fill="#C084FC"/>
+                        <path d="M12 2V6M12 18V22" stroke="#A855F7" stroke-width="2" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="ai_bot_header" x1="3" y1="6" x2="21" y2="18" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#8B5CF6"/>
+                                <stop offset="1" stop-color="#D946EF"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
                 <div>
                     <h3 class="text-sm font-extrabold text-white leading-none">Trợ Lý AI Mẹo Tin Học</h3>
