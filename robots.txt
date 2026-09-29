@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://sohoahanhchinh.vn/sitemap.xml
+Disallow: /private/
+Disallow: /tmp/
+
+Sitemap: https://meotinhoc.com/sitemap.xml
