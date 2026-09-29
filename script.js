@@ -1,4 +1,6 @@
 // ==================== KHỞI TẠO BIẾN CẤU HÌNH GLOBAL ====================
+const GOOGLE_CLIENT_ID = "422788053444-15jiv5s2034rc2knil7q04uq7a1ckigq.apps.googleusercontent.com";
+
 var allProducts = [];
 var currentCategoryFilter = 'tất cả';
 var showingOnlyFavorites = false;
@@ -75,12 +77,106 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchData();
     initTheme();
     updateFavCount();
+    checkAutoLogin();
+
+    // Thử khởi tạo SDK Google sau khi trang tải xong
+    setTimeout(initGoogleAuth, 1000);
 
     var searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', filterProducts);
     }
 });
+
+// ==================== ĐĂNG NHẬP & ĐĂNG KÝ BẰNG GOOGLE ====================
+function initGoogleAuth() {
+    if (window.google && window.google.accounts) {
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleCredentialResponse,
+            auto_select: false
+        });
+    }
+}
+
+function handleGoogleRegister() {
+    if (!window.google || !window.google.accounts) {
+        showToast('Đang kết nối thư viện Google SDK, vui lòng thử lại sau giây lát!', 'info');
+        initGoogleAuth();
+        return;
+    }
+
+    google.accounts.id.prompt(function (notification) {
+        if (notification.isNotDisplayed() || notification.isSkippedMomentum()) {
+            google.accounts.id.renderButton(
+                document.getElementById("registerModal"),
+                { theme: "outline", size: "large", text: "signup_with" }
+            );
+        }
+    });
+}
+
+function handleGoogleCredentialResponse(response) {
+    try {
+        var userData = parseJwt(response.credential);
+        var user = {
+            id: userData.sub,
+            name: userData.name,
+            email: userData.email,
+            avatar: userData.picture,
+            loggedInAt: new Date().toISOString()
+        };
+
+        localStorage.setItem("meotinhoc_user", JSON.stringify(user));
+        updateUserHeaderUI(user);
+        toggleRegisterModal();
+        showToast('🎉 Chào mừng ' + user.name + ' đã đăng nhập thành công!', 'success');
+    } catch (error) {
+        console.error("Lỗi giải mã Google Token:", error);
+        showToast('Đăng nhập không thành công, vui lòng thử lại!', 'error');
+    }
+}
+
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
+function checkAutoLogin() {
+    var savedUser = localStorage.getItem("meotinhoc_user");
+    if (savedUser) {
+        try {
+            var user = JSON.parse(savedUser);
+            updateUserHeaderUI(user);
+        } catch (e) {
+            console.error("Lỗi đọc dữ liệu người dùng lưu trữ");
+        }
+    }
+}
+
+function updateUserHeaderUI(user) {
+    var registerBtns = document.querySelectorAll("button[onclick='toggleRegisterModal()']");
+    registerBtns.forEach(function (btn) {
+        btn.setAttribute("onclick", "logoutUser()");
+        btn.title = "Đăng xuất (" + user.email + ")";
+        btn.innerHTML = '<img src="' + user.avatar + '" alt="' + escapeHtml(user.name) + '" class="w-5 h-5 rounded-full border border-white/40">' +
+            '<span class="hidden lg:inline text-xs font-bold truncate max-w-[100px]">' + escapeHtml(user.name) + '</span>' +
+            '<i class="fa-solid fa-right-from-bracket text-red-400 text-xs ml-1"></i>';
+    });
+}
+
+function logoutUser() {
+    if (confirm("Bạn có muốn đăng xuất tài khoản không?")) {
+        localStorage.removeItem("meotinhoc_user");
+        showToast('Đã đăng xuất tài khoản!', 'info');
+        setTimeout(function () { location.reload(); }, 600);
+    }
+}
 
 // --- Quản lý Giao diện Sáng/Tối (Dark Mode) ---
 function initTheme() {
@@ -1040,9 +1136,7 @@ function autoFixSpellInput() {
     showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
 }
 
-// ==================== CÔNG CỤ LÀM SẠCH CHỮ PDF (SIÊU DỄ DÙNG) ====================
-
-// Chuyển đổi giữa 2 Tab: Tải File PDF hoặc Dán Đoạn Văn
+// ==================== CÔNG CỤ LÀM SẠCH CHỮ PDF ====================
 function switchCleanTab(mode) {
     var fileArea = document.getElementById('cleanFileArea');
     var textArea = document.getElementById('cleanTextArea');
@@ -1062,33 +1156,26 @@ function switchCleanTab(mode) {
     }
 }
 
-// Hàm cốt lõi: Thuật toán làm sạch văn bản thông minh (Smart Auto-Clean)
 function smartCleanText(rawText) {
     if (!rawText) return "";
 
     var text = rawText.normalize('NFC');
 
-    // 1. Nối các từ bị gạch nối ngắt ở cuối dòng (ví dụ: "chuyển-\nđổi" -> "chuyển đổi")
     text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1$2');
-
-    // 2. Nối dòng bị ngắt câu sai cú pháp
     text = text.replace(/\r\n/g, '\n');
-    text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___'); // Bảo vệ đoạn văn chuẩn
-    text = text.replace(/\n/g, ' '); // Nối dòng đơn
-    text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n'); // Khôi phục đoạn văn
+    text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
+    text = text.replace(/\n/g, ' ');
+    text = text.replace(/___PARAGRAPH_BREAK___/g, '\n\n');
 
-    // 3. Chuẩn hóa khoảng trắng quanh dấu câu
-    text = text.replace(/\s+([.,;:!?])/g, '$1'); // Xóa khoảng trắng trước dấu câu
-    text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 '); // Thêm khoảng trắng sau dấu câu
+    text = text.replace(/\s+([.,;:!?])/g, '$1');
+    text = text.replace(/([.,;:!?])(?=[^\d\s.,;:!?])/g, '$1 ');
 
-    // 4. Lọc khoảng trắng thừa
     text = text.replace(/[ \t]+/g, ' ');
     text = text.split('\n').map(function (line) { return line.trim(); }).join('\n');
 
     return text.trim();
 }
 
-// Xử lý khi chọn File PDF trực tiếp
 async function handlePdfCleanFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1118,7 +1205,6 @@ async function handlePdfCleanFileSelect(e) {
             fullRawText += pageStrings.join('\n') + '\n\n';
         }
 
-        // Thực hiện làm sạch tự động
         var cleanedText = smartCleanText(fullRawText);
 
         if (outputEl) outputEl.value = cleanedText || "Không tìm thấy nội dung văn bản trong file PDF.";
@@ -1131,7 +1217,6 @@ async function handlePdfCleanFileSelect(e) {
     }
 }
 
-// Xử lý khi dán đoạn văn thủ công
 function processCleanPdfTextFromInput() {
     var inputEl = document.getElementById('pdfCleanInput');
     var outputEl = document.getElementById('pdfCleanOutput');
@@ -1149,7 +1234,6 @@ function processCleanPdfTextFromInput() {
     showToast('Đã làm sạch đoạn văn thành công!', 'success');
 }
 
-// Xuất văn bản đã làm sạch sang File Word (.doc)
 function exportCleanPdfToWord() {
     var outputEl = document.getElementById('pdfCleanOutput');
     var text = outputEl?.value;
@@ -1178,7 +1262,6 @@ function exportCleanPdfToWord() {
     showToast('Đã xuất file Word (.doc) thành công!', 'success');
 }
 
-// Sao chép văn bản đã làm sạch
 function copyCleanPdfText() {
     var outputEl = document.getElementById('pdfCleanOutput');
     if (outputEl && outputEl.value) {
@@ -1187,7 +1270,6 @@ function copyCleanPdfText() {
     }
 }
 
-// Làm mới giao diện
 function resetCleanPdfText() {
     var inputEl = document.getElementById('pdfCleanInput');
     var outputEl = document.getElementById('pdfCleanOutput');
@@ -1197,6 +1279,7 @@ function resetCleanPdfText() {
     document.getElementById('pdfCleanFileName')?.classList.add('hidden');
     showToast('Đã xóa nội dung', 'info');
 }
+
 // ==================== HÀM TIỆN ÍCH KHÁC ====================
 function toggleFavorite(id, e) {
     if (e) e.stopPropagation();
@@ -1246,12 +1329,7 @@ function toggleRegisterModal() {
     if (modal) modal.classList.toggle('hidden');
 }
 
-function handleGoogleRegister() {
-    showToast('Tính năng đăng ký Gmail đang được đồng bộ!', 'info');
-    toggleRegisterModal();
-}
-
-// ==================== TRỢ LÝ AI TIN HỌC (TƯƠNG TÁC THÔNG MINH) ====================
+// ==================== TRỢ LÝ AI TIN HỌC ====================
 function toggleAiModal() {
     var popup = document.getElementById('aiChatPopup');
     if (popup) popup.classList.toggle('hidden');
@@ -1272,7 +1350,6 @@ function handleAiChatSubmit(e) {
     var userMsg = input.value.trim();
     if (!userMsg) return;
 
-    // 1. Hiện câu hỏi người dùng
     var userBubble = document.createElement('div');
     userBubble.className = 'flex justify-end';
     userBubble.innerHTML = '<div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm leading-relaxed">' + escapeHtml(userMsg) + '</div>';
@@ -1280,14 +1357,12 @@ function handleAiChatSubmit(e) {
     input.value = '';
     body.scrollTop = body.scrollHeight;
 
-    // 2. Hiện trạng thái AI đang gõ
     var aiTyping = document.createElement('div');
     aiTyping.className = 'flex gap-2.5 items-start ai-typing-indicator';
     aiTyping.innerHTML = '<div class="bg-slate-800/90 border border-slate-700/60 text-slate-200 p-3 rounded-2xl rounded-tl-none flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:0.2s]"></span><span class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:0.4s]"></span></div>';
     body.appendChild(aiTyping);
     body.scrollTop = body.scrollHeight;
 
-    // 3. Phản hồi tự động từ AI sau 0.8 giây
     setTimeout(function () {
         aiTyping.remove();
         var replyText = generateAiAnswer(userMsg);
