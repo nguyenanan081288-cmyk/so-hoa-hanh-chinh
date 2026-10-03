@@ -103,8 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initTheme();
     updateFavCount();
     checkAutoLogin();
-
-    setTimeout(initGoogleAuth, 1000);
+    initGoogleAuth();
 
     var searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -125,11 +124,15 @@ document.addEventListener('DOMContentLoaded', function () {
 // ==================== ĐĂNG NHẬP & ĐĂNG KÝ BẰNG GOOGLE ====================
 function initGoogleAuth() {
     if (window.google && window.google.accounts) {
-        google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleCredentialResponse,
-            auto_select: false
-        });
+        try {
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleGoogleCredentialResponse,
+                auto_select: false
+            });
+        } catch (e) {
+            console.error("Lỗi khởi tạo Google Auth:", e);
+        }
     }
 }
 
@@ -292,6 +295,7 @@ async function fetchData() {
         filterProducts();
     } catch (error) {
         console.error('Lỗi nạp dữ liệu:', error);
+        showToast('Không thể kết nối đến file dữ liệu data.json!', 'error');
     }
 }
 
@@ -1078,7 +1082,7 @@ async function exportOcrToExcel() {
         var lines = textarea.value.split('\n');
         var excelData = lines.map(function (line) {
             if (line.includes('\t')) return line.split('\t');
-            if (line.includes('  ')) return line.split(/\s{2,}/);
+            if (/\s{3,}/.test(line)) return line.split(/\s{3,}/);
             return [line];
         });
 
@@ -1267,7 +1271,7 @@ function smartCleanText(rawText) {
 
     var text = rawText.normalize('NFC');
 
-    text = text.replace(/(\w+)[-\u2013\u2014]\s*\n\s*(\w+)/g, '$1$2');
+    text = text.replace(/(\p{L}+)[-\u2013\u2014]\s*\n\s*(\p{L}+)/gu, '$1$2');
     text = text.replace(/\r\n/g, '\n');
     text = text.replace(/\n\s*\n/g, '___PARAGRAPH_BREAK___');
     text = text.replace(/\n/g, ' ');
@@ -1411,7 +1415,6 @@ function openDownloadModal(id) {
     var item = allProducts.find(function (p) { return p.id === id; });
     if (!item) return;
 
-    // Kiểm tra mã PIN bảo vệ với phần mềm nội bộ (nếu có)
     if (item.pinCode) {
         var inputPin = prompt("🔒 Đây là phần mềm lưu hành nội bộ. Vui lòng nhập mã PIN xác thực:");
         if (inputPin !== item.pinCode) {
