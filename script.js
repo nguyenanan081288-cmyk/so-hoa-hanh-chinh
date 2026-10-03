@@ -873,39 +873,104 @@ function reconstructParagraphs(rawText) {
     return formattedText.join('\n');
 }
 
+// ==================== BỘ TỪ ĐIỂN VÀ QUY TẮC SOÁT LỖI NÂNG CẤP ====================
+const ADVANCED_SPELLING_DICTIONARY = [
+    // s / x
+    { wrong: /\b(sơ xuất|sơ xút)\b/gi, right: 'sơ suất', desc: 'Sai phụ âm đầu s/x (Sơ suất mới chuẩn chính tả)' },
+    { wrong: /\b(sắp sếp)\b/gi, right: 'sắp xếp', desc: 'Sai phụ âm s/x (Viết chuẩn: sắp xếp)' },
+    { wrong: /\b(suất sắc)\b/gi, right: 'xuất sắc', desc: 'Sai phụ âm s/x (Viết chuẩn: xuất sắc)' },
+    { wrong: /\b(xản xuất)\b/gi, right: 'sản xuất', desc: 'Sai phụ âm s/x (Viết chuẩn: sản xuất)' },
+    { wrong: /\b(sử lý)\b/gi, right: 'xử lý', desc: 'Sai phụ âm s/x (Viết chuẩn: xử lý)' },
+    { wrong: /\b(xửa chữa)\b/gi, right: 'sửa chữa', desc: 'Sai phụ âm s/x (Viết chuẩn: sửa chữa)' },
+    { wrong: /\b(sát xuất)\b/gi, right: 'xác suất', desc: 'Sai phụ âm s/x (Viết chuẩn: xác suất)' },
+    { wrong: /\b(xuất xắc)\b/gi, right: 'xuất sắc', desc: 'Sai phụ âm s/x (Viết chuẩn: xuất sắc)' },
+    { wrong: /\b(xao nhãng)\b/gi, right: 'sao nhãng', desc: 'Sai phụ âm s/x (Viết chuẩn: sao nhãng)' },
+    { wrong: /\b(sỉ nhục)\b/gi, right: 'xỉ nhục', desc: 'Sai phụ âm s/x (Viết chuẩn: xỉ nhục)' },
+    
+    // tr / ch
+    { wrong: /\b(chao đổi)\b/gi, right: 'trao đổi', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trao đổi)' },
+    { wrong: /\b(chung thực)\b/gi, right: 'trung thực', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trung thực)' },
+    { wrong: /\b(chân trọng)\b/gi, right: 'trân trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trân trọng)' },
+    { wrong: /\b(tri trả)\b/gi, right: 'chi trả', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chi trả)' },
+    { wrong: /\b(truy cập|trung cập)\b/gi, right: 'truy cập', desc: 'Lỗi gõ từ (Viết chuẩn: truy cập)' },
+    { wrong: /\b(trú trọng)\b/gi, right: 'chú trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chú trọng)' },
+    { wrong: /\b(chủ trì|trủ trì)\b/gi, right: 'chủ trì', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chủ trì)' },
+    
+    // d / gi / r
+    { wrong: /\b(dành dật|dành giật)\b/gi, right: 'giành giật', desc: 'Sai chính tả d/gi (Viết chuẩn: giành giật)' },
+    { wrong: /\b(giành cho)\b/gi, right: 'dành cho', desc: 'Sai chính tả d/gi (Dành cho ai đó)' },
+    { wrong: /\b(dễ giàng|giễ dàng)\b/gi, right: 'dễ dàng', desc: 'Sai chính tả d/gi (Viết chuẩn: dễ dàng)' },
+    { wrong: /\b(diao lưu)\b/gi, right: 'giao lưu', desc: 'Sai phụ âm d/gi (Viết chuẩn: giao lưu)' },
+    { wrong: /\b(diện tích)\b/gi, right: 'diện tích', desc: 'Lỗi gõ chữ' },
+    
+    // l / n
+    { wrong: /\b(lăng suất)\b/gi, right: 'năng suất', desc: 'Sai phụ âm l/n (Viết chuẩn: năng suất)' },
+    { wrong: /\b(nưu ý)\b/gi, right: 'lưu ý', desc: 'Sai phụ âm l/n (Viết chuẩn: lưu ý)' },
+    { wrong: /\b(lỗ lực)\b/gi, right: 'nỗ lực', desc: 'Sai phụ âm l/n (Viết chuẩn: nỗ lực)' },
+    
+    // Dấu hỏi / ngã & Vần
+    { wrong: /\b(kỉ năng)\b/gi, right: 'kỹ năng', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: kỹ năng)' },
+    { wrong: /\b(qui định)\b/gi, right: 'quy định', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: quy định)' },
+    { wrong: /\b(suy nghỉ)\b/gi, right: 'suy nghĩ', desc: 'Sai dấu hỏi/ngã (Viết chuẩn: suy nghĩ)' },
+    { wrong: /\b(đối xửa)\b/gi, right: 'đối xử', desc: 'Sai dấu hỏi/ngã & phụ âm (Viết chuẩn: đối xử)' },
+    { wrong: /\b(rút kinh ngiệm)\b/gi, right: 'rút kinh nghiệm', desc: 'Sai quy tắc n/ng (Viết chuẩn: kinh nghiệm)' },
+    { wrong: /\b(khiếu khuyết)\b/gi, right: 'khiếm khuyết', desc: 'Sai vần m/u (Viết chuẩn: khiếm khuyết)' },
+    
+    // Từ rườm rà / Lỗi văn phong hành chính (Style & Redundancy)
+    { wrong: /\b(nguyên nhân lý do)\b/gi, right: 'nguyên nhân', desc: 'Lặp từ đồng nghĩa rườm rà (Bỏ từ "lý do")' },
+    { wrong: /\b(kế hoạch dự kiến)\b/gi, right: 'kế hoạch', desc: 'Thừa từ rườm rà (Bỏ từ "dự kiến")' },
+    { wrong: /\b(tiến hành thực hiện)\b/gi, right: 'thực hiện', desc: 'Văn phong rườm rà (Nên dùng "thực hiện")' },
+    { wrong: /\b(thực hiện tiến hành)\b/gi, right: 'thực hiện', desc: 'Văn phong rườm rà (Nên dùng "thực hiện")' },
+    { wrong: /\b(ngay trong thời điểm hiện tại)\b/gi, right: 'hiện tại', desc: 'Lặp từ rườm rà (Nên dùng "hiện nay" hoặc "hiện tại")' },
+    { wrong: /\b(hoàn toàn miễn phí 100%)\b/gi, right: 'miễn phí', desc: 'Trùng lặp nghĩa (Nên dùng "miễn phí")' },
+    { wrong: /\b(tóm tắt ngắn gọn)\b/gi, right: 'tóm tắt', desc: 'Tóm tắt bản chất đã là ngắn gọn' },
+    { wrong: /\b(tự bản thân)\b/gi, right: 'bản thân', desc: 'Thừa từ "tự"' },
+    { wrong: /\b(kết quả đạt được)\b/gi, right: 'kết quả', desc: 'Nên rút gọn thành "kết quả"' },
+    
+    // Từ Hán-Việt & Tên gọi hành chính thiếu dấu
+    { wrong: /\b(Cong hoa)\b/gi, right: 'Cộng hòa', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Xa hoi)\b/gi, right: 'Xã hội', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Chu nghia)\b/gi, right: 'Chủ nghĩa', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Viet Nam)\b/gi, right: 'Việt Nam', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Doc lap)\b/gi, right: 'Độc lập', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Tu do)\b/gi, right: 'Tự do', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Hanh phuc)\b/gi, right: 'Hạnh phúc', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Nghi đinh|Nghi dinh)\b/gi, right: 'Nghị định', desc: 'Sai chính tả từ Nghị định' },
+    { wrong: /\b(Quyet đinh|Quyet dinh)\b/gi, right: 'Quyết định', desc: 'Sai chính tả từ Quyết định' },
+    { wrong: /\b(Thong bao)\b/gi, right: 'Thông báo', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Thong tu)\b/gi, right: 'Thông tư', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Bao cao)\b/gi, right: 'Báo cáo', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(To trinh)\b/gi, right: 'Tờ trình', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Kê hoach|Ke hoach)\b/gi, right: 'Kế hoạch', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Uy ban)\b/gi, right: 'Ủy ban', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Hoi đong|Hoi dong)\b/gi, right: 'Hội đồng', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Căn cư)\b/gi, right: 'Căn cứ', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Ban hanh)\b/gi, right: 'Ban hành', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Luu van thu)\b/gi, right: 'Lưu văn thư', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: /\b(Thanh pho)\b/gi, right: 'Thành phố', desc: 'Thiếu dấu tiếng Việt' }
+];
+
 function fixVietnameseSpellingText(text) {
     if (!text) return "";
 
     var cleaned = text.normalize('NFC');
-    cleaned = cleaned.replace(/\s+([,.:;?!])/g, '$1');
-    cleaned = cleaned.replace(/([,.:;?!])([A-Za-zÀ-ỹ])/g, '$1 $2');
-    cleaned = cleaned.replace(/[ \t]+/g, ' ');
+    
+    // 1. Thay thế các lỗi từ điển
+    ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
+        cleaned = cleaned.replace(item.wrong, item.right);
+    });
 
-    var errorMap = [
-        [/\bCong hoa\b/gi, 'Cộng hòa'],
-        [/\bXa hoi\b/gi, 'Xã hội'],
-        [/\bChu nghia\b/gi, 'Chủ nghĩa'],
-        [/\bViet Nam\b/gi, 'Việt Nam'],
-        [/\bDoc lap\b/gi, 'Độc lập'],
-        [/\bTu do\b/gi, 'Tự do'],
-        [/\bHanh phuc\b/gi, 'Hạnh phúc'],
-        [/\bNghi đinh\b/gi, 'Nghị định'],
-        [/\bQuyet đinh\b/gi, 'Quyết định'],
-        [/\bThong bao\b/gi, 'Thông báo'],
-        [/\bThong tu\b/gi, 'Thông tư'],
-        [/\bBao cao\b/gi, 'Báo cáo'],
-        [/\bTo trinh\b/gi, 'Tờ trình'],
-        [/\bKê hoach\b/gi, 'Kế hoạch'],
-        [/\bUy ban\b/gi, 'Ủy ban'],
-        [/\bHoi đong\b/gi, 'Hội đồng'],
-        [/\bCăn cư\b/gi, 'Căn cứ'],
-        [/\bBan hanh\b/gi, 'Ban hành'],
-        [/\bLuu van thu\b/gi, 'Lưu văn thư'],
-        [/\bThanh pho\b/gi, 'Thành phố']
-    ];
+    // 2. Chuẩn hóa khoảng trắng & Dấu câu theo Nghị định 30/2020/NĐ-CP
+    cleaned = cleaned.replace(/\s+([,.:;?!])/g, '$1'); // Xóa khoảng trắng trước dấu câu
+    cleaned = cleaned.replace(/([,.:;?!])([A-Za-zÀ-ỹ])/g, '$1 $2'); // Thêm khoảng trắng sau dấu câu
+    cleaned = cleaned.replace(/[ \t]+/g, ' '); // Xóa khoảng trắng lặp
 
-    errorMap.forEach(function (item) {
-        cleaned = cleaned.replace(item[0], item[1]);
+    // 3. Chuẩn hóa dấu ngoặc
+    cleaned = cleaned.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+
+    // 4. Viết hoa chữ cái đầu câu (Sau dấu ., !, ? hoặc xuống dòng)
+    cleaned = cleaned.replace(/(^\s*|[.!?]\s+|\n+\s*)([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/g, function(match, p1, p2) {
+        return p1 + p2.toUpperCase();
     });
 
     return cleaned;
@@ -1119,7 +1184,7 @@ function copyOcrText() {
     }
 }
 
-// --- 4. SOÁT LỖI CHÍNH TẢ & ĐỌC FILE TẢI LÊN ---
+// --- 4. SOÁT LỖI CHÍNH TẢ & PHÂN TÍCH VĂN PHONG NÂNG CẤP ---
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1199,42 +1264,114 @@ function processSpellCheck() {
         return;
     }
 
-    showToast('Đang phân tích cú pháp & chính tả...', 'info');
+    showToast('Đang phân tích cú pháp, chính tả & văn phong...', 'info');
 
-    var issues = [];
+    var spellingIssues = [];
+    var formatIssues = [];
+    var styleIssues = [];
+
+    // 1. Phân tích Thống kê Văn bản
+    var words = val.split(/\s+/).filter(Boolean);
+    var wordCount = words.length;
+    var sentences = val.split(/[.!?]+\s*/).filter(function(s) { return s.trim().length > 0; });
+    var sentenceCount = sentences.length || 1;
+    var readingTimeMinutes = Math.ceil(wordCount / 200);
+
+    // 2. Kiểm tra Thể thức & Khoảng trắng (Format Issues)
     var countMultipleSpaces = (val.match(/ {2,}/g) || []).length;
     var countPunctuationSpaces = (val.match(/ \b[,.:;?!]/g) || []).length;
+    var countMissingSpaces = (val.match(/([,.:;?!])([A-Za-zÀ-ỹ])/g) || []).length;
+    var uncapitalizedMatches = (val.match(/(^\s*|[.!?]\s+|\n+\s*)([a-zà-ỹ])/g) || []).length;
 
     if (countMultipleSpaces > 0) {
-        issues.push('Phát hiện <strong>' + countMultipleSpaces + ' vị trí</strong> bị lặp khoảng trắng (thừa dấu cách).');
+        formatIssues.push('Phát hiện <strong>' + countMultipleSpaces + ' vị trí</strong> lặp khoảng trắng (thừa dấu cách).');
     }
     if (countPunctuationSpaces > 0) {
-        issues.push('Phát hiện <strong>' + countPunctuationSpaces + ' vị trí</strong> đặt khoảng trắng trước dấu câu (ví dụ: "văn bản ,").');
+        formatIssues.push('Phát hiện <strong>' + countPunctuationSpaces + ' vị trí</strong> đặt khoảng trắng trước dấu câu.');
+    }
+    if (countMissingSpaces > 0) {
+        formatIssues.push('Phát hiện <strong>' + countMissingSpaces + ' vị trí</strong> thiếu khoảng trắng sau dấu câu.');
     }
 
-    var unaccentedMatches = val.match(/\b(Cong hoa|Xa hoi|Doc lap|Tu do|Hanh phuc|Nghi đinh|Quyet đinh|Thong bao|Bao cao)\b/gi);
-    if (unaccentedMatches && unaccentedMatches.length > 0) {
-        issues.push('Phát hiện <strong>' + unaccentedMatches.length + ' từ</strong> thiếu/sai dấu tiếng Việt (VD: ' + unaccentedMatches.slice(0, 3).join(', ') + ').');
+    // 3. Kiểm tra Từ điển Chính tả Nâng cao (Spelling Issues)
+    ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
+        var matches = val.match(item.wrong);
+        if (matches) {
+            spellingIssues.push('Từ "<strong>' + matches[0] + '</strong>" $\\rightarrow$ Nên sửa thành "<strong>' + item.right + '</strong>" (' + item.desc + ').');
+        }
+    });
+
+    // 4. Phân tích Văn phong & Độ dài Câu (Style Issues)
+    // - Bắt câu quá dài (>35 từ)
+    var longSentencesCount = 0;
+    sentences.forEach(function(s) {
+        var sWords = s.trim().split(/\s+/).length;
+        if (sWords > 35) longSentencesCount++;
+    });
+    if (longSentencesCount > 0) {
+        styleIssues.push('Phát hiện <strong>' + longSentencesCount + ' câu</strong> quá dài (trên 35 từ). Nên ngắt bớt câu để văn bản cô đọng, dễ đọc.');
     }
 
-    var issueHtml = '';
-    if (issues.length > 0) {
-        issueHtml = issues.map(function (item) { return '<li class="text-amber-700 dark:text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>' + item + '</li>'; }).join('');
-    } else {
-        issueHtml = '<li class="text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1.5"></i> Văn bản đạt chuẩn! Không phát hiện lỗi chính tả hoặc thể thức nghiêm trọng.</li>';
+    // - Bắt lỗi lặp từ liên tiếp
+    var duplicateWords = val.match(/\b([a-zà-ỹ]+)\s+\1\b/gi);
+    if (duplicateWords && duplicateWords.length > 0) {
+        styleIssues.push('Phát hiện <strong>' + duplicateWords.length + ' vị trí</strong> bị gõ lặp từ vô ý (VD: "' + duplicateWords.slice(0, 2).join('", "') + '").');
     }
 
+    // 5. Tính Điểm Văn Phong (Readability Score)
+    var totalErrors = spellingIssues.length + formatIssues.length + styleIssues.length;
+    var score = Math.max(30, 100 - (spellingIssues.length * 10 + formatIssues.length * 5 + styleIssues.length * 8));
+    var scoreBadgeColor = score >= 85 ? 'bg-emerald-500' : (score >= 60 ? 'bg-amber-500' : 'bg-red-500');
+
+    // 6. Hiển thị Giao diện Báo cáo Chi tiết
     resultBox.classList.remove('hidden');
     resultBox.innerHTML = 
-        '<div class="font-bold text-slate-900 dark:text-white mb-2 text-sm flex items-center gap-2">' +
-            '<i class="fa-solid fa-magnifying-glass-chart text-purple-600"></i> Kết Quả Phân Tích Dữ Liệu:' +
+        '<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-amber-200 dark:border-amber-800">' +
+            '<div class="flex items-center gap-2">' +
+                '<span class="' + scoreBadgeColor + ' text-white font-black text-xs px-2.5 py-1 rounded-xl shadow-sm">Điểm: ' + score + '/100</span>' +
+                '<span class="font-extrabold text-slate-900 dark:text-white text-xs">Kết Quả Phân Tích Văn Bản</span>' +
+            '</div>' +
+            '<div class="text-[11px] text-slate-500 font-semibold">' +
+                '📊 ' + wordCount + ' từ • ' + sentenceCount + ' câu • ~' + readingTimeMinutes + ' phút đọc' +
+            '</div>' +
         '</div>' +
-        '<ul class="space-y-2 text-xs leading-relaxed mb-4">' + issueHtml + '</ul>' +
-        '<button onclick="autoFixSpellInput()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5 active:scale-95">' +
-            '<i class="fa-solid fa-wand-magic-sparkles"></i> Tự Động Sửa Nhanh & Căn Chỉnh Khoảng Trắng' +
+
+        '<div class="space-y-3 my-3 text-xs">' +
+            (spellingIssues.length > 0 ? 
+                '<div>' +
+                    '<span class="font-bold text-red-600 dark:text-red-400 block mb-1">🔴 Lỗi Chính Tả & Từ Ngữ (' + spellingIssues.length + '):</span>' +
+                    '<ul class="list-disc pl-4 space-y-1 text-slate-700 dark:text-slate-300">' +
+                        spellingIssues.map(function(i) { return '<li>' + i + '</li>'; }).join('') +
+                    '</ul>' +
+                '</div>' : '') +
+
+            (formatIssues.length > 0 ? 
+                '<div>' +
+                    '<span class="font-bold text-amber-600 dark:text-amber-400 block mb-1">🟧 Lỗi Thể Thức & Dấu Câu (' + formatIssues.length + '):</span>' +
+                    '<ul class="list-disc pl-4 space-y-1 text-slate-700 dark:text-slate-300">' +
+                        formatIssues.map(function(i) { return '<li>' + i + '</li>'; }).join('') +
+                    '</ul>' +
+                '</div>' : '') +
+
+            (styleIssues.length > 0 ? 
+                '<div>' +
+                    '<span class="font-bold text-blue-600 dark:text-blue-400 block mb-1">🟦 Gợi Ý Văn Phong & Rườm Rà (' + styleIssues.length + '):</span>' +
+                    '<ul class="list-disc pl-4 space-y-1 text-slate-700 dark:text-slate-300">' +
+                        styleIssues.map(function(i) { return '<li>' + i + '</li>'; }).join('') +
+                    '</ul>' +
+                '</div>' : '') +
+
+            (totalErrors === 0 ? 
+                '<div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-2">' +
+                    '<i class="fa-solid fa-circle-check text-base"></i> Tuyệt vời! Văn bản đạt chuẩn chính tả & thể thức hành chính.' +
+                '</div>' : '') +
+        '</div>' +
+
+        '<button onclick="autoFixSpellInput()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 active:scale-95">' +
+            '<i class="fa-solid fa-wand-magic-sparkles"></i> ⚡ Sửa Toàn Bộ Lỗi Tự Động & Chuẩn Hóa Viết Hoa' +
         '</button>';
 
-    showToast('Hoàn tất soát lỗi chính tả!', 'success');
+    showToast('Hoàn tất phân tích văn bản!', 'success');
 }
 
 function autoFixSpellInput() {
@@ -1243,7 +1380,8 @@ function autoFixSpellInput() {
 
     var fixed = fixVietnameseSpellingText(textarea.value);
     textarea.value = reconstructParagraphs(fixed);
-    showToast('Đã tự động sửa lỗi & căn chỉnh văn bản!', 'success');
+    showToast('Đã tự động sửa lỗi & chuẩn hóa thể thức!', 'success');
+    processSpellCheck(); // Chạy lại kiểm tra để cập nhật lại điểm số
 }
 
 // ==================== CÔNG CỤ LÀM SẠCH CHỮ PDF ====================
