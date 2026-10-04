@@ -873,81 +873,92 @@ function reconstructParagraphs(rawText) {
     return formattedText.join('\n');
 }
 
-// ==================== BỘ TỪ ĐIỂN VÀ QUY TẮC SOÁT LỖI NÂNG CẤP ====================
+// ==================== BỘ TỪ ĐIỂN VÀ QUY TẮC SOÁT LỖI UNICODE CAO CẤP ====================
+// Danh sách các cặp lỗi chính tả thực tế & gõ dính phím Telex
 const ADVANCED_SPELLING_DICTIONARY = [
-    // s / x
-    { wrong: /\b(sơ xuất|sơ xút)\b/gi, right: 'sơ suất', desc: 'Sai phụ âm đầu s/x (Sơ suất mới chuẩn chính tả)' },
-    { wrong: /\b(sắp sếp)\b/gi, right: 'sắp xếp', desc: 'Sai phụ âm s/x (Viết chuẩn: sắp xếp)' },
-    { wrong: /\b(suất sắc)\b/gi, right: 'xuất sắc', desc: 'Sai phụ âm s/x (Viết chuẩn: xuất sắc)' },
-    { wrong: /\b(xản xuất)\b/gi, right: 'sản xuất', desc: 'Sai phụ âm s/x (Viết chuẩn: sản xuất)' },
-    { wrong: /\b(sử lý)\b/gi, right: 'xử lý', desc: 'Sai phụ âm s/x (Viết chuẩn: xử lý)' },
-    { wrong: /\b(xửa chữa)\b/gi, right: 'sửa chữa', desc: 'Sai phụ âm s/x (Viết chuẩn: sửa chữa)' },
-    { wrong: /\b(sát xuất)\b/gi, right: 'xác suất', desc: 'Sai phụ âm s/x (Viết chuẩn: xác suất)' },
-    { wrong: /\b(xuất xắc)\b/gi, right: 'xuất sắc', desc: 'Sai phụ âm s/x (Viết chuẩn: xuất sắc)' },
-    { wrong: /\b(xao nhãng)\b/gi, right: 'sao nhãng', desc: 'Sai phụ âm s/x (Viết chuẩn: sao nhãng)' },
-    { wrong: /\b(sỉ nhục)\b/gi, right: 'xỉ nhục', desc: 'Sai phụ âm s/x (Viết chuẩn: xỉ nhục)' },
+    // 1. Bẫy gõ dính phím Telex & OCR Tiếng Việt
+    { wrong: 'đựơc|đựoc|dược', right: 'được', desc: 'Sai ký tự gõ Telex / Dính phím' },
+    { wrong: 'truờng|truơng', right: 'trường', desc: 'Sai ký tự gõ Telex (Trường học / Trường hợp)' },
+    { wrong: 'nguời|nguơi', right: 'người', desc: 'Sai ký tự gõ Telex' },
+    { wrong: 'thuờng|thuơng', right: 'thường', desc: 'Sai ký tự gõ Telex' },
+    { wrong: 'phuơng', right: 'phương', desc: 'Sai ký tự gõ Telex (Phương án / Phương pháp)' },
+    { wrong: 'chương', right: 'chương', desc: 'Sai ký tự gõ Telex (Chương trình / Chương đoạn)' },
+    { wrong: 'hưỡng', right: 'hưởng', desc: 'Sai ký tự gõ Telex' },
+
+    // 2. Các từ chính tả hay nhầm lẫn nghiêm trọng trong văn bản
+    { wrong: 'chuẩn đoán', right: 'chẩn đoán', desc: 'Từ đúng phải là "chẩn đoán" (chẩn trong chẩn bệnh)' },
+    { wrong: 'thăm quan', right: 'tham quan', desc: 'Từ đúng phải là "tham quan" (tham trong tham gia)' },
+    { wrong: 'bổ xung', right: 'bổ sung', desc: 'Sai phụ âm s/x (Viết chuẩn: bổ sung)' },
+    { wrong: 'sơ xuất|sơ xút', right: 'sơ suất', desc: 'Sai phụ âm đầu s/x (Sơ suất mới chuẩn chính tả)' },
+    { wrong: 'sắp sếp', right: 'sắp xếp', desc: 'Sai phụ âm s/x (Viết chuẩn: sắp xếp)' },
+    { wrong: 'suất sắc', right: 'xuất sắc', desc: 'Sai phụ âm s/x (Viết chuẩn: xuất sắc)' },
+    { wrong: 'xản xuất', right: 'sản xuất', desc: 'Sai phụ âm s/x (Viết chuẩn: sản xuất)' },
+    { wrong: 'sử lý', right: 'xử lý', desc: 'Sai phụ âm s/x (Viết chuẩn: xử lý)' },
+    { wrong: 'xửa chữa', right: 'sửa chữa', desc: 'Sai phụ âm s/x (Viết chuẩn: sửa chữa)' },
+    { wrong: 'sát xuất', right: 'xác suất', desc: 'Sai phụ âm s/x (Viết chuẩn: xác suất)' },
+    { wrong: 'xao nhãng', right: 'sao nhãng', desc: 'Sai phụ âm s/x (Viết chuẩn: sao nhãng)' },
+    { wrong: 'sỉ nhục', right: 'xỉ nhục', desc: 'Sai phụ âm s/x (Viết chuẩn: xỉ nhục)' },
+    { wrong: 'xông xao', right: 'xôn xao', desc: 'Sai vần n/ng (Viết chuẩn: xôn xao)' },
     
     // tr / ch
-    { wrong: /\b(chao đổi)\b/gi, right: 'trao đổi', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trao đổi)' },
-    { wrong: /\b(chung thực)\b/gi, right: 'trung thực', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trung thực)' },
-    { wrong: /\b(chân trọng)\b/gi, right: 'trân trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trân trọng)' },
-    { wrong: /\b(tri trả)\b/gi, right: 'chi trả', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chi trả)' },
-    { wrong: /\b(truy cập|trung cập)\b/gi, right: 'truy cập', desc: 'Lỗi gõ từ (Viết chuẩn: truy cập)' },
-    { wrong: /\b(trú trọng)\b/gi, right: 'chú trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chú trọng)' },
-    { wrong: /\b(chủ trì|trủ trì)\b/gi, right: 'chủ trì', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chủ trì)' },
+    { wrong: 'chao đổi', right: 'trao đổi', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trao đổi)' },
+    { wrong: 'chung thực', right: 'trung thực', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trung thực)' },
+    { wrong: 'chân trọng', right: 'trân trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: trân trọng)' },
+    { wrong: 'tri trả', right: 'chi trả', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chi trả)' },
+    { wrong: 'trú trọng', right: 'chú trọng', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chú trọng)' },
+    { wrong: 'trủ trì', right: 'chủ trì', desc: 'Sai phụ âm tr/ch (Viết chuẩn: chủ trì)' },
     
     // d / gi / r
-    { wrong: /\b(dành dật|dành giật)\b/gi, right: 'giành giật', desc: 'Sai chính tả d/gi (Viết chuẩn: giành giật)' },
-    { wrong: /\b(giành cho)\b/gi, right: 'dành cho', desc: 'Sai chính tả d/gi (Dành cho ai đó)' },
-    { wrong: /\b(dễ giàng|giễ dàng)\b/gi, right: 'dễ dàng', desc: 'Sai chính tả d/gi (Viết chuẩn: dễ dàng)' },
-    { wrong: /\b(diao lưu)\b/gi, right: 'giao lưu', desc: 'Sai phụ âm d/gi (Viết chuẩn: giao lưu)' },
+    { wrong: 'dành dật|dành giật', right: 'giành giật', desc: 'Sai chính tả d/gi (Viết chuẩn: giành giật)' },
+    { wrong: 'giành cho', right: 'dành cho', desc: 'Sai chính tả d/gi (Dành cho ai đó)' },
+    { wrong: 'dễ giàng|giễ dàng', right: 'dễ dàng', desc: 'Sai chính tả d/gi (Viết chuẩn: dễ dàng)' },
+    { wrong: 'diao lưu', right: 'giao lưu', desc: 'Sai phụ âm d/gi (Viết chuẩn: giao lưu)' },
     
     // l / n
-    { wrong: /\b(lăng suất)\b/gi, right: 'năng suất', desc: 'Sai phụ âm l/n (Viết chuẩn: năng suất)' },
-    { wrong: /\b(nưu ý)\b/gi, right: 'lưu ý', desc: 'Sai phụ âm l/n (Viết chuẩn: lưu ý)' },
-    { wrong: /\b(lỗ lực)\b/gi, right: 'nỗ lực', desc: 'Sai phụ âm l/n (Viết chuẩn: nỗ lực)' },
+    { wrong: 'lăng suất', right: 'năng suất', desc: 'Sai phụ âm l/n (Viết chuẩn: năng suất)' },
+    { wrong: 'nưu ý', right: 'lưu ý', desc: 'Sai phụ âm l/n (Viết chuẩn: lưu ý)' },
+    { wrong: 'lỗ lực', right: 'nỗ lực', desc: 'Sai phụ âm l/n (Viết chuẩn: nỗ lực)' },
     
-    // Dấu hỏi / ngã & Vần
-    { wrong: /\b(kỉ năng)\b/gi, right: 'kỹ năng', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: kỹ năng)' },
-    { wrong: /\b(qui định)\b/gi, right: 'quy định', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: quy định)' },
-    { wrong: /\b(suy nghỉ)\b/gi, right: 'suy nghĩ', desc: 'Sai dấu hỏi/ngã (Viết chuẩn: suy nghĩ)' },
-    { wrong: /\b(đối xửa)\b/gi, right: 'đối xử', desc: 'Sai dấu hỏi/ngã & phụ âm (Viết chuẩn: đối xử)' },
-    { wrong: /\b(rút kinh ngiệm)\b/gi, right: 'rút kinh nghiệm', desc: 'Sai quy tắc n/ng (Viết chuẩn: kinh nghiệm)' },
-    { wrong: /\b(khiếu khuyết)\b/gi, right: 'khiếm khuyết', desc: 'Sai vần m/u (Viết chuẩn: khiếm khuyết)' },
+    // Dấu hỏi / ngã & Vần i/y
+    { wrong: 'kỉ năng', right: 'kỹ năng', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: kỹ năng)' },
+    { wrong: 'qui định', right: 'quy định', desc: 'Chuẩn hóa quy tắc i/y (Viết chuẩn: quy định)' },
+    { wrong: 'suy nghỉ', right: 'suy nghĩ', desc: 'Sai dấu hỏi/ngã (Viết chuẩn: suy nghĩ)' },
+    { wrong: 'đối xửa', right: 'đối xử', desc: 'Sai dấu hỏi/ngã & phụ âm (Viết chuẩn: đối xử)' },
+    { wrong: 'rút kinh ngiệm', right: 'rút kinh nghiệm', desc: 'Sai quy tắc n/ng (Viết chuẩn: kinh nghiệm)' },
+    { wrong: 'khiếu khuyết', right: 'khiếm khuyết', desc: 'Sai vần m/u (Viết chuẩn: khiếm khuyết)' },
     
+    // Chuẩn hóa Dấu thanh kiểu mới (hòa, thủy thay vì hoà, thuỷ)
+    { wrong: 'hoà', right: 'hòa', desc: 'Chuẩn hóa dấu thanh chính tả' },
+    { wrong: 'thuỷ', right: 'thủy', desc: 'Chuẩn hóa dấu thanh chính tả' },
+    { wrong: 'hoàn toàn miễn phí 100%', right: 'miễn phí', desc: 'Trùng lặp nghĩa rườm rà' },
+
     // Từ rườm rà / Lỗi văn phong hành chính
-    { wrong: /\b(nguyên nhân lý do)\b/gi, right: 'nguyên nhân', desc: 'Lặp từ đồng nghĩa rườm rà (Bỏ từ "lý do")' },
-    { wrong: /\b(kế hoạch dự kiến)\b/gi, right: 'kế hoạch', desc: 'Thừa từ rườm rà (Bỏ từ "dự kiến")' },
-    { wrong: /\b(tiến hành thực hiện)\b/gi, right: 'thực hiện', desc: 'Văn phong rườm rà (Nên dùng "thực hiện")' },
-    { wrong: /\b(thực hiện tiến hành)\b/gi, right: 'thực hiện', desc: 'Văn phong rườm rà (Nên dùng "thực hiện")' },
-    { wrong: /\b(ngay trong thời điểm hiện tại)\b/gi, right: 'hiện tại', desc: 'Lặp từ rườm rà (Nên dùng "hiện nay" hoặc "hiện tại")' },
-    { wrong: /\b(hoàn toàn miễn phí 100%)\b/gi, right: 'miễn phí', desc: 'Trùng lặp nghĩa (Nên dùng "miễn phí")' },
-    { wrong: /\b(tóm tắt ngắn gọn)\b/gi, right: 'tóm tắt', desc: 'Tóm tắt bản chất đã là ngắn gọn' },
-    { wrong: /\b(tự bản thân)\b/gi, right: 'bản thân', desc: 'Thừa từ "tự"' },
-    { wrong: /\b(kết quả đạt được)\b/gi, right: 'kết quả', desc: 'Nên rút gọn thành "kết quả"' },
-    
-    // Từ Hán-Việt & Tên gọi hành chính thiếu dấu
-    { wrong: /\b(Cong hoa)\b/gi, right: 'Cộng hòa', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Xa hoi)\b/gi, right: 'Xã hội', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Chu nghia)\b/gi, right: 'Chủ nghĩa', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Viet Nam)\b/gi, right: 'Việt Nam', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Doc lap)\b/gi, right: 'Độc lập', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Tu do)\b/gi, right: 'Tự do', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Hanh phuc)\b/gi, right: 'Hạnh phúc', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Nghi đinh|Nghi dinh)\b/gi, right: 'Nghị định', desc: 'Sai chính tả từ Nghị định' },
-    { wrong: /\b(Quyet đinh|Quyet dinh)\b/gi, right: 'Quyết định', desc: 'Sai chính tả từ Quyết định' },
-    { wrong: /\b(Thong bao)\b/gi, right: 'Thông báo', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Thong tu)\b/gi, right: 'Thông tư', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Bao cao)\b/gi, right: 'Báo cáo', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(To trinh)\b/gi, right: 'Tờ trình', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Kê hoach|Ke hoach)\b/gi, right: 'Kế hoạch', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Uy ban)\b/gi, right: 'Ủy ban', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Hoi đong|Hoi dong)\b/gi, right: 'Hội đồng', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Căn cư)\b/gi, right: 'Căn cứ', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Ban hanh)\b/gi, right: 'Ban hành', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Luu van thu)\b/gi, right: 'Lưu văn thư', desc: 'Thiếu dấu tiếng Việt' },
-    { wrong: /\b(Thanh pho)\b/gi, right: 'Thành phố', desc: 'Thiếu dấu tiếng Việt' }
+    { wrong: 'nguyên nhân lý do', right: 'nguyên nhân', desc: 'Lặp từ đồng nghĩa rườm rà (Bỏ từ "lý do")' },
+    { wrong: 'kế hoạch dự kiến', right: 'kế hoạch', desc: 'Thừa từ rườm rà (Bỏ từ "dự kiến")' },
+    { wrong: 'tiến hành thực hiện|thực hiện tiến hành', right: 'thực hiện', desc: 'Văn phong rườm rà' },
+    { wrong: 'ngay trong thời điểm hiện tại', right: 'hiện tại', desc: 'Rút gọn văn phong' },
+
+    // Từ Hán-Việt & Thể thức thiếu dấu
+    { wrong: 'Cong hoa', right: 'Cộng hòa', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Xa hoi', right: 'Xã hội', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Chu nghia', right: 'Chủ nghĩa', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Viet Nam', right: 'Việt Nam', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Doc lap', right: 'Độc lập', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Tu do', right: 'Tự do', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Hanh phuc', right: 'Hạnh phúc', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Nghi đinh|Nghi dinh', right: 'Nghị định', desc: 'Sai thể thức văn bản' },
+    { wrong: 'Quyet đinh|Quyet dinh', right: 'Quyết định', desc: 'Sai thể thức văn bản' },
+    { wrong: 'Thong bao', right: 'Thông báo', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Thong tu', right: 'Thông tư', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Bao cao', right: 'Báo cáo', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'To trinh', right: 'Tờ trình', desc: 'Thiếu dấu tiếng Việt' },
+    { wrong: 'Kê hoach|Ke hoach', right: 'Kế hoạch', desc: 'Thiếu dấu tiếng Việt' }
 ];
+
+// Hàm tạo Regex Unicode an toàn với ranh giới tiếng Việt
+function createUnicodeWordRegex(pattern) {
+    return new RegExp('(?<!\\p{L})(' + pattern + ')(?!\\p{L})', 'gui');
+}
 
 function fixVietnameseSpellingText(text) {
     if (!text) return "";
@@ -957,17 +968,17 @@ function fixVietnameseSpellingText(text) {
         var isTableLine = line.includes('\t') || (line.split(/\s{2,}/).length >= 2 && !line.startsWith('---'));
         var cleaned = line.normalize('NFC');
 
-        // 1. Thay thế các lỗi từ điển
+        // 1. Thay thế các lỗi từ điển với Unicode Lookaround
         ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
-            cleaned = cleaned.replace(item.wrong, item.right);
+            var regex = createUnicodeWordRegex(item.wrong);
+            cleaned = cleaned.replace(regex, item.right);
         });
 
         if (isTableLine) {
-            // Nếu là dòng bảng kẻ, KHÔNG xóa tab hoặc ngắt khoảng cách cột
-            cleaned = cleaned.replace(/ {2,}/g, ' '); 
+            // Nếu là dòng BẢNG KẺ: Giữ nguyên dải Tab (\t) và khoảng trắng cột
             return cleaned;
         } else {
-            // Văn bản thường: Chuẩn hóa khoảng trắng & Dấu câu
+            // Nếu là VĂN BẢN THƯỜNG: Chuẩn hóa thể thức & khoảng trắng
             cleaned = cleaned.replace(/\s+([,.:;?!])/g, '$1'); 
             cleaned = cleaned.replace(/([,.:;?!])([A-Za-zÀ-ỹ])/g, '$1 $2'); 
             cleaned = cleaned.replace(/ +/g, ' '); 
@@ -1194,7 +1205,7 @@ function copyOcrText() {
     }
 }
 
-// --- 4. SOÁT LỖI CHÍNH TẢ, BẢO TOÀN BẢNG KẺ & XUẤT FILE ---
+// --- 4. SOÁT LỖI CHÍNH TẢ UNICODE, BẢO TOÀN BẢNG KẺ & XUẤT FILE ---
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1302,9 +1313,10 @@ function processSpellCheck() {
         formatIssues.push('Phát hiện <strong>' + countMissingSpaces + ' vị trí</strong> thiếu khoảng trắng sau dấu câu.');
     }
 
-    // 3. Kiểm tra Từ điển
+    // 3. Kiểm tra Từ điển Unicode
     ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
-        var matches = val.match(item.wrong);
+        var regex = createUnicodeWordRegex(item.wrong);
+        var matches = val.match(regex);
         if (matches) {
             spellingIssues.push('Từ "<strong>' + matches[0] + '</strong>" $\\rightarrow$ Nên sửa thành "<strong>' + item.right + '</strong>" (' + item.desc + ').');
         }
@@ -1329,13 +1341,13 @@ function processSpellCheck() {
     var score = Math.max(30, 100 - (spellingIssues.length * 10 + formatIssues.length * 5 + styleIssues.length * 8));
     var scoreBadgeColor = score >= 85 ? 'bg-emerald-500' : (score >= 60 ? 'bg-amber-500' : 'bg-red-500');
 
-    // 6. Hiển thị UI Báo cáo kèm Bộ Nút Thao Tác
+    // 6. Hiển thị UI Báo cáo
     resultBox.classList.remove('hidden');
     resultBox.innerHTML = 
         '<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-amber-200 dark:border-amber-800">' +
             '<div class="flex items-center gap-2">' +
                 '<span class="' + scoreBadgeColor + ' text-white font-black text-xs px-2.5 py-1 rounded-xl shadow-sm">Điểm: ' + score + '/100</span>' +
-                '<span class="font-extrabold text-slate-900 dark:text-white text-xs">Kết Quả Phân Tích Văn Bản</span>' +
+                '<span class="font-extrabold text-slate-900 dark:text-white text-xs">Kết Quả Phân Tích Văn Bản Unicode</span>' +
             '</div>' +
             '<div class="text-[11px] text-slate-500 font-semibold">' +
                 '📊 ' + wordCount + ' từ • ' + sentenceCount + ' câu • ~' + readingTimeMinutes + ' phút đọc' +
