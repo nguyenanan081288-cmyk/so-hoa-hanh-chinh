@@ -901,7 +901,6 @@ const ADVANCED_SPELLING_DICTIONARY = [
     { wrong: /\b(giành cho)\b/gi, right: 'dành cho', desc: 'Sai chính tả d/gi (Dành cho ai đó)' },
     { wrong: /\b(dễ giàng|giễ dàng)\b/gi, right: 'dễ dàng', desc: 'Sai chính tả d/gi (Viết chuẩn: dễ dàng)' },
     { wrong: /\b(diao lưu)\b/gi, right: 'giao lưu', desc: 'Sai phụ âm d/gi (Viết chuẩn: giao lưu)' },
-    { wrong: /\b(diện tích)\b/gi, right: 'diện tích', desc: 'Lỗi gõ chữ' },
     
     // l / n
     { wrong: /\b(lăng suất)\b/gi, right: 'năng suất', desc: 'Sai phụ âm l/n (Viết chuẩn: năng suất)' },
@@ -916,7 +915,7 @@ const ADVANCED_SPELLING_DICTIONARY = [
     { wrong: /\b(rút kinh ngiệm)\b/gi, right: 'rút kinh nghiệm', desc: 'Sai quy tắc n/ng (Viết chuẩn: kinh nghiệm)' },
     { wrong: /\b(khiếu khuyết)\b/gi, right: 'khiếm khuyết', desc: 'Sai vần m/u (Viết chuẩn: khiếm khuyết)' },
     
-    // Từ rườm rà / Lỗi văn phong hành chính (Style & Redundancy)
+    // Từ rườm rà / Lỗi văn phong hành chính
     { wrong: /\b(nguyên nhân lý do)\b/gi, right: 'nguyên nhân', desc: 'Lặp từ đồng nghĩa rườm rà (Bỏ từ "lý do")' },
     { wrong: /\b(kế hoạch dự kiến)\b/gi, right: 'kế hoạch', desc: 'Thừa từ rườm rà (Bỏ từ "dự kiến")' },
     { wrong: /\b(tiến hành thực hiện)\b/gi, right: 'thực hiện', desc: 'Văn phong rườm rà (Nên dùng "thực hiện")' },
@@ -953,27 +952,38 @@ const ADVANCED_SPELLING_DICTIONARY = [
 function fixVietnameseSpellingText(text) {
     if (!text) return "";
 
-    var cleaned = text.normalize('NFC');
-    
-    // 1. Thay thế các lỗi từ điển
-    ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
-        cleaned = cleaned.replace(item.wrong, item.right);
+    var lines = text.split('\n');
+    var fixedLines = lines.map(function(line) {
+        var isTableLine = line.includes('\t') || (line.split(/\s{2,}/).length >= 2 && !line.startsWith('---'));
+        var cleaned = line.normalize('NFC');
+
+        // 1. Thay thế các lỗi từ điển
+        ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
+            cleaned = cleaned.replace(item.wrong, item.right);
+        });
+
+        if (isTableLine) {
+            // Nếu là dòng bảng kẻ, KHÔNG xóa tab hoặc ngắt khoảng cách cột
+            cleaned = cleaned.replace(/ {2,}/g, ' '); 
+            return cleaned;
+        } else {
+            // Văn bản thường: Chuẩn hóa khoảng trắng & Dấu câu
+            cleaned = cleaned.replace(/\s+([,.:;?!])/g, '$1'); 
+            cleaned = cleaned.replace(/([,.:;?!])([A-Za-zÀ-ỹ])/g, '$1 $2'); 
+            cleaned = cleaned.replace(/ +/g, ' '); 
+
+            // Chuẩn hóa dấu ngoặc
+            cleaned = cleaned.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+
+            // Viết hoa chữ cái đầu câu
+            cleaned = cleaned.replace(/(^\s*|[.!?]\s+)([a-zà-ỹ])/g, function(match, p1, p2) {
+                return p1 + p2.toUpperCase();
+            });
+            return cleaned;
+        }
     });
 
-    // 2. Chuẩn hóa khoảng trắng & Dấu câu theo Nghị định 30/2020/NĐ-CP
-    cleaned = cleaned.replace(/\s+([,.:;?!])/g, '$1'); // Xóa khoảng trắng trước dấu câu
-    cleaned = cleaned.replace(/([,.:;?!])([A-Za-zÀ-ỹ])/g, '$1 $2'); // Thêm khoảng trắng sau dấu câu
-    cleaned = cleaned.replace(/[ \t]+/g, ' '); // Xóa khoảng trắng lặp
-
-    // 3. Chuẩn hóa dấu ngoặc
-    cleaned = cleaned.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
-
-    // 4. Viết hoa chữ cái đầu câu (Sau dấu ., !, ? hoặc xuống dòng)
-    cleaned = cleaned.replace(/(^\s*|[.!?]\s+|\n+\s*)([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ])/g, function(match, p1, p2) {
-        return p1 + p2.toUpperCase();
-    });
-
-    return cleaned;
+    return fixedLines.join('\n');
 }
 
 function autoFixVietnameseSpellingUI() {
@@ -1184,7 +1194,7 @@ function copyOcrText() {
     }
 }
 
-// --- 4. SOÁT LỖI CHÍNH TẢ & PHÂN TÍCH VĂN PHONG NÂNG CẤP ---
+// --- 4. SOÁT LỖI CHÍNH TẢ, BẢO TOÀN BẢNG KẺ & XUẤT FILE ---
 async function handleSpellFileSelect(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -1270,18 +1280,17 @@ function processSpellCheck() {
     var formatIssues = [];
     var styleIssues = [];
 
-    // 1. Phân tích Thống kê Văn bản
+    // 1. Phân tích Thống kê
     var words = val.split(/\s+/).filter(Boolean);
     var wordCount = words.length;
     var sentences = val.split(/[.!?]+\s*/).filter(function(s) { return s.trim().length > 0; });
     var sentenceCount = sentences.length || 1;
     var readingTimeMinutes = Math.ceil(wordCount / 200);
 
-    // 2. Kiểm tra Thể thức & Khoảng trắng (Format Issues)
+    // 2. Kiểm tra Khoảng trắng & Dấu câu
     var countMultipleSpaces = (val.match(/ {2,}/g) || []).length;
     var countPunctuationSpaces = (val.match(/ \b[,.:;?!]/g) || []).length;
     var countMissingSpaces = (val.match(/([,.:;?!])([A-Za-zÀ-ỹ])/g) || []).length;
-    var uncapitalizedMatches = (val.match(/(^\s*|[.!?]\s+|\n+\s*)([a-zà-ỹ])/g) || []).length;
 
     if (countMultipleSpaces > 0) {
         formatIssues.push('Phát hiện <strong>' + countMultipleSpaces + ' vị trí</strong> lặp khoảng trắng (thừa dấu cách).');
@@ -1293,7 +1302,7 @@ function processSpellCheck() {
         formatIssues.push('Phát hiện <strong>' + countMissingSpaces + ' vị trí</strong> thiếu khoảng trắng sau dấu câu.');
     }
 
-    // 3. Kiểm tra Từ điển Chính tả Nâng cao (Spelling Issues)
+    // 3. Kiểm tra Từ điển
     ADVANCED_SPELLING_DICTIONARY.forEach(function (item) {
         var matches = val.match(item.wrong);
         if (matches) {
@@ -1301,29 +1310,26 @@ function processSpellCheck() {
         }
     });
 
-    // 4. Phân tích Văn phong & Độ dài Câu (Style Issues)
-    // - Bắt câu quá dài (>35 từ)
+    // 4. Kiểm tra Độ dài câu & Lặp từ
     var longSentencesCount = 0;
     sentences.forEach(function(s) {
-        var sWords = s.trim().split(/\s+/).length;
-        if (sWords > 35) longSentencesCount++;
+        if (s.trim().split(/\s+/).length > 35) longSentencesCount++;
     });
     if (longSentencesCount > 0) {
-        styleIssues.push('Phát hiện <strong>' + longSentencesCount + ' câu</strong> quá dài (trên 35 từ). Nên ngắt bớt câu để văn bản cô đọng, dễ đọc.');
+        styleIssues.push('Phát hiện <strong>' + longSentencesCount + ' câu</strong> quá dài (trên 35 từ). Nên ngắt bớt câu.');
     }
 
-    // - Bắt lỗi lặp từ liên tiếp
     var duplicateWords = val.match(/\b([a-zà-ỹ]+)\s+\1\b/gi);
     if (duplicateWords && duplicateWords.length > 0) {
-        styleIssues.push('Phát hiện <strong>' + duplicateWords.length + ' vị trí</strong> bị gõ lặp từ vô ý (VD: "' + duplicateWords.slice(0, 2).join('", "') + '").');
+        styleIssues.push('Phát hiện <strong>' + duplicateWords.length + ' vị trí</strong> bị gõ lặp từ vô ý.');
     }
 
-    // 5. Tính Điểm Văn Phong (Readability Score)
+    // 5. Tính điểm
     var totalErrors = spellingIssues.length + formatIssues.length + styleIssues.length;
     var score = Math.max(30, 100 - (spellingIssues.length * 10 + formatIssues.length * 5 + styleIssues.length * 8));
     var scoreBadgeColor = score >= 85 ? 'bg-emerald-500' : (score >= 60 ? 'bg-amber-500' : 'bg-red-500');
 
-    // 6. Hiển thị Giao diện Báo cáo Chi tiết
+    // 6. Hiển thị UI Báo cáo kèm Bộ Nút Thao Tác
     resultBox.classList.remove('hidden');
     resultBox.innerHTML = 
         '<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-amber-200 dark:border-amber-800">' +
@@ -1363,13 +1369,24 @@ function processSpellCheck() {
 
             (totalErrors === 0 ? 
                 '<div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-2">' +
-                    '<i class="fa-solid fa-circle-check text-base"></i> Tuyệt vời! Văn bản đạt chuẩn chính tả & thể thức hành chính.' +
+                    '<i class="fa-solid fa-circle-check text-base"></i> Tuyệt vời! Văn bản đạt chuẩn chính tả & thể thức.' +
                 '</div>' : '') +
         '</div>' +
 
-        '<button onclick="autoFixSpellInput()" class="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 active:scale-95">' +
-            '<i class="fa-solid fa-wand-magic-sparkles"></i> ⚡ Sửa Toàn Bộ Lỗi Tự Động & Chuẩn Hóa Viết Hoa' +
-        '</button>';
+        '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mt-4">' +
+            '<button onclick="autoFixSpellInput()" class="py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">' +
+                '<i class="fa-solid fa-wand-magic-sparkles"></i> Sửa Lỗi Tự Động' +
+            '</button>' +
+            '<button onclick="exportSpellToWord()" class="py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">' +
+                '<i class="fa-solid fa-file-word"></i> Xuất Word (.doc)' +
+            '</button>' +
+            '<button onclick="exportSpellToExcel()" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">' +
+                '<i class="fa-solid fa-file-excel"></i> Xuất Excel (.xlsx)' +
+            '</button>' +
+            '<button onclick="copySpellText()" class="py-2.5 px-3 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-1.5 active:scale-95">' +
+                '<i class="fa-solid fa-copy"></i> Sao Chép' +
+            '</button>' +
+        '</div>';
 
     showToast('Hoàn tất phân tích văn bản!', 'success');
 }
@@ -1379,9 +1396,115 @@ function autoFixSpellInput() {
     if (!textarea || !textarea.value) return;
 
     var fixed = fixVietnameseSpellingText(textarea.value);
-    textarea.value = reconstructParagraphs(fixed);
-    showToast('Đã tự động sửa lỗi & chuẩn hóa thể thức!', 'success');
-    processSpellCheck(); // Chạy lại kiểm tra để cập nhật lại điểm số
+    textarea.value = fixed;
+    showToast('Đã tự động sửa lỗi & bảo toàn cấu trúc bảng kẻ!', 'success');
+    processSpellCheck();
+}
+
+function exportSpellToWord() {
+    var textarea = document.getElementById('spellInputText');
+    if (!textarea || !textarea.value.trim()) {
+        showToast('Chưa có nội dung văn bản để xuất Word!', 'error');
+        return;
+    }
+
+    var lines = textarea.value.split('\n');
+    var htmlContent = "";
+    var inTable = false;
+
+    lines.forEach(function (line) {
+        var isTableLine = line.includes('\t') || (line.split(/\s{2,}/).length >= 2 && !line.startsWith('---'));
+
+        if (isTableLine) {
+            if (!inTable) {
+                htmlContent += "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; margin:12px 0; border:1px solid #000;'>";
+                inTable = true;
+            }
+            var cells = line.includes('\t') ? line.split('\t') : line.split(/\s{2,}/);
+            var cols = cells.map(function (c, idx) {
+                return "<td style='padding:6px 8px; border:1px solid #000; vertical-align:top; font-size:12pt;" + (idx === 0 ? " text-align:center;" : "") + "'>" + escapeHtml(c.trim()) + "</td>";
+            }).join('');
+            htmlContent += '<tr>' + cols + '</tr>';
+        } else {
+            if (inTable) {
+                htmlContent += "</table>";
+                inTable = false;
+            }
+            if (line.trim()) {
+                htmlContent += "<p style='margin:6px 0; text-align:justify; font-size:13pt; line-height:1.4; font-family:\"Times New Roman\", serif;'>" + escapeHtml(line.trim()) + "</p>";
+            } else {
+                htmlContent += "<br>";
+            }
+        }
+    });
+
+    if (inTable) htmlContent += "</table>";
+
+    var wordDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head><meta charset="utf-8"><title>Van Ban Soat Loi</title><style>body { font-family: "Times New Roman", serif; line-height: 1.4; color: #000; } table { font-family: "Times New Roman", serif; border-collapse: collapse; } td, th { border: 1px solid #000; }</style></head>' +
+        '<body>' + htmlContent + '</body></html>';
+
+    var blob = new Blob(['\ufeff' + wordDoc], { type: 'application/msword' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'Van_Ban_Da_Soat_Loi_' + Date.now() + '.doc';
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+
+    showToast('Đã xuất file Word (.doc) hoàn chỉnh!', 'success');
+}
+
+async function exportSpellToExcel() {
+    var textarea = document.getElementById('spellInputText');
+    if (!textarea || !textarea.value.trim()) {
+        showToast('Chưa có nội dung văn bản để xuất Excel!', 'error');
+        return;
+    }
+
+    showToast('Đang khởi tạo file Excel...', 'info');
+
+    try {
+        await loadXlsxLib();
+
+        var lines = textarea.value.split('\n');
+        var excelData = lines.map(function (line) {
+            if (line.includes('\t')) return line.split('\t');
+            if (/\s{2,}/.test(line)) return line.split(/\s{2,}/);
+            return [line];
+        });
+
+        var ws = XLSX.utils.aoa_to_sheet(excelData);
+
+        var colWidths = [];
+        excelData.forEach(function (row) {
+            row.forEach(function (cell, i) {
+                var len = cell ? cell.toString().length : 10;
+                colWidths[i] = Math.max(colWidths[i] || 10, Math.min(len + 3, 50));
+            });
+        });
+        ws['!cols'] = colWidths.map(function (w) { return { wch: w }; });
+
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "SoatLoi_VanBan");
+
+        XLSX.writeFile(wb, 'Van_Ban_Soat_Loi_' + Date.now() + '.xlsx');
+        showToast('Đã xuất file Excel (.xlsx) chuẩn cột ô!', 'success');
+
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi khi tạo file Excel!', 'error');
+    }
+}
+
+function copySpellText() {
+    var txt = document.getElementById('spellInputText');
+    if (txt && txt.value) {
+        navigator.clipboard.writeText(txt.value);
+        showToast('Đã sao chép văn bản vào bộ nhớ tạm!', 'success');
+    } else {
+        showToast('Chưa có văn bản để sao chép!', 'error');
+    }
 }
 
 // ==================== CÔNG CỤ LÀM SẠCH CHỮ PDF ====================
